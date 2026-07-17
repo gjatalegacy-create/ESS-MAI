@@ -1,0 +1,99 @@
+ESS-MAI v1.5.2 STATIC AUDIT
+Baseline: v1.5.1 full project
+Scope: evidence-driven Cargo closure + sovereign contract hardening
+
+[OK] TOML_PARSE :: Cargo.toml
+[OK] TOML_PARSE :: light/Cargo.toml
+[OK] TOML_PARSE :: light/ui/src-tauri/Cargo.toml
+[OK] TOML_PARSE :: quantum/Cargo.toml
+[OK] TOML_PARSE :: shadow/Cargo.toml
+[OK] TOML_PARSE :: ui/Cargo.toml
+[OK] JSON_PARSE :: installer/manifest.json
+[OK] JSON_PARSE :: light/ui/src-tauri/tauri.conf.json
+[OK] JSON_PARSE :: ui/tauri.conf.json
+[OK] NO_BASELINE_FILE_REMOVED
+[OK] RUST_SOURCE_COUNT_PRESERVED :: baseline=253 release=253
+[OK] VERSION_IS_1_5_2
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npro.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npim.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npro_lim_bridge.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/pim.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/lim.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/pro.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/knowledge_vault.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/vault_disk.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/sovereign_ffi_gate.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: light/src/sovereign/laws.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/sovereign/laws.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: light/src/sovereign/seal_registry.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/sovereign/seal_registry.rs
+[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/seal_registry.rs
+[OK] GCL_COPIES_BYTE_IDENTICAL
+[OK] GCL_QUALIFIED_COORDINATION :: light/src/lab_contracts/gcl_presume.rs
+[OK] GCL_NO_BARE_COORDINATION_CALL :: light/src/lab_contracts/gcl_presume.rs
+[OK] GCL_PARALLEL_SAFE_ASSERTION :: light/src/lab_contracts/gcl_presume.rs
+[OK] GCL_QUALIFIED_COORDINATION :: quantum/src/lab_contracts/gcl_presume.rs
+[OK] GCL_NO_BARE_COORDINATION_CALL :: quantum/src/lab_contracts/gcl_presume.rs
+[OK] GCL_PARALLEL_SAFE_ASSERTION :: quantum/src/lab_contracts/gcl_presume.rs
+[OK] GCL_QUALIFIED_COORDINATION :: shadow/src/lab_contracts/gcl_presume.rs
+[OK] GCL_NO_BARE_COORDINATION_CALL :: shadow/src/lab_contracts/gcl_presume.rs
+[OK] GCL_PARALLEL_SAFE_ASSERTION :: shadow/src/lab_contracts/gcl_presume.rs
+[OK] TOKEN_REMAINS_OPAQUE :: light
+[OK] NO_UNWRAP_ERR_ON_TOKEN :: light
+[OK] CAP_HANDLE_REPR_C :: light
+[OK] NONCE_BOUND_TO_SLOT :: light
+[OK] NONCE_CHECK_PRECEDES_CAS :: light
+[OK] U64_TO_USIZE_FAIL_CLOSED :: light
+[OK] TAMPER_DOES_NOT_BURN_CAPABILITY_TEST :: light
+[OK] FFI_LAYOUT_TEST :: light
+[OK] TOKEN_REMAINS_OPAQUE :: quantum
+[OK] NO_UNWRAP_ERR_ON_TOKEN :: quantum
+[OK] CAP_HANDLE_REPR_C :: quantum
+[OK] NONCE_BOUND_TO_SLOT :: quantum
+[OK] NONCE_CHECK_PRECEDES_CAS :: quantum
+[OK] U64_TO_USIZE_FAIL_CLOSED :: quantum
+[OK] TAMPER_DOES_NOT_BURN_CAPABILITY_TEST :: quantum
+[OK] FFI_LAYOUT_TEST :: quantum
+[OK] NO_DIRECT_RINGBUFFER_SYNC_IMPL :: light
+[OK] TYPED_SPSC_ENDPOINTS :: light
+[OK] ENDPOINTS_REQUIRE_MUT :: light
+[OK] SPSC_NO_MUTEX :: light
+[OK] SPSC_RELEASE_ACQUIRE :: light
+[OK] BRIDGE_TYPED_CONSUMER_PATH :: light
+[OK] BRIDGE_SINGLE_PACKET_GATE :: light
+[OK] TYPED_BRIDGE_TEST :: light
+[OK] NO_DIRECT_RINGBUFFER_SYNC_IMPL :: quantum
+[OK] TYPED_SPSC_ENDPOINTS :: quantum
+[OK] ENDPOINTS_REQUIRE_MUT :: quantum
+[OK] SPSC_NO_MUTEX :: quantum
+[OK] SPSC_RELEASE_ACQUIRE :: quantum
+[OK] BRIDGE_TYPED_CONSUMER_PATH :: quantum
+[OK] BRIDGE_SINGLE_PACKET_GATE :: quantum
+[OK] TYPED_BRIDGE_TEST :: quantum
+[OK] LIGHT_DOES_NOT_DEFINE_QUANTUM_EBPF_SEAL
+[OK] LIGHT_RING_NO_LOCAL_SEAL_EBPF_IMPORT
+[OK] LIGHT_RING_REGISTRY_OWNERSHIP_CHECK
+[OK] SPSC_ENDPOINTS_REEXPORTED :: light/src/sovereign/mod.rs
+[OK] SPSC_ENDPOINTS_REEXPORTED :: quantum/src/sovereign/mod.rs
+[OK] SPSC_ENDPOINTS_REEXPORTED :: quantum/src/lib.rs
+[OK] VALIDATOR_BUILDS_ALL_TARGETS
+[OK] VALIDATOR_SHADOW_PURE_MATRIX
+[OK] VALIDATOR_AVOIDS_ALL_FEATURES
+[OK] NO_CARGO_FIX
+[OK] RUST_DELIMITERS_BALANCED :: light/src/lab_contracts/gcl_presume.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/lgc_gate.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/mod.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/ring.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: quantum/src/lab_contracts/gcl_presume.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: quantum/src/lib.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/lgc_gate.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/mod.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/ring.rs stack=[], state=code
+[OK] RUST_DELIMITERS_BALANCED :: shadow/src/lab_contracts/gcl_presume.rs stack=[], state=code
+[OK] RING_CORE_LIGHT_QUANTUM_IDENTICAL
+[OK] GATE_CORE_LIGHT_QUANTUM_IDENTICAL
+
+STATIC_AUDIT_CHECKS=90
+STATIC_AUDIT_FAILS=0
+CARGO_EXECUTED_IN_PACKAGING_ENV=NO
+REASON=no rustc/cargo available; run VALIDATE_V152.ps1 on authoritative Windows host

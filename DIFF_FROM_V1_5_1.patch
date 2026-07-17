@@ -1,0 +1,1403 @@
+diff -ruN a/AUDIT_CARGO_V152.md b/AUDIT_CARGO_V152.md
+--- a/AUDIT_CARGO_V152.md	1970-01-01 00:00:00.000000000 +0000
++++ b/AUDIT_CARGO_V152.md	2026-07-13 18:24:45.387602807 +0000
+@@ -0,0 +1,93 @@
++# ESS-MAI v1.5.2 — Harta e Hetimit dhe Planit të Ndërhyrjes
++
++## Harta sovrane
++
++```text
++Input
++  ↓
++Light / Coordination
++  i₀ → PA → Xi/Yi → transport i vulosur
++  ↓
++Quantum / Reasoning
++  LIM → PRO/NPRO → MPRO/APRO → PIM/NPIM
++  ↓
++Shadow / Verification
++  anchor gate → Y verdict → X trust → vault/negative knowledge
++  ↓
++Light / Output + trace
++```
++
++Ndërhyrja nuk ndryshon asnjë nyje të kësaj harte. Ajo prek vetëm portat mbrojtëse dhe testet që provojnë gatishmërinë e nyjeve.
++
++## Matrica e provës Cargo
++
++`cargo build --workspace --all-targets` mbi v1.5.1 raportoi gjashtë error-e:
++
++- 1 × `E0432`: `SEAL_EBPF` kërkohej gabimisht nga namespace-i lokal i Light;
++- 2 × `E0425`: `Coordination` ishte variant i pakualifikuar në testin GCL;
++- 3 × `E0277`: `unwrap_err()` kërkonte `Debug` mbi `LgcToken` opak.
++
++Build-i ndaloi te target-i `light-platform` test. Kopjet simetrike në Quantum/Shadow u kontrolluan statikisht përpara ndërhyrjes, që error-i të mos zhvendosej thjesht te target-i pasues.
++
++## Plan i zbatuar i ndërhyrjes
++
++1. Izolim i error-it nga warning-et dhe përcaktim i target-it që dështoi.
++2. Gjurmim i pronësisë së seal-it në registry, jo shtim mekanik konstanteje.
++3. Krahasim i kopjeve Light/Quantum/Shadow dhe korrigjim simetrik vetëm ku kontrata ishte identike.
++4. Ruajtje e opacitetit të capability token-it; korrigjim i testit dhe forcim i binding-ut të handle-it.
++5. Audit i `unsafe` të ring-ut dhe përputhje me disiplinën SPSC.
++6. Kontroll byte-për-byte i motorëve epistemikë, vault-it, ligjeve dhe registrave të vulave.
++7. Paketim vetëm pasi auditimi statik dha zero dështime.
++
++## Rrjedha 1 — `SEAL_EBPF`
++
++```text
++all-targets
++  → light::sovereign::ring::tests
++  → import nga light::sovereign::laws
++  → emri nuk ekziston
++```
++
++Hetimi tregoi se `EBPF_HYDRATOR` është regjistruar si modul Quantum. Shtimi i `SEAL_EBPF` te ligjet Light do të përziente pronësinë e platformave. Zgjidhja është lookup nga registry ndër-platformë dhe provë e `Platform::Quantum`.
++
++## Rrjedha 2 — `Coordination`
++
++```text
++all-targets
++  → gcl_presume test-only
++  → variant i pakualifikuar jashtë scope-it lokal
++```
++
++Skedari ekziston byte-identik në të tria platformat. Korrigjimi bëhet ×3 dhe ruan identitetin. Gjatë hetimit u gjet se pohimi mbi `stats.total` ishte i brishtë ndaj testimit paralel; ai u zëvendësua me numërimin e hyrjes me emër unik.
++
++## Rrjedha 3 — `LgcToken: Debug`
++
++```text
++unwrap_err()
++  → kërkon Debug mbi tipin Ok
++  → tipi Ok është capability token opak
++```
++
++Derivimi `Debug` mbi token do të ishte korrigjim i gabuar filozofik. Testi u korrigjua pa ekspozuar token-in. Ndjekja e rrjedhës zbuloi se `nonce` dilte në `CapHandle`, por nuk verifikohej nga Light/Quantum; kjo binte ndesh me vetë komentet e capability contract dhe me implementimin më të fortë të Shadow. Slot-i tani mban dhe verifikon nonce-in para konsumit.
++
++## Rrjedha 4 — Ring concurrency
++
++`unsafe impl Sync for RingBuffer` e bënte API-në safe të thirrshme nga shumë producer/consumer, ndërsa algoritmi `load/store` ishte SPSC. Kjo ishte mospërputhje mes tipit dhe P8. Zgjidhja nuk e kthen në MPSC dhe nuk shton mutex: ring-u ndahet me konsum të pronarit në endpoint-e unike SPSC. `LgcBridge::receive_from` e lidh consumer-in unik me të njëjtën portë CRC + seal, prandaj rruga paralele nuk anashkalon autorizimin.
++
++## Stop conditions të kontrolluara
++
++- Nuk u shtua vulë e platformës tjetër në ligjet Light.
++- `LgcToken` nuk u bë `Debug`, `Clone`, `Copy` ose `Send`.
++- Shadow nuk humbi autoritet.
++- Asnjë skedar NPRO/NPIM nuk u ndryshua.
++- Asnjë wire payload ose vlerë seal ekzistuese nuk u ndryshua.
++- Profilet Cargo nuk u centralizuan, sepse kjo do të kërkonte vendim për `panic=abort` global kundrejt sjelljes së Quantum.
++
++## Validimi i kërkuar në makinën autoritative
++
++1. `cargo build --workspace --all-targets`
++2. `cargo test --workspace`
++3. testet me feature-matrix nga `VALIDATE_V152.ps1`
++4. Clippy pa kombinimin e ndaluar `runtime_mode + pure_rust`
++
++Çdo error i ri trajtohet si provë e re; nuk përdoret `cargo fix`.
+diff -ruN a/CHANGED_FILES_V152.txt b/CHANGED_FILES_V152.txt
+--- a/CHANGED_FILES_V152.txt	1970-01-01 00:00:00.000000000 +0000
++++ b/CHANGED_FILES_V152.txt	2026-07-13 18:25:15.503200914 +0000
+@@ -0,0 +1,53 @@
++ESS-MAI v1.5.2 — FILE SCOPE
++Baseline autoritativ: projekti i plotë v1.5.1
++Politika: vetëm korrigjime të mbështetura nga Cargo + ndjekje statike e kontratave
++
++SKEDARË RUNTIME / TEST TË MODIFIKUAR
++- light/src/sovereign/ring.rs
++  Pronësia Quantum e SEAL_EBPF në test; SPSC i tipizuar; rrugë bridge për consumer-in; testet.
++- quantum/src/sovereign/ring.rs
++  SPSC i tipizuar simetrik; rrugë bridge për consumer-in; testet.
++- light/src/sovereign/lgc_gate.rs
++  Token opak; testet pa unwrap_err; nonce binding; repr(C); fail-closed conversion.
++- quantum/src/sovereign/lgc_gate.rs
++  I njëjti capability contract si Light.
++- light/src/lab_contracts/gcl_presume.rs
++- quantum/src/lab_contracts/gcl_presume.rs
++- shadow/src/lab_contracts/gcl_presume.rs
++  CollapsePhase::Coordination + test idempotence i qëndrueshëm ndaj testimit paralel; kopjet mbeten identike.
++- light/src/sovereign/mod.rs
++- quantum/src/sovereign/mod.rs
++- quantum/src/lib.rs
++  Re-eksporte additive të RingProducer/RingConsumer.
++
++DOKUMENTIM / RELEASE
++- VERSION_ESSMAI.txt
++- light/README.md
++- quantum/README.md
++- CHANGELOG_v1.5.2.md
++- AUDIT_CARGO_V152.md
++- VALIDATE_V152.ps1
++- STATIC_AUDIT_V152.txt
++- CHANGED_FILES_V152.txt
++- DIFF_FROM_V1_5_1.patch
++- SHA256SUMS.txt (rigjeneruar për pemën v1.5.2; përjashton vetveten)
++
++TË PAPREKURA BYTE-PËR-BYTE
++- quantum/src/npro.rs
++- quantum/src/npim.rs
++- quantum/src/npro_lim_bridge.rs
++- quantum/src/pro.rs
++- quantum/src/pim.rs
++- quantum/src/lim.rs
++- shadow/src/knowledge_vault.rs
++- shadow/src/vault_disk.rs
++- shadow/src/sovereign_ffi_gate.rs
++- light/src/sovereign/laws.rs
++- quantum/src/sovereign/laws.rs
++- registrat ekzistues të vulave Light/Quantum/Shadow
++
++NUK U PËRDOR
++- cargo fix
++- ndryshim automatik i warnings
++- centralizim i Cargo profiles pa vendim për panic policy
++- ndryshim i NPRO/NPIM, negativity_score, wire/FFI payload-eve ose autoritetit të Shadow
+diff -ruN a/CHANGELOG_v1.5.2.md b/CHANGELOG_v1.5.2.md
+--- a/CHANGELOG_v1.5.2.md	1970-01-01 00:00:00.000000000 +0000
++++ b/CHANGELOG_v1.5.2.md	2026-07-13 18:22:31.301022317 +0000
+@@ -0,0 +1,60 @@
++# ESS-MAI v1.5.2 — Cargo-Evidence Closure and Sovereign Contract Hardening
++
++## Baseline
++
++Kjo release është projekti i plotë `v1.5.1` plus vetëm ndërhyrje të lidhura me prova konkrete nga:
++
++- `cargo build --workspace --all-targets` i ekzekutuar në Windows;
++- gjashtë error-et e target-it `light-platform` test;
++- ndjekja statike e kopjeve byte-identike dhe kontratave të prekura.
++
++## Korrigjimet
++
++### 1. Pronësia e vulës eBPF në Light
++
++`light::sovereign::ring` nuk importon më `SEAL_EBPF` nga ligjet lokale të Light. Testi merr vulën `EBPF_HYDRATOR` nga `SealRegistry`, verifikon se pronari është `Platform::Quantum`, dhe pastaj provon handshake-un. Nuk u shtua asnjë vulë Quantum në namespace-in e ligjeve Light.
++
++### 2. GCL Presume ×3
++
++Kopjet Light, Quantum dhe Shadow mbeten byte-identike.
++
++- `CollapsePhase::Coordination` përdoret plotësisht i kualifikuar.
++- Testi i idempotencës nuk krahason më totalin global, i cili mund të ndryshojë nga testet paralele; numëron vetëm emrin unik të hyrjes që po provon.
++
++### 3. Capability gate Light + Quantum
++
++- `LgcToken` mbetet opak dhe nuk merr `Debug` vetëm për të kënaqur `unwrap_err()`.
++- Testet përdorin `Result::err()`, pa ekspozuar token-in.
++- `CapHandle` është `#[repr(C)]`, me layout dy `u64`.
++- `CapSlot` ruan `expected_nonce`.
++- `validate()` kontrollon nonce-in para CAS-it; manipulimi jep `NonceMismatch` dhe nuk djeg capability-n legjitime.
++- Konvertimi `u64 → usize` është fail-closed me `try_from`.
++- Replay/clone vazhdon të refuzohet me `AlreadyConsumed`.
++
++### 4. RingBuffer SPSC i zbatuar nga tipi
++
++Deklarata P8 `SPSC ring` tani mbrohet nga forma e API-së:
++
++- `RingBuffer` është pronar sekuencial dhe jo `Sync`;
++- `split(self)` prodhon saktësisht një `RingProducer` dhe një `RingConsumer`;
++- endpoint-et nuk janë `Clone/Sync` dhe operacionet kërkojnë `&mut self`;
++- core-i ndahet vetëm mes këtyre dy endpoint-eve;
++- `LgcBridge::receive_from` lidh consumer-in e tipizuar me të njëjtën portë CRC + seal, pa rrugë anashkaluese;
++- matematikat `head & MASK`, CRC, `Ev.mass` dhe rrjedha `Ring → LgcBridge` mbeten të pandryshuara;
++- zero kopje payload-i dhe zero mutex.
++
++### 5. Validation matrix
++
++`VALIDATE_V152.ps1` nuk përdor më `--all-features`, sepse Shadow ndalon me ligj kombinimin `runtime_mode + pure_rust`. Testet dhe Clippy ndahen në feature-matrix të vlefshme.
++
++## Të paprekura
++
++- Light → Quantum → Shadow dhe autoriteti final i Shadow.
++- NPRO/NPIM, negativity_score dhe pragjet e tyre.
++- Wire payload-et dhe vulat numerike ekzistuese.
++- Shadow persistence dhe vault semantics të v1.5.1.
++- Cargo profile policy: mbetet për vendim të veçantë, sepse strategjia `panic` nuk mund të ruhet per-package nga workspace profile overrides.
++
++## Statusi i validimit
++
++Mjedisi i paketimit nuk ka `rustc/cargo`; prandaj nuk deklarohet cargo-green pa ekzekutuar `VALIDATE_V152.ps1` në makinën autoritative. Janë kryer kontrolli statik i scope-it, simetrisë, delimiter-ëve, hash-eve dhe eliminimi i gjashtë modeleve të error-it të raportuar.
+diff -ruN a/STATIC_AUDIT_V152.txt b/STATIC_AUDIT_V152.txt
+--- a/STATIC_AUDIT_V152.txt	1970-01-01 00:00:00.000000000 +0000
++++ b/STATIC_AUDIT_V152.txt	2026-07-13 18:24:54.247405555 +0000
+@@ -0,0 +1,99 @@
++ESS-MAI v1.5.2 STATIC AUDIT
++Baseline: v1.5.1 full project
++Scope: evidence-driven Cargo closure + sovereign contract hardening
++
++[OK] TOML_PARSE :: Cargo.toml
++[OK] TOML_PARSE :: light/Cargo.toml
++[OK] TOML_PARSE :: light/ui/src-tauri/Cargo.toml
++[OK] TOML_PARSE :: quantum/Cargo.toml
++[OK] TOML_PARSE :: shadow/Cargo.toml
++[OK] TOML_PARSE :: ui/Cargo.toml
++[OK] JSON_PARSE :: installer/manifest.json
++[OK] JSON_PARSE :: light/ui/src-tauri/tauri.conf.json
++[OK] JSON_PARSE :: ui/tauri.conf.json
++[OK] NO_BASELINE_FILE_REMOVED
++[OK] RUST_SOURCE_COUNT_PRESERVED :: baseline=253 release=253
++[OK] VERSION_IS_1_5_2
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npro.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npim.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/npro_lim_bridge.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/pim.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/lim.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/pro.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/knowledge_vault.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/vault_disk.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/sovereign_ffi_gate.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: light/src/sovereign/laws.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/sovereign/laws.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: light/src/sovereign/seal_registry.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: quantum/src/sovereign/seal_registry.rs
++[OK] CRITICAL_BYTE_IDENTICAL :: shadow/src/seal_registry.rs
++[OK] GCL_COPIES_BYTE_IDENTICAL
++[OK] GCL_QUALIFIED_COORDINATION :: light/src/lab_contracts/gcl_presume.rs
++[OK] GCL_NO_BARE_COORDINATION_CALL :: light/src/lab_contracts/gcl_presume.rs
++[OK] GCL_PARALLEL_SAFE_ASSERTION :: light/src/lab_contracts/gcl_presume.rs
++[OK] GCL_QUALIFIED_COORDINATION :: quantum/src/lab_contracts/gcl_presume.rs
++[OK] GCL_NO_BARE_COORDINATION_CALL :: quantum/src/lab_contracts/gcl_presume.rs
++[OK] GCL_PARALLEL_SAFE_ASSERTION :: quantum/src/lab_contracts/gcl_presume.rs
++[OK] GCL_QUALIFIED_COORDINATION :: shadow/src/lab_contracts/gcl_presume.rs
++[OK] GCL_NO_BARE_COORDINATION_CALL :: shadow/src/lab_contracts/gcl_presume.rs
++[OK] GCL_PARALLEL_SAFE_ASSERTION :: shadow/src/lab_contracts/gcl_presume.rs
++[OK] TOKEN_REMAINS_OPAQUE :: light
++[OK] NO_UNWRAP_ERR_ON_TOKEN :: light
++[OK] CAP_HANDLE_REPR_C :: light
++[OK] NONCE_BOUND_TO_SLOT :: light
++[OK] NONCE_CHECK_PRECEDES_CAS :: light
++[OK] U64_TO_USIZE_FAIL_CLOSED :: light
++[OK] TAMPER_DOES_NOT_BURN_CAPABILITY_TEST :: light
++[OK] FFI_LAYOUT_TEST :: light
++[OK] TOKEN_REMAINS_OPAQUE :: quantum
++[OK] NO_UNWRAP_ERR_ON_TOKEN :: quantum
++[OK] CAP_HANDLE_REPR_C :: quantum
++[OK] NONCE_BOUND_TO_SLOT :: quantum
++[OK] NONCE_CHECK_PRECEDES_CAS :: quantum
++[OK] U64_TO_USIZE_FAIL_CLOSED :: quantum
++[OK] TAMPER_DOES_NOT_BURN_CAPABILITY_TEST :: quantum
++[OK] FFI_LAYOUT_TEST :: quantum
++[OK] NO_DIRECT_RINGBUFFER_SYNC_IMPL :: light
++[OK] TYPED_SPSC_ENDPOINTS :: light
++[OK] ENDPOINTS_REQUIRE_MUT :: light
++[OK] SPSC_NO_MUTEX :: light
++[OK] SPSC_RELEASE_ACQUIRE :: light
++[OK] BRIDGE_TYPED_CONSUMER_PATH :: light
++[OK] BRIDGE_SINGLE_PACKET_GATE :: light
++[OK] TYPED_BRIDGE_TEST :: light
++[OK] NO_DIRECT_RINGBUFFER_SYNC_IMPL :: quantum
++[OK] TYPED_SPSC_ENDPOINTS :: quantum
++[OK] ENDPOINTS_REQUIRE_MUT :: quantum
++[OK] SPSC_NO_MUTEX :: quantum
++[OK] SPSC_RELEASE_ACQUIRE :: quantum
++[OK] BRIDGE_TYPED_CONSUMER_PATH :: quantum
++[OK] BRIDGE_SINGLE_PACKET_GATE :: quantum
++[OK] TYPED_BRIDGE_TEST :: quantum
++[OK] LIGHT_DOES_NOT_DEFINE_QUANTUM_EBPF_SEAL
++[OK] LIGHT_RING_NO_LOCAL_SEAL_EBPF_IMPORT
++[OK] LIGHT_RING_REGISTRY_OWNERSHIP_CHECK
++[OK] SPSC_ENDPOINTS_REEXPORTED :: light/src/sovereign/mod.rs
++[OK] SPSC_ENDPOINTS_REEXPORTED :: quantum/src/sovereign/mod.rs
++[OK] SPSC_ENDPOINTS_REEXPORTED :: quantum/src/lib.rs
++[OK] VALIDATOR_BUILDS_ALL_TARGETS
++[OK] VALIDATOR_SHADOW_PURE_MATRIX
++[OK] VALIDATOR_AVOIDS_ALL_FEATURES
++[OK] NO_CARGO_FIX
++[OK] RUST_DELIMITERS_BALANCED :: light/src/lab_contracts/gcl_presume.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/lgc_gate.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/mod.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: light/src/sovereign/ring.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: quantum/src/lab_contracts/gcl_presume.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: quantum/src/lib.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/lgc_gate.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/mod.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: quantum/src/sovereign/ring.rs stack=[], state=code
++[OK] RUST_DELIMITERS_BALANCED :: shadow/src/lab_contracts/gcl_presume.rs stack=[], state=code
++[OK] RING_CORE_LIGHT_QUANTUM_IDENTICAL
++[OK] GATE_CORE_LIGHT_QUANTUM_IDENTICAL
++
++STATIC_AUDIT_CHECKS=90
++STATIC_AUDIT_FAILS=0
++CARGO_EXECUTED_IN_PACKAGING_ENV=NO
++REASON=no rustc/cargo available; run VALIDATE_V152.ps1 on authoritative Windows host
+diff -ruN a/VALIDATE_V152.ps1 b/VALIDATE_V152.ps1
+--- a/VALIDATE_V152.ps1	1970-01-01 00:00:00.000000000 +0000
++++ b/VALIDATE_V152.ps1	2026-07-13 18:20:00.755426225 +0000
+@@ -0,0 +1,47 @@
++$ErrorActionPreference = "Continue"
++$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
++$Out = Join-Path $Root "validation_v152"
++New-Item -ItemType Directory -Force -Path $Out | Out-Null
++Set-Location $Root
++
++function Run-Step {
++    param([string]$Name, [string]$Command)
++    $Log = Join-Path $Out ($Name + ".txt")
++    cmd.exe /d /s /c "$Command > `"$Log`" 2>&1"
++    return $LASTEXITCODE
++}
++
++# Porta kryesore që zbuloi 6 gabimet e v1.5.1.
++$AllTargets = Run-Step "01_build_workspace_all_targets" "cargo --color never build --workspace --all-targets"
++
++# Testet e platformave me feature-matrix të vlefshme.
++$LightDefault = Run-Step "02_light_tests_default" "cargo --color never test -p light-platform"
++$LightDev = Run-Step "03_light_tests_dev_simulation" "cargo --color never test -p light-platform --no-default-features --features dev_simulation"
++$QuantumLib = Run-Step "04_quantum_lib_tests" "cargo --color never test -p quantum-platform --lib"
++$ShadowPure = Run-Step "05_shadow_tests_pure_rust" "cargo --color never test -p shadow_platform --no-default-features --features pure_rust"
++$Workspace = Run-Step "06_workspace_tests" "cargo --color never test --workspace"
++$Release = Run-Step "07_release_build" "cargo --color never build --workspace --release"
++
++# Mos aktivizo të gjitha feature-t njëherësh: Shadow e ndalon kombinimin runtime_mode + pure_rust.
++$ClippyDefault = Run-Step "08_clippy_workspace" "cargo --color never clippy --workspace --all-targets"
++$ClippyShadowPure = Run-Step "09_clippy_shadow_pure_rust" "cargo --color never clippy -p shadow_platform --all-targets --no-default-features --features pure_rust"
++
++$Pairs = @(
++    [pscustomobject]@{ Name = "BUILD_ALL_TARGETS"; Exit = $AllTargets }
++    [pscustomobject]@{ Name = "LIGHT_TEST_DEFAULT"; Exit = $LightDefault }
++    [pscustomobject]@{ Name = "LIGHT_TEST_DEV_SIMULATION"; Exit = $LightDev }
++    [pscustomobject]@{ Name = "QUANTUM_LIB_TEST"; Exit = $QuantumLib }
++    [pscustomobject]@{ Name = "SHADOW_PURE_RUST_TEST"; Exit = $ShadowPure }
++    [pscustomobject]@{ Name = "WORKSPACE_TEST"; Exit = $Workspace }
++    [pscustomobject]@{ Name = "RELEASE_BUILD"; Exit = $Release }
++    [pscustomobject]@{ Name = "CLIPPY_WORKSPACE"; Exit = $ClippyDefault }
++    [pscustomobject]@{ Name = "CLIPPY_SHADOW_PURE_RUST"; Exit = $ClippyShadowPure }
++)
++
++$Pairs | ForEach-Object { "$($_.Name)_EXIT=$($_.Exit)" } |
++    Set-Content -Encoding utf8 (Join-Path $Out "00_summary.txt")
++
++$Failed = @($Pairs | Where-Object { $_.Exit -ne 0 })
++"FAILED_STEPS=$($Failed.Count)" | Add-Content -Encoding utf8 (Join-Path $Out "00_summary.txt")
++
++notepad (Join-Path $Out "00_summary.txt")
+diff -ruN a/VERSION_ESSMAI.txt b/VERSION_ESSMAI.txt
+--- a/VERSION_ESSMAI.txt	2026-07-13 09:44:16.000000000 +0000
++++ b/VERSION_ESSMAI.txt	2026-07-13 18:17:07.680419379 +0000
+@@ -1 +1 @@
+-1.5.1
++1.5.2
+diff -ruN a/light/README.md b/light/README.md
+--- a/light/README.md	2026-06-28 19:18:01.000000000 +0000
++++ b/light/README.md	2026-07-13 18:22:31.302497334 +0000
+@@ -131,8 +131,8 @@
+ ## 2. Sovereign 0-COPY + ligji FFI (E RE)
+ `sovereign/` — IDENTIK me Quantum, vula 500 ndër platforma:
+ - **laws.rs**: gate, dot8, admit4, fnv, vulat e moduleve të Light, verify_500
+-- **lgc_gate.rs**: CapHandle + LgcToken + AtomicBool single-use. Ligji FFI: klon i handle-it → CAS(false→false) → AlreadyConsumed. Mbijeton FFI-në.
+-- **ring.rs**: RingBuffer 0-copy + EbpfPacket
++- **lgc_gate.rs**: `CapHandle #[repr(C)]` + `LgcToken` opak + `AtomicBool` single-use. Nonce-i i modulit lidhet me slot-in para CAS-it; klon/replay → `AlreadyConsumed`, manipulim → `NonceMismatch` pa djegur capability-n legjitime.
++- **ring.rs**: RingBuffer 0-copy SPSC i zbatuar nga tipi: pronar sekuencial ose `split(self) → (RingProducer, RingConsumer)` unik; `LgcBridge::receive_from` ruan CRC + seal në rrugën paralele
+ - Vula 500: `(flags & 0xFFFF) ^ 0xA5A5 == 500`, masked=0xA451 — byte-for-byte me Quantum/Shadow
+ 
+ ## 3. Urat sovrane (lidhja me 2 platformat) — sovereign_bridges.rs
+diff -ruN a/light/src/lab_contracts/gcl_presume.rs b/light/src/lab_contracts/gcl_presume.rs
+--- a/light/src/lab_contracts/gcl_presume.rs	2026-07-07 09:30:05.000000000 +0000
++++ b/light/src/lab_contracts/gcl_presume.rs	2026-07-13 18:14:36.385914247 +0000
+@@ -277,11 +277,18 @@
+ 
+     #[test]
+     fn register_is_idempotent_by_name() {
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s1, _) = sweep("TEST", Coordination, &tdir());
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s2, _) = sweep("TEST", Coordination, &tdir());
+-        assert_eq!(s1.total, s2.total, "regjistrimi i dyfishtë s'duhet ta rrisë regjistrin");
++        const NAME: &str = "test_presume_idem_unik";
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines1) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines2) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++
++        // Regjistri është global dhe testet mund të ecin paralelisht; prandaj
++        // kontrata matet mbi emrin tonë, jo mbi totalin global të brishtë.
++        let count1 = lines1.iter().filter(|line| line.name == NAME).count();
++        let count2 = lines2.iter().filter(|line| line.name == NAME).count();
++        assert_eq!(count1, 1, "regjistrimi i parë duhet të krijojë vetëm një hyrje");
++        assert_eq!(count2, 1, "regjistrimi i dyfishtë s'duhet të krijojë hyrje të dytë");
+     }
+ 
+     #[test]
+diff -ruN a/light/src/sovereign/lgc_gate.rs b/light/src/sovereign/lgc_gate.rs
+--- a/light/src/sovereign/lgc_gate.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/light/src/sovereign/lgc_gate.rs	2026-07-13 18:24:04.887331850 +0000
+@@ -6,7 +6,7 @@
+ // ║                                                                          ║
+ // ║  TEOREMA: C sheh vetëm CapHandle(gen, nonce). CapSlot{AtomicBool}      ║
+ // ║  jeton i paprekur në heap Rust. validate() bën CAS(true→false) —      ║
+-// ║  hardware-atomik. Klon i handle-it → CAS(false→false) → refuzim.       ║
++// ║  hardware-atomik. Nga kopjet identike vetëm përdorimi i parë kalon; replay refuzohet.       ║
+ // ║                                                                          ║
+ // ║  FILOZOFIA: nuk e DETYRON C-në — ELIMINON mundësinë. LAW_3 mbijeton.   ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+@@ -32,9 +32,10 @@
+ // SOVEREIGN ERROR
+ // ─────────────────────────────────────────────────────────────────────────────
+ 
+-#[derive(Debug, Clone, PartialEq)]
++#[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum SovErr {
+     SealMismatch(u64),
++    NonceMismatch { expected: u64, actual: u64 },
+     AlreadyConsumed,
+     NotFound,
+ }
+@@ -73,11 +74,15 @@
+ /// Jeton në heap Rust; C-ja nuk e prek dot.
+ struct CapSlot {
+     live: AtomicBool,
++    expected_nonce: u64,
+ }
+ 
+ impl CapSlot {
+-    fn new() -> Self {
+-        Self { live: AtomicBool::new(true) }
++    fn new(expected_nonce: u64) -> Self {
++        Self {
++            live: AtomicBool::new(true),
++            expected_nonce,
++        }
+     }
+ 
+     /// Konsumon qelizën. CAS(true→false): vetëm hera e parë kalon.
+@@ -94,9 +99,10 @@
+ // ─────────────────────────────────────────────────────────────────────────────
+ 
+ /// Çelësi që del jashtë gate-it — vetëm dy numra.
+-/// C mund ta kopjojë me memcpy, por kopja është e padobishme:
+-/// CapSlot{AtomicBool} mbetet në heap, i paarritshëm.
+-#[derive(Debug, Clone, Copy)]
++/// C mund ta kopjojë me memcpy, por kopjet ndajnë të njëjtin slot një-përdorimësh:
++/// vetëm njëra mund të fitojë konsumimin; replay refuzohet nga CAS-i në heap.
++#[repr(C)]
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub struct CapHandle {
+     pub gen:   u64,
+     pub nonce: u64,
+@@ -121,15 +127,26 @@
+     pub fn issue(&mut self, module_seal: u64) -> CapHandle {
+         let gen = self.gen_counter;
+         self.gen_counter += 1;
+-        self.slots.push(CapSlot::new());
++        self.slots.push(CapSlot::new(module_seal));
+         CapHandle { gen, nonce: module_seal }
+     }
+ 
+     /// Validon dhe konsumon. Një herë.
+     /// Klon i handle-it → CAS(false→false) → AlreadyConsumed.
+     pub fn validate(&self, handle: CapHandle) -> Result<LgcToken, SovErr> {
+-        let idx = handle.gen as usize;
++        let idx = usize::try_from(handle.gen).map_err(|_| SovErr::NotFound)?;
+         let slot = self.slots.get(idx).ok_or(SovErr::NotFound)?;
++
++        // Nonce-i është pjesë e capability contract. Kontrollohet PARA CAS-it:
++        // një handle i manipuluar refuzohet pa djegur capability-n legjitime.
++        match slot.expected_nonce == handle.nonce {
++            true => {}
++            false => return Err(SovErr::NonceMismatch {
++                expected: slot.expected_nonce,
++                actual: handle.nonce,
++            }),
++        }
++
+         // CAS atomik — vetëm hera e parë kalon.
+         match slot.consume() {
+             true => Ok(LgcToken::new()),
+@@ -148,10 +165,21 @@
+     use crate::sovereign::laws::SEAL_COORDINATOR;
+ 
+     #[test]
++    fn cap_handle_layout_is_ffi_stable() {
++        assert_eq!(
++            std::mem::size_of::<CapHandle>(),
++            2 * std::mem::size_of::<u64>(),
++        );
++    }
++
++    #[test]
+     fn gate_opens_on_correct_seal() {
+         let gate = LgcGate::new(SEAL_COORDINATOR);
+         assert!(gate.open(SEAL_COORDINATOR).is_ok());
+-        assert_eq!(gate.open(0xDEAD).unwrap_err(), SovErr::SealMismatch(SEAL_COORDINATOR ^ 0xDEAD));
++        assert_eq!(
++            gate.open(0xDEAD).err(),
++            Some(SovErr::SealMismatch(SEAL_COORDINATOR ^ 0xDEAD)),
++        );
+     }
+ 
+     #[test]
+@@ -161,20 +189,41 @@
+         // Hera e parë: OK
+         assert!(sov.validate(handle).is_ok());
+         // Hera e dytë (klon i handle-it): AlreadyConsumed
+-        assert_eq!(sov.validate(handle).unwrap_err(), SovErr::AlreadyConsumed);
++        assert_eq!(sov.validate(handle).err(), Some(SovErr::AlreadyConsumed));
++    }
++
++    #[test]
++    fn tampered_nonce_is_rejected_without_burning_capability() {
++        let mut sov = SovereignGate::new();
++        let original = sov.issue(SEAL_COORDINATOR);
++        let forged = CapHandle {
++            gen: original.gen,
++            nonce: original.nonce ^ 1,
++        };
++
++        assert_eq!(
++            sov.validate(forged).err(),
++            Some(SovErr::NonceMismatch {
++                expected: original.nonce,
++                actual: original.nonce ^ 1,
++            }),
++        );
++
++        // Refuzimi i nonce-it të manipuluar nuk konsumon slot-in legjitim.
++        assert!(sov.validate(original).is_ok());
+     }
+ 
+     #[test]
+-    fn stolen_handle_is_useless() {
++    fn copied_handle_cannot_replay_after_consumption() {
+         let mut sov = SovereignGate::new();
+         let original = sov.issue(SEAL_COORDINATOR);
+-        // Sulm: memcpy perfekt (Copy)
++        // Kopje byte-identike e capability handle-it (Copy).
+         let stolen = original;
+         assert_eq!(stolen.gen, original.gen);
+         assert_eq!(stolen.nonce, original.nonce);
+         // Hera e parë me original: OK (konsumon AtomicBool)
+         assert!(sov.validate(original).is_ok());
+-        // Stolen → CAS(false→false) → refuzim
+-        assert_eq!(sov.validate(stolen).unwrap_err(), SovErr::AlreadyConsumed);
++        // Kopja pas konsumimit → CAS(false→false) → replay i refuzuar.
++        assert_eq!(sov.validate(stolen).err(), Some(SovErr::AlreadyConsumed));
+     }
+ }
+diff -ruN a/light/src/sovereign/mod.rs b/light/src/sovereign/mod.rs
+--- a/light/src/sovereign/mod.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/light/src/sovereign/mod.rs	2026-07-13 18:15:33.197116423 +0000
+@@ -28,7 +28,7 @@
+ 
+ // Ring buffer 0-copy + EpistemicVector
+ pub use ring::{
+-    EbpfPacket, RingBuffer,
++    EbpfPacket, RingBuffer, RingProducer, RingConsumer,
+ };
+ 
+ // Regjistri qendror i vulave
+diff -ruN a/light/src/sovereign/ring.rs b/light/src/sovereign/ring.rs
+--- a/light/src/sovereign/ring.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/light/src/sovereign/ring.rs	2026-07-13 18:21:25.747757921 +0000
+@@ -10,7 +10,9 @@
+ // ║  EpistemicVector.mass = dot8(axes, W) → produkt skalar linear.        ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-use std::cell::UnsafeCell;
++use std::cell::{Cell, UnsafeCell};
++use std::marker::PhantomData;
++use std::sync::Arc;
+ use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+ use crate::sovereign::laws::dot8;
+ use crate::sovereign::lgc_gate::{LgcGate, SovErr};
+@@ -80,16 +82,9 @@
+ 
+ struct RingSlot {
+     data: UnsafeCell<EbpfPacket>,
+-    seq:  AtomicU64,
+ }
+ 
+-unsafe impl Sync for RingSlot {}
+-
+-// ─────────────────────────────────────────────────────────────────────────────
+-// RING BUFFER — MPSC zero-copy
+-// ─────────────────────────────────────────────────────────────────────────────
+-
+-pub struct RingBuffer {
++struct RingCore {
+     slots:   Vec<RingSlot>,
+     head:    AtomicUsize,  // producer
+     tail:    AtomicUsize,  // consumer
+@@ -97,16 +92,19 @@
+     dropped: AtomicU64,
+ }
+ 
+-unsafe impl Sync for RingBuffer {}
+-unsafe impl Send for RingBuffer {}
++// RingCore ndahet vetëm nga çifti unik RingProducer/RingConsumer.
++// SAFETY: konstruktorët e endpoint-eve janë privatë; `split(self)` prodhon
++// saktësisht një producer dhe një consumer. Producer publikon `head` me
++// Release pasi shkruan slot-in; consumer e lexon me Acquire. Consumer publikon
++// `tail` me Release pasi lexon; producer e lexon me Acquire para ripërdorimit.
++unsafe impl Sync for RingCore {}
+ 
+-impl RingBuffer {
+-    pub fn new() -> Self {
++impl RingCore {
++    fn new() -> Self {
+         let mut slots = Vec::with_capacity(RING_N);
+         for _ in 0..RING_N {
+             slots.push(RingSlot {
+                 data: UnsafeCell::new(EbpfPacket::zeroed()),
+-                seq:  AtomicU64::new(0),
+             });
+         }
+         Self {
+@@ -118,53 +116,117 @@
+         }
+     }
+ 
+-    /// PRODUCER: shkruan një paketë. pos = head & MASK (pa modulo, pa branch).
+-    /// Nëse ringu plot → dropped++, Err.
+-    pub fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> {
++    fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> {
+         let head = self.head.load(Ordering::Relaxed);
+         let tail = self.tail.load(Ordering::Acquire);
+ 
+         // Full check pa branch: (head − tail) >= N. Match në vend të if.
+-        let full = head.wrapping_sub(tail) >= RING_N;
+-        match full {
++        match head.wrapping_sub(tail) >= RING_N {
+             true => {
+                 self.dropped.fetch_add(1, Ordering::Relaxed);
+-                return Err(SovErr::NotFound); // ringu plot
++                return Err(SovErr::NotFound);
+             }
+             false => {}
+         }
+ 
+         let pos = head & RING_MASK;
+-        // SAFETY: vetëm një producer shkruan në këtë pos para publikimit.
++        // SAFETY: endpoint-i unik producer është i vetmi shkrues; slot-i nuk
++        // ripërdoret para se consumer të publikojë tail me Release.
+         unsafe {
+             *self.slots[pos].data.get() = pkt;
+         }
+-        self.slots[pos].seq.store(head as u64, Ordering::Release);
+         self.head.store(head.wrapping_add(1), Ordering::Release);
+         self.written.fetch_add(1, Ordering::Relaxed);
+         Ok(())
+     }
+ 
+-    /// CONSUMER: lexon paketën e radhës. pos = tail & MASK.
+-    pub fn pop(&self) -> Option<EbpfPacket> {
++    fn pop(&self) -> Option<EbpfPacket> {
+         let tail = self.tail.load(Ordering::Relaxed);
+         let head = self.head.load(Ordering::Acquire);
+ 
+-        // Bosh? Match në vend të if.
+         match tail == head {
+             true => return None,
+             false => {}
+         }
+ 
+         let pos = tail & RING_MASK;
+-        // SAFETY: consumer i vetëm, paketa u publikua nga producer.
++        // SAFETY: endpoint-i unik consumer është i vetmi lexues; Acquire mbi
++        // head sheh shkrimin e publikuar nga producer para Release-it.
+         let pkt = unsafe { *self.slots[pos].data.get() };
+         self.tail.store(tail.wrapping_add(1), Ordering::Release);
+         Some(pkt)
+     }
+ 
+-    pub fn written(&self) -> u64 { self.written.load(Ordering::Relaxed) }
+-    pub fn dropped(&self) -> u64 { self.dropped.load(Ordering::Relaxed) }
++    fn written(&self) -> u64 { self.written.load(Ordering::Relaxed) }
++    fn dropped(&self) -> u64 { self.dropped.load(Ordering::Relaxed) }
++}
++
++// ─────────────────────────────────────────────────────────────────────────────
++// RING BUFFER — pronar sekuencial + ndarje e tipizuar SPSC
++// ─────────────────────────────────────────────────────────────────────────────
++
++/// Pronari fillestar i ring-ut. Nuk është `Sync`: safe Rust nuk mund ta ndajë
++/// drejtpërdrejt mes shumë thread-eve. Për SPSC paralel përdoret `split(self)`,
++/// i cili prodhon saktësisht një endpoint producer dhe një endpoint consumer.
++pub struct RingBuffer {
++    core: Arc<RingCore>,
++    _single_owner: PhantomData<Cell<()>>, // !Sync, por Send
++}
++
++/// Endpoint-i unik i prodhuesit. Nuk është Clone/Sync; `push` kërkon `&mut self`.
++pub struct RingProducer {
++    core: Arc<RingCore>,
++    _not_sync: PhantomData<Cell<()>>,
++}
++
++/// Endpoint-i unik i konsumatorit. Nuk është Clone/Sync; `pop` kërkon `&mut self`.
++pub struct RingConsumer {
++    core: Arc<RingCore>,
++    _not_sync: PhantomData<Cell<()>>,
++}
++
++impl RingBuffer {
++    pub fn new() -> Self {
++        Self {
++            core: Arc::new(RingCore::new()),
++            _single_owner: PhantomData,
++        }
++    }
++
++    /// Ndarje e vetme, e konsumueshme: një producer + një consumer.
++    /// Kjo e bën disiplinën SPSC pronë të tipit, jo vetëm koment.
++    pub fn split(self) -> (RingProducer, RingConsumer) {
++        let RingBuffer { core, .. } = self;
++        let producer = RingProducer {
++            core: Arc::clone(&core),
++            _not_sync: PhantomData,
++        };
++        let consumer = RingConsumer {
++            core,
++            _not_sync: PhantomData,
++        };
++        (producer, consumer)
++    }
++
++    /// Rruga sekuenciale ekzistuese; e sigurt sepse `RingBuffer` nuk është Sync.
++    pub fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> { self.core.push(pkt) }
++    pub fn pop(&self) -> Option<EbpfPacket> { self.core.pop() }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
++}
++
++impl RingProducer {
++    pub fn push(&mut self, pkt: EbpfPacket) -> Result<(), SovErr> {
++        self.core.push(pkt)
++    }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
++}
++
++impl RingConsumer {
++    pub fn pop(&mut self) -> Option<EbpfPacket> { self.core.pop() }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
+ }
+ 
+ impl Default for RingBuffer {
+@@ -211,24 +273,36 @@
+         Self { gate: LgcGate::new(expected_seal) }
+     }
+ 
+-    /// Merr paketën e radhës nga ringu, e verifikon, prodhon Ev.
+-    ///
+-    /// Hapat: pop → verify_crc → seal token → Ev::from_packet.
+-    /// Çdo dështim → Err (error-handling i pranuar).
++    /// Merr paketën e radhës nga pronari sekuencial, e verifikon dhe prodhon Ev.
+     pub fn receive(&self, ring: &RingBuffer, runtime_seal: u64) -> Result<Ev, SovErr> {
+-        // 1. Merr paketën (zero-copy nga ringu).
+         let pkt = ring.pop().ok_or(SovErr::NotFound)?;
++        self.verify_and_project(pkt, runtime_seal)
++    }
+ 
+-        // 2. Verifiko CRC (integritet transporti). Match në vend të if.
++    /// Merr paketën nga endpoint-i unik consumer i rrjedhës paralele SPSC.
++    /// E njëjta portë CRC + seal zbatohet; ndarja e thread-eve nuk krijon
++    /// rrugë alternative që anashkalon autorizimin epistemik.
++    pub fn receive_from(
++        &self,
++        consumer: &mut RingConsumer,
++        runtime_seal: u64,
++    ) -> Result<Ev, SovErr> {
++        let pkt = consumer.pop().ok_or(SovErr::NotFound)?;
++        self.verify_and_project(pkt, runtime_seal)
++    }
++
++    /// Rruga e vetme e transformimit packet → Ev për të dy format e pronësisë.
++    fn verify_and_project(&self, pkt: EbpfPacket, runtime_seal: u64) -> Result<Ev, SovErr> {
++        // 1. Verifiko CRC (integritet transporti). Match total në vend të if.
+         match pkt.verify_crc() {
+             false => return Err(SovErr::NotFound),
+             true => {}
+         }
+ 
+-        // 3. Verifiko seal-in (autorizim) — prodhon token që konsumohet menjëherë.
++        // 2. Verifiko seal-in — token-i prodhohet dhe konsumohet brenda portës.
+         let _token = self.gate.open(runtime_seal)?;
+ 
+-        // 4. Prodho EpistemicVector (zero kopjim shtesë).
++        // 3. Vetëm paketa e verifikuar projektohet në EpistemicVector.
+         Ok(Ev::from_packet(&pkt))
+     }
+ }
+@@ -236,7 +310,14 @@
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+-    use crate::sovereign::laws::SEAL_EBPF;
++    use crate::sovereign::seal_registry::{Platform, Q_EBPF, SealRegistry};
++
++    fn quantum_ebpf_seal() -> u64 {
++        let seal = SealRegistry::lookup(Q_EBPF)
++            .expect("EBPF_HYDRATOR duhet të jetë në regjistrin ndër-platformë");
++        assert_eq!(SealRegistry::platform_of(seal), Some(Platform::Quantum));
++        seal
++    }
+ 
+     #[test]
+     fn ring_push_pop_fifo() {
+@@ -253,6 +334,30 @@
+     }
+ 
+     #[test]
++    fn typed_spsc_split_preserves_fifo() {
++        fn assert_send<T: Send>() {}
++        assert_send::<RingProducer>();
++        assert_send::<RingConsumer>();
++
++        let (mut producer, mut consumer) = RingBuffer::new().split();
++        producer.push(EbpfPacket::from_axes([0.2; 8])).unwrap();
++        producer.push(EbpfPacket::from_axes([0.8; 8])).unwrap();
++        assert!((consumer.pop().unwrap().d1 - 0.2).abs() < 1e-6);
++        assert!((consumer.pop().unwrap().d1 - 0.8).abs() < 1e-6);
++        assert!(consumer.pop().is_none());
++    }
++
++    #[test]
++    fn typed_spsc_consumer_passes_through_lgc_bridge() {
++        let seal = quantum_ebpf_seal();
++        let (mut producer, mut consumer) = RingBuffer::new().split();
++        producer.push(EbpfPacket::from_axes([0.6; 8])).unwrap();
++        let bridge = LgcBridge::new(seal);
++        let ev = bridge.receive_from(&mut consumer, seal).unwrap();
++        assert!((ev.axes[0] - 0.6).abs() < 1e-6);
++    }
++
++    #[test]
+     fn ring_full_drops() {
+         let ring = RingBuffer::new();
+         // Mbush ringun (RING_N pakete).
+@@ -283,9 +388,10 @@
+     fn lgc_bridge_full_handshake() {
+         let ring = RingBuffer::new();
+         ring.push(EbpfPacket::from_axes([0.7; 8])).unwrap();
+-        let bridge = LgcBridge::new(SEAL_EBPF);
++        let seal = quantum_ebpf_seal();
++        let bridge = LgcBridge::new(seal);
+         // Seal i saktë → Ev prodhohet.
+-        let ev = bridge.receive(&ring, SEAL_EBPF).unwrap();
++        let ev = bridge.receive(&ring, seal).unwrap();
+         assert!((ev.axes[0] - 0.7).abs() < 1e-6);
+     }
+ 
+@@ -293,7 +399,8 @@
+     fn lgc_bridge_rejects_bad_seal() {
+         let ring = RingBuffer::new();
+         ring.push(EbpfPacket::from_axes([0.7; 8])).unwrap();
+-        let bridge = LgcBridge::new(SEAL_EBPF);
++        let seal = quantum_ebpf_seal();
++        let bridge = LgcBridge::new(seal);
+         // Seal i gabuar → SealMismatch.
+         assert!(bridge.receive(&ring, 0xDEAD).is_err());
+     }
+diff -ruN a/quantum/README.md b/quantum/README.md
+--- a/quantum/README.md	2026-06-28 19:18:01.000000000 +0000
++++ b/quantum/README.md	2026-07-13 18:22:43.147203750 +0000
+@@ -46,8 +46,8 @@
+ ## Ligji 0-COPY Sovereign (sovereign/)
+ Adaptim i `zero_copy_sovereign.rs`:
+ - **laws.rs**: `gate`, `dot8`, `elim`, `admit4`, `fnv`, `module_seal` — ligje matematike, const fn
+-- **lgc_gate.rs**: `CapHandle`(numra) + `CapSlot`{AtomicBool} → CAS single-use. LAW_3 mbijeton FFI: handle i vjedhur → CAS(false→false) → AlreadyConsumed
+-- **ring.rs**: RingBuffer `head & MASK` (zero branch), `Ev{axes:[f32;8]}`, `mass=dot8(axes,W)`, `LgcBridge` (CRC + seal → Ev)
++- **lgc_gate.rs**: `CapHandle #[repr(C)]` + `CapSlot{expected_nonce, AtomicBool}` → nonce check para CAS-it dhe konsum single-use. LAW_3 mbijeton FFI: manipulim → `NonceMismatch`; replay → `AlreadyConsumed`.
++- **ring.rs**: SPSC 0-copy i zbatuar nga tipi (`split → RingProducer/RingConsumer` unik), `head & MASK`, `Ev{axes:[f32;8]}`, `mass=dot8(axes,W)`, `LgcBridge` (`receive`/`receive_from`, CRC + seal → Ev)
+ 
+ ## Ligji 0 if/else
+ **Zero if/else** në të gjitha modulet (laws, lgc_gate, ring, bridge_shadow, bridge_light).
+diff -ruN a/quantum/src/lab_contracts/gcl_presume.rs b/quantum/src/lab_contracts/gcl_presume.rs
+--- a/quantum/src/lab_contracts/gcl_presume.rs	2026-07-07 09:30:05.000000000 +0000
++++ b/quantum/src/lab_contracts/gcl_presume.rs	2026-07-13 18:14:36.386680449 +0000
+@@ -277,11 +277,18 @@
+ 
+     #[test]
+     fn register_is_idempotent_by_name() {
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s1, _) = sweep("TEST", Coordination, &tdir());
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s2, _) = sweep("TEST", Coordination, &tdir());
+-        assert_eq!(s1.total, s2.total, "regjistrimi i dyfishtë s'duhet ta rrisë regjistrin");
++        const NAME: &str = "test_presume_idem_unik";
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines1) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines2) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++
++        // Regjistri është global dhe testet mund të ecin paralelisht; prandaj
++        // kontrata matet mbi emrin tonë, jo mbi totalin global të brishtë.
++        let count1 = lines1.iter().filter(|line| line.name == NAME).count();
++        let count2 = lines2.iter().filter(|line| line.name == NAME).count();
++        assert_eq!(count1, 1, "regjistrimi i parë duhet të krijojë vetëm një hyrje");
++        assert_eq!(count2, 1, "regjistrimi i dyfishtë s'duhet të krijojë hyrje të dytë");
+     }
+ 
+     #[test]
+diff -ruN a/quantum/src/lib.rs b/quantum/src/lib.rs
+--- a/quantum/src/lib.rs	2026-07-12 10:33:11.000000000 +0000
++++ b/quantum/src/lib.rs	2026-07-13 18:15:33.198266736 +0000
+@@ -99,7 +99,7 @@
+ // Sovereign (ligji 0-copy)
+ pub use sovereign::{
+     gate, dot8, elim, admit4, module_seal,
+-    RingBuffer, EbpfPacket, Ev, LgcBridge, SovereignGate, CapHandle,
++    RingBuffer, RingProducer, RingConsumer, EbpfPacket, Ev, LgcBridge, SovereignGate, CapHandle,
+     SEAL_LIM, SEAL_PRO, SEAL_SRK, SEAL_PIM, SEAL_EBPF,
+ };
+ 
+diff -ruN a/quantum/src/sovereign/lgc_gate.rs b/quantum/src/sovereign/lgc_gate.rs
+--- a/quantum/src/sovereign/lgc_gate.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/quantum/src/sovereign/lgc_gate.rs	2026-07-13 18:24:04.888102899 +0000
+@@ -6,7 +6,7 @@
+ // ║                                                                          ║
+ // ║  TEOREMA: C sheh vetëm CapHandle(gen, nonce). CapSlot{AtomicBool}      ║
+ // ║  jeton i paprekur në heap Rust. validate() bën CAS(true→false) —      ║
+-// ║  hardware-atomik. Klon i handle-it → CAS(false→false) → refuzim.       ║
++// ║  hardware-atomik. Nga kopjet identike vetëm përdorimi i parë kalon; replay refuzohet.       ║
+ // ║                                                                          ║
+ // ║  FILOZOFIA: nuk e DETYRON C-në — ELIMINON mundësinë. LAW_3 mbijeton.   ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+@@ -32,9 +32,10 @@
+ // SOVEREIGN ERROR
+ // ─────────────────────────────────────────────────────────────────────────────
+ 
+-#[derive(Debug, Clone, PartialEq)]
++#[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum SovErr {
+     SealMismatch(u64),
++    NonceMismatch { expected: u64, actual: u64 },
+     AlreadyConsumed,
+     NotFound,
+ }
+@@ -73,11 +74,15 @@
+ /// Jeton në heap Rust; C-ja nuk e prek dot.
+ struct CapSlot {
+     live: AtomicBool,
++    expected_nonce: u64,
+ }
+ 
+ impl CapSlot {
+-    fn new() -> Self {
+-        Self { live: AtomicBool::new(true) }
++    fn new(expected_nonce: u64) -> Self {
++        Self {
++            live: AtomicBool::new(true),
++            expected_nonce,
++        }
+     }
+ 
+     /// Konsumon qelizën. CAS(true→false): vetëm hera e parë kalon.
+@@ -94,9 +99,10 @@
+ // ─────────────────────────────────────────────────────────────────────────────
+ 
+ /// Çelësi që del jashtë gate-it — vetëm dy numra.
+-/// C mund ta kopjojë me memcpy, por kopja është e padobishme:
+-/// CapSlot{AtomicBool} mbetet në heap, i paarritshëm.
+-#[derive(Debug, Clone, Copy)]
++/// C mund ta kopjojë me memcpy, por kopjet ndajnë të njëjtin slot një-përdorimësh:
++/// vetëm njëra mund të fitojë konsumimin; replay refuzohet nga CAS-i në heap.
++#[repr(C)]
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub struct CapHandle {
+     pub gen:   u64,
+     pub nonce: u64,
+@@ -121,15 +127,26 @@
+     pub fn issue(&mut self, module_seal: u64) -> CapHandle {
+         let gen = self.gen_counter;
+         self.gen_counter += 1;
+-        self.slots.push(CapSlot::new());
++        self.slots.push(CapSlot::new(module_seal));
+         CapHandle { gen, nonce: module_seal }
+     }
+ 
+     /// Validon dhe konsumon. Një herë.
+     /// Klon i handle-it → CAS(false→false) → AlreadyConsumed.
+     pub fn validate(&self, handle: CapHandle) -> Result<LgcToken, SovErr> {
+-        let idx = handle.gen as usize;
++        let idx = usize::try_from(handle.gen).map_err(|_| SovErr::NotFound)?;
+         let slot = self.slots.get(idx).ok_or(SovErr::NotFound)?;
++
++        // Nonce-i është pjesë e capability contract. Kontrollohet PARA CAS-it:
++        // një handle i manipuluar refuzohet pa djegur capability-n legjitime.
++        match slot.expected_nonce == handle.nonce {
++            true => {}
++            false => return Err(SovErr::NonceMismatch {
++                expected: slot.expected_nonce,
++                actual: handle.nonce,
++            }),
++        }
++
+         // CAS atomik — vetëm hera e parë kalon.
+         match slot.consume() {
+             true => Ok(LgcToken::new()),
+@@ -148,10 +165,21 @@
+     use crate::sovereign::laws::SEAL_LIM;
+ 
+     #[test]
++    fn cap_handle_layout_is_ffi_stable() {
++        assert_eq!(
++            std::mem::size_of::<CapHandle>(),
++            2 * std::mem::size_of::<u64>(),
++        );
++    }
++
++    #[test]
+     fn gate_opens_on_correct_seal() {
+         let gate = LgcGate::new(SEAL_LIM);
+         assert!(gate.open(SEAL_LIM).is_ok());
+-        assert_eq!(gate.open(0xDEAD).unwrap_err(), SovErr::SealMismatch(SEAL_LIM ^ 0xDEAD));
++        assert_eq!(
++            gate.open(0xDEAD).err(),
++            Some(SovErr::SealMismatch(SEAL_LIM ^ 0xDEAD)),
++        );
+     }
+ 
+     #[test]
+@@ -161,20 +189,41 @@
+         // Hera e parë: OK
+         assert!(sov.validate(handle).is_ok());
+         // Hera e dytë (klon i handle-it): AlreadyConsumed
+-        assert_eq!(sov.validate(handle).unwrap_err(), SovErr::AlreadyConsumed);
++        assert_eq!(sov.validate(handle).err(), Some(SovErr::AlreadyConsumed));
++    }
++
++    #[test]
++    fn tampered_nonce_is_rejected_without_burning_capability() {
++        let mut sov = SovereignGate::new();
++        let original = sov.issue(SEAL_LIM);
++        let forged = CapHandle {
++            gen: original.gen,
++            nonce: original.nonce ^ 1,
++        };
++
++        assert_eq!(
++            sov.validate(forged).err(),
++            Some(SovErr::NonceMismatch {
++                expected: original.nonce,
++                actual: original.nonce ^ 1,
++            }),
++        );
++
++        // Refuzimi i nonce-it të manipuluar nuk konsumon slot-in legjitim.
++        assert!(sov.validate(original).is_ok());
+     }
+ 
+     #[test]
+-    fn stolen_handle_is_useless() {
++    fn copied_handle_cannot_replay_after_consumption() {
+         let mut sov = SovereignGate::new();
+         let original = sov.issue(SEAL_LIM);
+-        // Sulm: memcpy perfekt (Copy)
++        // Kopje byte-identike e capability handle-it (Copy).
+         let stolen = original;
+         assert_eq!(stolen.gen, original.gen);
+         assert_eq!(stolen.nonce, original.nonce);
+         // Hera e parë me original: OK (konsumon AtomicBool)
+         assert!(sov.validate(original).is_ok());
+-        // Stolen → CAS(false→false) → refuzim
+-        assert_eq!(sov.validate(stolen).unwrap_err(), SovErr::AlreadyConsumed);
++        // Kopja pas konsumimit → CAS(false→false) → replay i refuzuar.
++        assert_eq!(sov.validate(stolen).err(), Some(SovErr::AlreadyConsumed));
+     }
+ }
+diff -ruN a/quantum/src/sovereign/mod.rs b/quantum/src/sovereign/mod.rs
+--- a/quantum/src/sovereign/mod.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/quantum/src/sovereign/mod.rs	2026-07-13 18:15:33.197663750 +0000
+@@ -28,7 +28,7 @@
+ 
+ // Ring buffer 0-copy + EpistemicVector
+ pub use ring::{
+-    RING_N, RING_MASK, EbpfPacket, RingBuffer, Ev, LgcBridge,
++    RING_N, RING_MASK, EbpfPacket, RingBuffer, RingProducer, RingConsumer, Ev, LgcBridge,
+ };
+ 
+ // Regjistri qendror i vulave (anti-përplasje)
+diff -ruN a/quantum/src/sovereign/ring.rs b/quantum/src/sovereign/ring.rs
+--- a/quantum/src/sovereign/ring.rs	2026-06-28 19:15:59.000000000 +0000
++++ b/quantum/src/sovereign/ring.rs	2026-07-13 18:21:25.748406715 +0000
+@@ -10,7 +10,9 @@
+ // ║  EpistemicVector.mass = dot8(axes, W) → produkt skalar linear.        ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-use std::cell::UnsafeCell;
++use std::cell::{Cell, UnsafeCell};
++use std::marker::PhantomData;
++use std::sync::Arc;
+ use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+ use crate::sovereign::laws::dot8;
+ use crate::sovereign::lgc_gate::{LgcGate, SovErr};
+@@ -80,18 +82,9 @@
+ 
+ struct RingSlot {
+     data: UnsafeCell<EbpfPacket>,
+-    seq:  AtomicU64,
+ }
+ 
+-unsafe impl Sync for RingSlot {}
+-
+-// ─────────────────────────────────────────────────────────────────────────────
+-// RING BUFFER — SPSC zero-copy (Single Producer, Single Consumer)
+-// Ordering::Relaxed i mjaftueshëm: vetëm një producer, vetëm një consumer.
+-// LIGJI 0: zero allokime gjatë push/pop — slots pre-alokuara.
+-// ─────────────────────────────────────────────────────────────────────────────
+-
+-pub struct RingBuffer {
++struct RingCore {
+     slots:   Vec<RingSlot>,
+     head:    AtomicUsize,  // producer
+     tail:    AtomicUsize,  // consumer
+@@ -99,16 +92,19 @@
+     dropped: AtomicU64,
+ }
+ 
+-unsafe impl Sync for RingBuffer {}
+-unsafe impl Send for RingBuffer {}
++// RingCore ndahet vetëm nga çifti unik RingProducer/RingConsumer.
++// SAFETY: konstruktorët e endpoint-eve janë privatë; `split(self)` prodhon
++// saktësisht një producer dhe një consumer. Producer publikon `head` me
++// Release pasi shkruan slot-in; consumer e lexon me Acquire. Consumer publikon
++// `tail` me Release pasi lexon; producer e lexon me Acquire para ripërdorimit.
++unsafe impl Sync for RingCore {}
+ 
+-impl RingBuffer {
+-    pub fn new() -> Self {
++impl RingCore {
++    fn new() -> Self {
+         let mut slots = Vec::with_capacity(RING_N);
+         for _ in 0..RING_N {
+             slots.push(RingSlot {
+                 data: UnsafeCell::new(EbpfPacket::zeroed()),
+-                seq:  AtomicU64::new(0),
+             });
+         }
+         Self {
+@@ -120,53 +116,117 @@
+         }
+     }
+ 
+-    /// PRODUCER: shkruan një paketë. pos = head & MASK (pa modulo, pa branch).
+-    /// Nëse ringu plot → dropped++, Err.
+-    pub fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> {
++    fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> {
+         let head = self.head.load(Ordering::Relaxed);
+         let tail = self.tail.load(Ordering::Acquire);
+ 
+         // Full check pa branch: (head − tail) >= N. Match në vend të if.
+-        let full = head.wrapping_sub(tail) >= RING_N;
+-        match full {
++        match head.wrapping_sub(tail) >= RING_N {
+             true => {
+                 self.dropped.fetch_add(1, Ordering::Relaxed);
+-                return Err(SovErr::NotFound); // ringu plot
++                return Err(SovErr::NotFound);
+             }
+             false => {}
+         }
+ 
+         let pos = head & RING_MASK;
+-        // SAFETY: vetëm një producer shkruan në këtë pos para publikimit.
++        // SAFETY: endpoint-i unik producer është i vetmi shkrues; slot-i nuk
++        // ripërdoret para se consumer të publikojë tail me Release.
+         unsafe {
+             *self.slots[pos].data.get() = pkt;
+         }
+-        self.slots[pos].seq.store(head as u64, Ordering::Release);
+         self.head.store(head.wrapping_add(1), Ordering::Release);
+         self.written.fetch_add(1, Ordering::Relaxed);
+         Ok(())
+     }
+ 
+-    /// CONSUMER: lexon paketën e radhës. pos = tail & MASK.
+-    pub fn pop(&self) -> Option<EbpfPacket> {
++    fn pop(&self) -> Option<EbpfPacket> {
+         let tail = self.tail.load(Ordering::Relaxed);
+         let head = self.head.load(Ordering::Acquire);
+ 
+-        // Bosh? Match në vend të if.
+         match tail == head {
+             true => return None,
+             false => {}
+         }
+ 
+         let pos = tail & RING_MASK;
+-        // SAFETY: consumer i vetëm, paketa u publikua nga producer.
++        // SAFETY: endpoint-i unik consumer është i vetmi lexues; Acquire mbi
++        // head sheh shkrimin e publikuar nga producer para Release-it.
+         let pkt = unsafe { *self.slots[pos].data.get() };
+         self.tail.store(tail.wrapping_add(1), Ordering::Release);
+         Some(pkt)
+     }
+ 
+-    pub fn written(&self) -> u64 { self.written.load(Ordering::Relaxed) }
+-    pub fn dropped(&self) -> u64 { self.dropped.load(Ordering::Relaxed) }
++    fn written(&self) -> u64 { self.written.load(Ordering::Relaxed) }
++    fn dropped(&self) -> u64 { self.dropped.load(Ordering::Relaxed) }
++}
++
++// ─────────────────────────────────────────────────────────────────────────────
++// RING BUFFER — pronar sekuencial + ndarje e tipizuar SPSC
++// ─────────────────────────────────────────────────────────────────────────────
++
++/// Pronari fillestar i ring-ut. Nuk është `Sync`: safe Rust nuk mund ta ndajë
++/// drejtpërdrejt mes shumë thread-eve. Për SPSC paralel përdoret `split(self)`,
++/// i cili prodhon saktësisht një endpoint producer dhe një endpoint consumer.
++pub struct RingBuffer {
++    core: Arc<RingCore>,
++    _single_owner: PhantomData<Cell<()>>, // !Sync, por Send
++}
++
++/// Endpoint-i unik i prodhuesit. Nuk është Clone/Sync; `push` kërkon `&mut self`.
++pub struct RingProducer {
++    core: Arc<RingCore>,
++    _not_sync: PhantomData<Cell<()>>,
++}
++
++/// Endpoint-i unik i konsumatorit. Nuk është Clone/Sync; `pop` kërkon `&mut self`.
++pub struct RingConsumer {
++    core: Arc<RingCore>,
++    _not_sync: PhantomData<Cell<()>>,
++}
++
++impl RingBuffer {
++    pub fn new() -> Self {
++        Self {
++            core: Arc::new(RingCore::new()),
++            _single_owner: PhantomData,
++        }
++    }
++
++    /// Ndarje e vetme, e konsumueshme: një producer + një consumer.
++    /// Kjo e bën disiplinën SPSC pronë të tipit, jo vetëm koment.
++    pub fn split(self) -> (RingProducer, RingConsumer) {
++        let RingBuffer { core, .. } = self;
++        let producer = RingProducer {
++            core: Arc::clone(&core),
++            _not_sync: PhantomData,
++        };
++        let consumer = RingConsumer {
++            core,
++            _not_sync: PhantomData,
++        };
++        (producer, consumer)
++    }
++
++    /// Rruga sekuenciale ekzistuese; e sigurt sepse `RingBuffer` nuk është Sync.
++    pub fn push(&self, pkt: EbpfPacket) -> Result<(), SovErr> { self.core.push(pkt) }
++    pub fn pop(&self) -> Option<EbpfPacket> { self.core.pop() }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
++}
++
++impl RingProducer {
++    pub fn push(&mut self, pkt: EbpfPacket) -> Result<(), SovErr> {
++        self.core.push(pkt)
++    }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
++}
++
++impl RingConsumer {
++    pub fn pop(&mut self) -> Option<EbpfPacket> { self.core.pop() }
++    pub fn written(&self) -> u64 { self.core.written() }
++    pub fn dropped(&self) -> u64 { self.core.dropped() }
+ }
+ 
+ impl Default for RingBuffer {
+@@ -213,24 +273,36 @@
+         Self { gate: LgcGate::new(expected_seal) }
+     }
+ 
+-    /// Merr paketën e radhës nga ringu, e verifikon, prodhon Ev.
+-    ///
+-    /// Hapat: pop → verify_crc → seal token → Ev::from_packet.
+-    /// Çdo dështim → Err (error-handling i pranuar).
++    /// Merr paketën e radhës nga pronari sekuencial, e verifikon dhe prodhon Ev.
+     pub fn receive(&self, ring: &RingBuffer, runtime_seal: u64) -> Result<Ev, SovErr> {
+-        // 1. Merr paketën (zero-copy nga ringu).
+         let pkt = ring.pop().ok_or(SovErr::NotFound)?;
++        self.verify_and_project(pkt, runtime_seal)
++    }
+ 
+-        // 2. Verifiko CRC (integritet transporti). Match në vend të if.
++    /// Merr paketën nga endpoint-i unik consumer i rrjedhës paralele SPSC.
++    /// E njëjta portë CRC + seal zbatohet; ndarja e thread-eve nuk krijon
++    /// rrugë alternative që anashkalon autorizimin epistemik.
++    pub fn receive_from(
++        &self,
++        consumer: &mut RingConsumer,
++        runtime_seal: u64,
++    ) -> Result<Ev, SovErr> {
++        let pkt = consumer.pop().ok_or(SovErr::NotFound)?;
++        self.verify_and_project(pkt, runtime_seal)
++    }
++
++    /// Rruga e vetme e transformimit packet → Ev për të dy format e pronësisë.
++    fn verify_and_project(&self, pkt: EbpfPacket, runtime_seal: u64) -> Result<Ev, SovErr> {
++        // 1. Verifiko CRC (integritet transporti). Match total në vend të if.
+         match pkt.verify_crc() {
+             false => return Err(SovErr::NotFound),
+             true => {}
+         }
+ 
+-        // 3. Verifiko seal-in (autorizim) — prodhon token që konsumohet menjëherë.
++        // 2. Verifiko seal-in — token-i prodhohet dhe konsumohet brenda portës.
+         let _token = self.gate.open(runtime_seal)?;
+ 
+-        // 4. Prodho EpistemicVector (zero kopjim shtesë).
++        // 3. Vetëm paketa e verifikuar projektohet në EpistemicVector.
+         Ok(Ev::from_packet(&pkt))
+     }
+ }
+@@ -255,6 +327,29 @@
+     }
+ 
+     #[test]
++    fn typed_spsc_split_preserves_fifo() {
++        fn assert_send<T: Send>() {}
++        assert_send::<RingProducer>();
++        assert_send::<RingConsumer>();
++
++        let (mut producer, mut consumer) = RingBuffer::new().split();
++        producer.push(EbpfPacket::from_axes([0.2; 8])).unwrap();
++        producer.push(EbpfPacket::from_axes([0.8; 8])).unwrap();
++        assert!((consumer.pop().unwrap().d1 - 0.2).abs() < 1e-6);
++        assert!((consumer.pop().unwrap().d1 - 0.8).abs() < 1e-6);
++        assert!(consumer.pop().is_none());
++    }
++
++    #[test]
++    fn typed_spsc_consumer_passes_through_lgc_bridge() {
++        let (mut producer, mut consumer) = RingBuffer::new().split();
++        producer.push(EbpfPacket::from_axes([0.6; 8])).unwrap();
++        let bridge = LgcBridge::new(SEAL_EBPF);
++        let ev = bridge.receive_from(&mut consumer, SEAL_EBPF).unwrap();
++        assert!((ev.axes[0] - 0.6).abs() < 1e-6);
++    }
++
++    #[test]
+     fn ring_full_drops() {
+         let ring = RingBuffer::new();
+         // Mbush ringun (RING_N pakete).
+diff -ruN a/shadow/src/lab_contracts/gcl_presume.rs b/shadow/src/lab_contracts/gcl_presume.rs
+--- a/shadow/src/lab_contracts/gcl_presume.rs	2026-07-07 09:29:59.000000000 +0000
++++ b/shadow/src/lab_contracts/gcl_presume.rs	2026-07-13 18:14:36.387570114 +0000
+@@ -277,11 +277,18 @@
+ 
+     #[test]
+     fn register_is_idempotent_by_name() {
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s1, _) = sweep("TEST", Coordination, &tdir());
+-        register("test_presume_idem_unik", GclRole::Support("a"), gati);
+-        let (s2, _) = sweep("TEST", Coordination, &tdir());
+-        assert_eq!(s1.total, s2.total, "regjistrimi i dyfishtë s'duhet ta rrisë regjistrin");
++        const NAME: &str = "test_presume_idem_unik";
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines1) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++        register(NAME, GclRole::Support("a"), gati);
++        let (_, lines2) = sweep("TEST", CollapsePhase::Coordination, &tdir());
++
++        // Regjistri është global dhe testet mund të ecin paralelisht; prandaj
++        // kontrata matet mbi emrin tonë, jo mbi totalin global të brishtë.
++        let count1 = lines1.iter().filter(|line| line.name == NAME).count();
++        let count2 = lines2.iter().filter(|line| line.name == NAME).count();
++        assert_eq!(count1, 1, "regjistrimi i parë duhet të krijojë vetëm një hyrje");
++        assert_eq!(count2, 1, "regjistrimi i dyfishtë s'duhet të krijojë hyrje të dytë");
+     }
+ 
+     #[test]

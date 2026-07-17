@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Nura Legacy — ESS-MAI</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="visual-layer" aria-hidden="true"></div>
+    <div class="veil" aria-hidden="true"></div>
+
+    <aside class="sidebar" aria-label="Nura navigation">
+      <div class="brand-row">
+        <img src="assets/nura-legacy-logo.png" alt="Nura Legacy" class="brand-logo">
+      </div>
+
+      <nav id="nav" class="nav-stack">
+        <button class="nav-item active" data-view="home"><span>⌂</span><strong>HOME</strong></button>
+        <button class="nav-item" data-view="domains"><span>◉</span><strong>RESEARCH DOMAINS</strong></button>
+        <button class="nav-item" data-view="knowledge"><span>▱</span><strong>MY LIGHT KNOWLEDGE</strong></button>
+        <button class="nav-item" data-view="evolution"><span>⌁</span><strong>MY EVOLUTION</strong></button>
+        <button class="nav-item" data-view="architecture"><span>◎</span><strong>SYSTEM MODULES</strong></button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+      <button class="living-project active-project" data-view="project">MY LIVING PROJECT</button>
+      <div class="phase-badge">
+        <span class="phase-mark">◇</span>
+        <span>ESS-MAI<br>TAURI 2<br>UI SHELL</span>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">NURA LEGACY</div>
+          <h1 id="viewTitle">Home</h1>
+        </div>
+        <div class="runtime-pill" id="runtimePill"><i></i><span>Checking Light…</span></div>
+      </header>
+
+      <section id="home" class="view active-view">
+        <div class="hero-copy">
+          <h2>Explore with Nura</h2>
+          <p>Light coordinates. Quantum reasons. Shadow verifies. The UI carries no sovereign authority.</p>
+        </div>
+        <div id="conversation" class="conversation" aria-live="polite"></div>
+      </section>
+
+      <section id="domains" class="view">
+        <div class="glass-panel wide-panel">
+          <div class="panel-kicker">LIGHT COORDINATION</div>
+          <h2>Research Domains</h2>
+          <p>Domain selection is orientation metadata for Light. It is not a verdict and it does not activate Shadow or Quantum directly.</p>
+          <div class="domain-grid" id="domainGrid">
+            <button data-domain="Computer Science">Computer Science</button>
+            <button data-domain="Physics">Physics</button>
+            <button data-domain="Medicine">Medicine</button>
+            <button data-domain="Engineering">Engineering</button>
+            <button data-domain="Mathematics">Mathematics</button>
+            <button data-domain="Social Sciences">Social Sciences</button>
+          </div>
+          <div class="selected-domain">Selected: <strong id="selectedDomain">Computer Science</strong></div>
+        </div>
+      </section>
+
+      <section id="knowledge" class="view">
+        <div class="glass-panel wide-panel">
+          <div class="panel-kicker">USER MATERIAL INTAKE</div>
+          <h2>My Light Knowledge</h2>
+          <p>The old UI accepts material and reflects system state. Tauri hands the material to Light only.</p>
+          <label class="dropzone" for="knowledgeFiles">
+            <input id="knowledgeFiles" type="file" multiple>
+            <strong>Select project evidence</strong>
+            <span>Images, video, PDF, Markdown, text, and documents. Up to 8 files / 24 MiB total.</span>
+          </label>
+          <div id="fileList" class="file-list"></div>
+        </div>
+      </section>
+
+      <section id="evolution" class="view">
+        <div class="glass-panel wide-panel">
+          <div class="panel-kicker">SYSTEM REFLECTION</div>
+          <h2>My Evolution</h2>
+          <p>This view reflects runtime progression and emotional commands returned through Light. It does not calculate system truth.</p>
+          <div class="status-grid">
+            <article><span>Trace</span><strong id="lastTrace">—</strong></article>
+            <article><span>Emotional phase</span><strong id="lastPhase">LIGHT_COORDINATION</strong></article>
+            <article><span>Last project route</span><strong id="lastProjectRoute">—</strong></article>
+            <article><span>Token policy</span><strong>UNCHANGED</strong></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="view">
+        <div class="glass-panel wide-panel">
+          <div class="panel-kicker">REAL ESS-MAI BOUNDARIES</div>
+          <h2>System Modules</h2>
+          <div class="module-flow">
+            <article><b>LIGHT</b><span>Input trace, coordination, APUPK handoff, PD output</span></article>
+            <em>→</em>
+            <article><b>QUANTUM</b><span>Reasoning, PD, Spine 9, project-workspace orientation</span></article>
+            <em>→</em>
+            <article><b>SHADOW</b><span>APUPK persistence, multi-step verification, TRL4 under GCL</span></article>
+            <em>→</em>
+            <article><b>LIGHT</b><span>Verified output and emotional projection to UI</span></article>
+          </div>
+          <div class="boundary-note">UI → Tauri 2 → Light only. No direct UI call to Quantum or Shadow.</div>
+        </div>
+      </section>
+
+      <section id="project" class="view">
+        <div class="project-layout">
+          <form id="projectForm" class="glass-panel project-form">
+            <div class="panel-kicker">PROJECT INTAKE THROUGH LIGHT</div>
+            <h2>My Living Project</h2>
+            <div class="form-grid">
+              <label><span>Project name</span><input id="projectName" maxlength="512" required></label>
+              <label><span>Domain</span><input id="projectDomain" value="Computer Science" maxlength="512" required></label>
+              <label class="full"><span>Description</span><textarea id="projectDescription" rows="2"></textarea></label>
+              <label class="full"><span>Project material / conversation context</span><textarea id="projectContent" rows="5" required></textarea></label>
+              <label class="full"><span>Hypothesis</span><textarea id="projectHypothesis" rows="3" required></textarea></label>
+              <label class="full"><span>Assumptions — one per line</span><textarea id="projectAssumptions" rows="3"></textarea></label>
+              <label class="full"><span>Documentation description</span><textarea id="projectDocumentation" rows="3" required></textarea></label>
+              <label class="full"><span>Evolution summary</span><textarea id="projectEvolution" rows="2"></textarea></label>
+            </div>
+            <div class="route-select" role="radiogroup" aria-label="Project route">
+              <label><input type="radio" name="route" value="workspace" checked><span><b>Project Workspace</b><small>Storage and project conversation orientation. Default.</small></span></label>
+              <label><input type="radio" name="route" value="scientific"><span><b>GCL Scientific Project</b><small>Explicit legacy scientific processing with Shadow verification.</small></span></label>
+            </div>
+            <button id="submitProject" class="primary" type="submit">SUBMIT THROUGH LIGHT</button>
+          </form>
+          <aside class="glass-panel project-result">
+            <div class="panel-kicker">BOUNDARY RECEIPT</div>
+            <h3>Project status</h3>
+            <pre id="projectResult">No project submitted.</pre>
+          </aside>
+        </div>
+      </section>
+
+      <footer class="composer">
+        <button id="attachButton" class="icon-button" type="button" title="Open project evidence">⌕</button>
+        <input id="question" type="text" maxlength="65536" placeholder="explore with Nura" autocomplete="off">
+        <button id="deepResearch" class="toggle-button" type="button" aria-pressed="false">◉ DEEP RESEARCH</button>
+        <button id="send" class="send-button" type="button" aria-label="Send">➤</button>
+      </footer>
+    </main>
+
+    <aside class="system-reflection" aria-label="System emotional reflection">
+      <div class="orb-wrap"><div id="orbRing" class="orb-ring"></div><div id="orb" class="orb"></div></div>
+      <div id="emotionPhase" class="emotion-phase">LIGHT_COORDINATION</div>
+      <div class="emotion-meter"><span id="emotionMeter"></span></div>
+      <div id="emotionSource" class="emotion-source">OLD_UI_EMOTIONAL_ENGINE</div>
+      <p>Visual reflection only.<br>No verdict authority.</p>
+    </aside>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

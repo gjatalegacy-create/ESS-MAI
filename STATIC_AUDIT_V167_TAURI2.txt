@@ -1,0 +1,24 @@
+ESS-MAI v1.6.7 TAURI 2 STATIC AUDIT
+Passed: 20
+Failed: 0
+
+[PASS] tauri.conf.json parses
+[PASS] app.js syntax
+[PASS] frontend assets referenced
+[PASS] Quantomic label absent from UI
+[PASS] exact module labels present
+[PASS] strict CSP enabled
+[PASS] no remote frontend resource
+[PASS] Light process call present
+[PASS] no direct Quantum process call
+[PASS] no direct Shadow process call
+[PASS] workspace route present
+[PASS] scientific legacy route present
+[PASS] wire codec dependency present
+[PASS] bounded upload limits present
+[PASS] token types absent from UI runtime
+[PASS] project response decoded
+[PASS] temporary files cleaned
+[PASS] Rust raw delimiters balanced
+[PASS] CSS braces balanced
+[PASS] sovereign/runtime files byte-identical to v1.6.6 — 308/308

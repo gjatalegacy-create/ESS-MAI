@@ -1,0 +1,20 @@
+ESS-MAI v1.5.7 — changed files over v1.5.6
+
+Cargo.toml
+light/Cargo.toml
+quantum/Cargo.toml
+shadow/Cargo.toml
+Cargo.lock (when present)
+VERSION_ESSMAI.txt
+ess-mai.md
+VALIDATE_V157.ps1
+light/src/pd_spine_contract.rs
+quantum/src/pd_spine_contract.rs
+shadow/src/pd_spine_contract.rs
+light/src/pd_continuum_contract.rs
+quantum/src/pd_continuum_contract.rs
+shadow/src/pd_continuum_contract.rs
+quantum/src/progressive_debatic/types.rs
+quantum/src/progressive_debatic/runtime.rs
+quantum/src/progressive_debatic/seal.rs
+quantum/src/main.rs

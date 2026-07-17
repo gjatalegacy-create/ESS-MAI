@@ -1,0 +1,45 @@
+ESS-MAI v1.6.0 — changed/new files from v1.5.9
+COUNT=42
+
+ADDED	AUDIT_V160_GCL_LAYERS_FINAL_EVIDENCE_IZ.md
+ADDED	CHANGELOG_v1.6.0.md
+ADDED	ESS_MAI_V1_6_0_IMPLEMENTATION_MAP.md
+MODIFIED	README.md
+ADDED	STATIC_AUDIT_V160.txt
+ADDED	V160_SIMULATION_MAP.md
+ADDED	VALIDATE_V160.ps1
+MODIFIED	VERSION_ESSMAI.txt
+MODIFIED	ess-mai.md
+MODIFIED	light/Cargo.toml
+ADDED	light/src/legacy_emotional_ui.rs
+MODIFIED	light/src/light_coordinator.rs
+MODIFIED	light/src/light_spine.rs
+MODIFIED	light/src/main.rs
+MODIFIED	light/src/pd_light.rs
+MODIFIED	light/src/pd_spine_contract.rs
+MODIFIED	light/src/phase9_integration.rs
+MODIFIED	light/src/quantum_bridge.rs
+MODIFIED	light/ui/src-tauri/Cargo.toml
+MODIFIED	quantum/Cargo.toml
+MODIFIED	quantum/README.md
+MODIFIED	quantum/src/bridge_light/mod.rs
+MODIFIED	quantum/src/main.rs
+MODIFIED	quantum/src/pd_spine_contract.rs
+MODIFIED	quantum/src/progressive_debatic/runtime.rs
+MODIFIED	quantum/src/progressive_debatic/seal.rs
+MODIFIED	quantum/src/shadow_process_bridge.rs
+MODIFIED	shadow-contracts/Cargo.toml
+MODIFIED	shadow-contracts/src/lib.rs
+MODIFIED	shadow/Cargo.toml
+MODIFIED	shadow/src/bridge/mod.rs
+MODIFIED	shadow/src/bridge/quantum_in.rs
+MODIFIED	shadow/src/bridge/shadow_callable.rs
+MODIFIED	shadow/src/main.rs
+MODIFIED	shadow/src/pd_spine_contract.rs
+MODIFIED	shadow/src/process_bridge.rs
+MODIFIED	shadow/src/shadow_gateway.rs
+MODIFIED	shadow/src/shadow_matrix.rs
+MODIFIED	shadow/src/types.rs
+MODIFIED	ui/Cargo.toml
+MODIFIED	ui/src/main.rs
+MODIFIED	ui_contracts/emotional_command.rs

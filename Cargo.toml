@@ -1,0 +1,42 @@
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  ESS-MAI — Workspace i Vetëm (Light + Quantum + Shadow)         ║
+# ║  GJATA LEGACY™ — Nura Legacy                                            ║
+# ║                                                                          ║
+# ║  Tre platforma, NJË sistem. Rolet mbeten absolutisht të ndara.          ║
+# ║  Rrjedha e mbyllur: INPUT → LIGHT → QUANTUM → SHADOW → LIGHT → OUTPUT    ║
+# ║                                                                          ║
+# ║  INTEGRIMI REAL (8 prioritete):                               ║
+# ║   P1: Quantum→Shadow thirrje reale (ingest_quantum, jo simulim)         ║
+# ║   P2: Orchestrator NPRO real (WeaknessSignal nga LIM, jo empty)         ║
+# ║   P3: VNK Flow i plotë (Lab→Shadow→PRO, NK eksport sinkron)            ║
+# ║   P4: NPRO sinjale reale nga LIM (jo hardkod)                          ║
+# ║   P5: Shadow ECO + NightWatch aktivë në pipeline (jo dead code)         ║
+# ║   P6: Cross-domain reale nga AbyssalProbe (jo Vec bosh)                ║
+# ║   P7: Digital Lab metrika semantike (jo pseudo nga hash)              ║
+# ║   P8: WAL guard 64MB + SPSC ring                                       ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+
+[workspace]
+resolver = "2"
+members = [
+    "light",
+    "quantum",
+    "shadow",
+    "shadow-contracts",
+]
+
+# Build:
+#   cargo build --release            (të tria)
+#   cargo test                       (1047 teste — verifiko: installer/ci_gate.sh)
+#   cargo build --workspace          (ndërton edhe procesin e detyrueshëm Shadow)
+#   cargo run -p quantum-platform    (Quantum thërret vetëm shadow_platform main.rs)
+
+# Profili është pronë e workspace-it, jo e crate-eve anëtare.
+# panic=unwind ruan crash evidence; panic=abort NUK aktivizohet pa provë
+# që evidenca e ndërprerjes arrin te Shadow.
+[profile.release]
+opt-level     = 3
+lto           = true
+codegen-units = 1
+panic         = "unwind"
+strip         = true

@@ -1,0 +1,66 @@
+ESS-MAI v1.5.6 — FILE SCOPE
+
+ADDED (9)
++ CHANGED_FILES_V156.txt
++ CHANGELOG_v1.5.6.md
++ ESS_MAI_V1_5_6_IMPLEMENTATION_MAP.md
++ STATIC_AUDIT_V156.txt
++ VALIDATE_V156.ps1
++ light/src/algorithm_continuum.rs
++ light/src/pd_continuum_contract.rs
++ quantum/src/pd_continuum_contract.rs
++ shadow/src/pd_continuum_contract.rs
+
+CHANGED (43)
+~ VERSION_ESSMAI.txt
+~ installer/ci_gate.sh
+~ light/Cargo.toml
+~ light/src/ess_mai_system.rs
+~ light/src/ess_manifest.rs
+~ light/src/lab_contracts/gcl_presume.rs
+~ light/src/lab_contracts/verification_receipt.rs
+~ light/src/light_hardening.rs
+~ light/src/main.rs
+~ light/src/pd_light.rs
+~ light/src/pd_spine_contract.rs
+~ light/ui/src-tauri/Cargo.toml
+~ light/ui/src-tauri/tauri.conf.json
+~ quantum/Cargo.toml
+~ quantum/src/bridge_shadow/mod.rs
+~ quantum/src/lab_contracts/gcl_presume.rs
+~ quantum/src/lab_contracts/verification_receipt.rs
+~ quantum/src/lib.rs
+~ quantum/src/main.rs
+~ quantum/src/pd_spine_contract.rs
+~ quantum/src/progressive_debatic/genius_detector.rs
+~ quantum/src/progressive_debatic/mod.rs
+~ quantum/src/progressive_debatic/runtime.rs
+~ quantum/src/progressive_debatic/seal.rs
+~ quantum/src/progressive_debatic/types.rs
+~ quantum/src/runtime_pulse.rs
+~ quantum/src/ultimatum_collapse_law.rs
+~ shadow/Cargo.toml
+~ shadow/src/bridge/mod.rs
+~ shadow/src/bridge/quantum_in.rs
+~ shadow/src/bridge/shadow_callable.rs
+~ shadow/src/bridge/shadow_out.rs
+~ shadow/src/lab_contracts/gcl_presume.rs
+~ shadow/src/lab_contracts/verification_receipt.rs
+~ shadow/src/lib.rs
+~ shadow/src/pd_spine_contract.rs
+~ shadow/src/shadow_gateway.rs
+~ shadow/src/sovereign_ffi_gate.rs
+~ ui/Cargo.toml
+~ ui/dist/index.html
+~ ui/src/main.rs
+~ ui/tauri.conf.json
+~ ui_contracts/emotional_command.rs
+
+REMOVED (5)
+- CHANGED_FILES_V155.txt
+- CHANGELOG_v1.5.5.md
+- ESS_MAI_V1_5_5_FILELIST.sha256
+- STATIC_AUDIT_V155.txt
+- VALIDATE_V155.ps1
+
+Shënim: manifesti v1.5.6 është autoriteti i vetëm hash dhe përjashton vetëm vetveten.

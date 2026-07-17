@@ -1,0 +1,44 @@
+[package]
+name    = "shadow_platform"
+version = "1.6.5"
+edition = "2021"
+autolib = false
+autotests = false   # testi historik përfshihet nga main.rs si modul binar
+autoexamples = true  # shembulli v1.5.9 nuk prek core; dokumenton rrjedhën e ndërmjetësuar
+
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  SHADOW PLATFORM — ESS-MAI                                        ║
+# ║  Gjata Legacy™  |  Arkitekt: Bledar Gjata                             ║
+# ║                                                                          ║
+# ║  Autoriteti suprem epistemik — memoria sovrane.                        ║
+# ║  Rust + C FFI kernel. Zero if/else (verdikt). Zero ML. Zero-copy.     ║
+# ║  Gjykata supreme e dijes — shadow_gj_legacy.lgc                       ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+
+[[bin]]
+name = "shadow_platform"
+path = "src/main.rs"
+
+[features]
+# runtime_mode: ekzekutim real i deklaruar qartë (default i prodhimit).
+# Marker semantik konsistent me Light/Quantum; default = ekzekutim real.
+default   = ["runtime_mode"]
+runtime_mode = []
+# dev_harness: vetëm porta historike --negative-once për Digital Lab dev;
+# build-i production nuk mund të persistojë negative jashtë verdict-it suprem.
+dev_harness = []
+# pure_rust: VETËM TEST/DEV — pasqyrë Rust e kernelit (PA shtresën C).
+# NDALIM SOVRAN (zbatohet në build.rs): `runtime_mode`+`pure_rust` bashkë
+# DËSHTON build-in. Përdorimi i vetëm i lejuar:
+#   cargo test --no-default-features --features pure_rust
+pure_rust = []
+
+[dependencies]
+# Vetëm kontrata publike wire; zero autoritet dhe zero akses te Shadow core.
+shadow_contracts = { path = "../shadow-contracts" }
+sha2 = "0.10"
+
+# Shadow core mbetet pure Rust + C FFI brenda binarit main.rs
+
+[build-dependencies]
+cc = "1.0"

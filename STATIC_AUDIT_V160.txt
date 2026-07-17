@@ -1,0 +1,60 @@
+ESS-MAI v1.6.0 — STATIC AUDIT EVIDENCE
+Baseline: v1.5.9_ess_mai
+Date: 2026-07-15
+
+=== RUST STRUCTURAL SCAN ===
+RUST_FILES=270
+ERRORS=0
+
+=== ARCHITECTURAL / CONTRACT AUDIT ===
+PASS=37
+FAIL=0
+PASS | UTF-8 text files
+PASS | All package versions 1.6.0
+PASS | Version marker
+PASS | PD Spine byte-identical | 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+PASS | PD Continuum byte-identical | 3b321a035d8ef6358c8d09ade0c00a32d05e5e6ff2068b670935b361991cad56
+PASS | GCL law byte-identical | 629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b
+PASS | Verification receipt byte-identical | cfb106bf6752b017128ad367592f36718b05738c0ed6114a07f4ea159927b15e
+PASS | Shadow binary-only
+PASS | Quantum only public Shadow contracts
+PASS | No direct Quantum Shadow core calls
+PASS | Quantum executes Shadow main
+PASS | All PD modes activate full Spine 9
+PASS | Layer material and GCL bound
+PASS | Wire schema PdLayerEvidenceWire | 9 fields
+PASS | Wire schema PdContinuumEvidenceWire | 16 fields
+PASS | Wire schema PdActivationEvidenceWire | 8 fields
+PASS | Wire schema PdSpineEvidenceWire | 24 fields
+PASS | Wire schema FinalEvidenceWire | 25 fields
+PASS | Continuum independently recomputable
+PASS | PD activation independently recomputable
+PASS | Spine independently recomputable
+PASS | MPRO exactly 16 binary measurements
+PASS | Shadow verifies before core
+PASS | Shadow rejects non-finite
+PASS | Shadow recomputes Light SHA
+PASS | Shadow cross-checks continuum identity
+PASS | Shadow checks PIM/NPIM/MPRO
+PASS | Light→Quantum wire carries input SHA
+PASS | Quantum recomputes input SHA
+PASS | Light does not claim PD Spine 9
+PASS | PD Light typed courier
+PASS | Old UI emits real iZ command
+PASS | Tauri/new UI consumes iZ command
+PASS | Legacy Shadow remains present
+PASS | E0521 static lifetime fix
+PASS | Authoritative v1.5.9→v1.6.0 documentation
+PASS | Change scope recorded | 41 changed/new files before generated evidence
+
+=== VALIDATOR STATIC-GUARD EMULATION ===
+DIRECT_GUARDS=46
+FAIL=0
+
+=== TOOLCHAIN BOUNDARY ===
+cargo: unavailable in packaging environment
+rustc: unavailable in packaging environment
+rustfmt: unavailable in packaging environment
+pwsh: unavailable in packaging environment
+
+No Cargo-green claim is made here. Execute VALIDATE_V160.ps1 in the authoritative Windows GNU environment.

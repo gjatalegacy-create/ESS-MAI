@@ -1,0 +1,25 @@
+ESS-MAI v1.6.5 — files changed from v1.6.4
+
+ADDED	AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md
+ADDED	CHANGELOG_v1.6.5.md
+ADDED	ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md
+ADDED	STATIC_AUDIT_V165.txt
+ADDED	V165_SIMULATION_MAP.md
+ADDED	V1_6_5_FROM_V1_6_4.diff
+ADDED	VALIDATE_V165.ps1
+MODIFIED	VERSION_ESSMAI.txt
+MODIFIED	ess-mai.md
+MODIFIED	light/Cargo.toml
+MODIFIED	light/src/project_process_bridge.rs
+MODIFIED	light/src/sovereign_bridges.rs
+MODIFIED	light/ui/src-tauri/Cargo.toml
+MODIFIED	light/ui/src-tauri/tauri.conf.json
+MODIFIED	quantum/Cargo.toml
+MODIFIED	quantum/src/lib.rs
+MODIFIED	quantum/src/main.rs
+ADDED	quantum/src/project_workspace_router.rs
+MODIFIED	shadow-contracts/Cargo.toml
+MODIFIED	shadow/Cargo.toml
+MODIFIED	ui/Cargo.toml
+MODIFIED	ui/tauri.conf.json
+ADDED	ESS_MAI_V1_6_5_FILELIST.sha256

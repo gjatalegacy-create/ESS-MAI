@@ -1,0 +1,1591 @@
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md v1.6.5_ess_mai/ess_mai/AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md
+--- v164_work/v1.6.4_ess_mai/ess_mai/AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md	2026-07-16 05:29:35.611583030 +0000
+@@ -0,0 +1,70 @@
++# Audit v1.6.5 — Quantum Project Workspace dhe ruajtja e tokenëve
++
++## Kufiri i ri
++
++```text
++Old UI upload
++  → Light --project-route-once
++  → APUPK registration in Shadow main
++  → ProjectContextWitness
++  → Quantum --project-workspace-once
++  → route + SHA-256 record identities
++  → storage/conversation owner
++```
++
++Quantum nuk bëhet memory store. Ai vetëm e orienton pjesën `scientific_project`; inputet normale vazhdojnë në rrugën ekzistuese stdin/runtime.
++
++## Ndarja nga procedimi shkencor
++
++```text
++WORKSPACE:
++--project-workspace-once
++  ├─ validate request/APUPK identity
++  ├─ classify storage/chat/both
++  ├─ hash workspace/material/turn
++  └─ return authority=NONE
++
++LEGACY SCIENCE:
++--project-process-once
++  ├─ run(...)
++  ├─ PD/Spine 9/Layers
++  ├─ TRL 0–3
++  ├─ Shadow multi-stage verification
++  └─ receipt/Living Trust/iZ/next i₀
++```
++
++## Token audit
++
++Porta Workspace nuk referon:
++
++```text
++LgcToken
++LgcGate
++CapHandle
++SovereignGate
++token_forge
++ForgeToken
++mint(...)
++SEAL_PD / SEAL_* capability flow
++```
++
++Ajo prodhon vetëm SHA-256 domain-separated. SHA-të quhen `workspace_sha256`, `material_sha256` dhe `conversation_turn_sha256`; nuk quhen dhe nuk përdoren si token.
++
++## GCL audit
++
++- APUPK dhe Vula 500 vazhdojnë të krijohen në Light para ndarjes së rrugës.
++- `GCL:SCIENTIFIC_PROJECT:V164` mbetet i pandryshuar.
++- GCL Project, Living Trust dhe VerificationReceipt nuk u versionuan, sepse porta Workspace nuk ndryshon provën kushtetuese.
++- Rruga legacy mbetet e aksesueshme me flag eksplicit.
++
++## Shadow audit
++
++Shadow nuk u modifikua. Projekti regjistrohet në APUPK para se Quantum të orientojë workspace-in. Kështu magazina persistente mbetet në Shadow dhe Quantum nuk krijon memory paralele.
++
++## Rreziqet e mbyllura
++
++1. **Project route accidentally entering full reasoning** — porta Workspace nuk thërret `run`.
++2. **Normal user input diverted to project storage** — porta kërkon flag të veçantë dhe `ScientificProjectInput`.
++3. **Token mutation** — skedarët token-kritikë janë byte-identikë me v1.6.4.
++4. **Legacy regression** — flag-et e vjetra ruhen dhe përdorin të njëjtin APUPK helper.
++5. **Wire drift** — Light riverifikon çdo field të përgjigjes Workspace dhe të tre SHA-256.
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/CHANGED_FILES_V165.txt v1.6.5_ess_mai/ess_mai/CHANGED_FILES_V165.txt
+--- v164_work/v1.6.4_ess_mai/ess_mai/CHANGED_FILES_V165.txt	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/CHANGED_FILES_V165.txt	2026-07-16 05:32:53.898176733 +0000
+@@ -0,0 +1,25 @@
++ESS-MAI v1.6.5 — files changed from v1.6.4
++
++ADDED	AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md
++ADDED	CHANGELOG_v1.6.5.md
++ADDED	ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md
++ADDED	STATIC_AUDIT_V165.txt
++ADDED	V165_SIMULATION_MAP.md
++ADDED	V1_6_5_FROM_V1_6_4.diff
++ADDED	VALIDATE_V165.ps1
++MODIFIED	VERSION_ESSMAI.txt
++MODIFIED	ess-mai.md
++MODIFIED	light/Cargo.toml
++MODIFIED	light/src/project_process_bridge.rs
++MODIFIED	light/src/sovereign_bridges.rs
++MODIFIED	light/ui/src-tauri/Cargo.toml
++MODIFIED	light/ui/src-tauri/tauri.conf.json
++MODIFIED	quantum/Cargo.toml
++MODIFIED	quantum/src/lib.rs
++MODIFIED	quantum/src/main.rs
++ADDED	quantum/src/project_workspace_router.rs
++MODIFIED	shadow-contracts/Cargo.toml
++MODIFIED	shadow/Cargo.toml
++MODIFIED	ui/Cargo.toml
++MODIFIED	ui/tauri.conf.json
++ADDED	ESS_MAI_V1_6_5_FILELIST.sha256
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/CHANGELOG_v1.6.5.md v1.6.5_ess_mai/ess_mai/CHANGELOG_v1.6.5.md
+--- v164_work/v1.6.4_ess_mai/ess_mai/CHANGELOG_v1.6.5.md	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/CHANGELOG_v1.6.5.md	2026-07-16 05:29:35.598377967 +0000
+@@ -0,0 +1,79 @@
++# ESS-MAI v1.6.5 — Changelog
++
++## Qëllimi
++
++v1.6.5 ndan rrugën e projektit në dy porta të qarta pa ndryshuar GCL, Living Trust, receipt-et ose capability tokenët:
++
++1. **Project Workspace** — rruga default për magazinim dhe bisedë rreth projektit;
++2. **Legacy Scientific Process** — rruga ekzistuese v1.6.4 për procedim të plotë GCL/PD/TRL/Shadow.
++
++## Quantum Project Workspace
++
++U shtua `quantum/src/project_workspace_router.rs` dhe porta:
++
++```text
++quantum-platform --project-workspace-once REQUEST RESPONSE
++```
++
++Kjo portë:
++
++- pranon vetëm request me `ScientificProjectInput` dhe APUPK witness të vlefshëm;
++- verifikon `project_id`, `trace_id`, `context_sha256`, `payload_sha256` dhe request SHA-256;
++- orienton vetëm në `PROJECT_STORAGE`, `PROJECT_CONVERSATION` ose `PROJECT_STORAGE_AND_CONVERSATION`;
++- prodhon identitete SHA-256 për workspace, material dhe turn bisede;
++- nuk ruan vetë materialin, sepse Quantum nuk është magazinë persistente;
++- nuk thërret `run`, PD, Spine 9, TRL ose Shadow supreme;
++- nuk hap, nuk mint-on dhe nuk transporton LGC/Forge/capability token.
++
++## Rruga legacy
++
++Portat ekzistuese ruhen:
++
++```text
++light-platform   --project-route-legacy-once REQUEST RESPONSE
++quantum-platform --project-process-once REQUEST RESPONSE
++```
++
++`--project-process-once` mbetet rruga e vjetër e procedimit shkencor. Kodi i saj nuk u ndryshua.
++
++## Light
++
++- `--project-route-once` është tani porta default e Project Workspace.
++- Light regjistron projektin APUPK te Shadow main dhe riverifikon witness-in përpara Quantum.
++- Rruga e re dhe ajo legacy ndajnë të njëjtin helper kushtetues për APUPK, SHA-256, `GCL:SCIENTIFIC_PROJECT:V164` dhe Vulën 500.
++- Light verifikon përgjigjen Workspace: versionin, projektin, trace-in, SHA-256, `authority=NONE`, `token_policy=UNCHANGED` dhe deklarimin e rrugës legacy.
++
++## Shadow
++
++Kodi Shadow nuk u ndryshua. Shadow vazhdon të jetë:
++
++- magazina persistente APUPK;
++- pronari i verifikimit shumëhapësh;
++- i vetmi vend ku mund të lindë TRL4 dhe verdict-i suprem në rrugën legacy.
++
++## Tokenët dhe domain-et
++
++Nuk u ndryshuan:
++
++- `quantum/src/sovereign/lgc_gate.rs`;
++- `quantum/src/token_forge.rs`;
++- modulet PD seal/token;
++- verification receipt;
++- GCL Project domains V164;
++- Living Trust domains V164;
++- `shadow-contracts::PROTOCOL_VERSION = 9`.
++
++v1.6.5 shton vetëm një domain të ri jo-autoritar:
++
++```text
++ESS_MAI_QUANTUM_PROJECT_WORKSPACE_V165
++```
++
++Ky domain prodhon identitete rekordi, jo token ose verdict.
++
++## Gjendja e verifikimit
++
++- Parsim sintaksor Tree-sitter: të gjithë skedarët Rust, 0 nyje `ERROR`.
++- Guard-et statike: rruga e re nuk importon token/GCL gate dhe nuk thërret pipeline-in `run`.
++- Hash-et e skedarëve token-kritikë ruhen identike me v1.6.4.
++- Cargo-green mbetet për t’u provuar me `VALIDATE_V165.ps1` në Windows GNU / Rust 1.96.0.
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md v1.6.5_ess_mai/ess_mai/ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md
+--- v164_work/v1.6.4_ess_mai/ess_mai/ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md	2026-07-16 05:29:35.624968233 +0000
+@@ -0,0 +1,15 @@
++# ESS-MAI v1.6.5 — Implementation Map
++
++| Kufiri | Implementimi | Përgjegjësia |
++|---|---|---|
++| Old UI | `upload_project` | Vetëm material + emotion; thërret Light default route |
++| Light default project route | `--project-route-once` | APUPK/Shadow register → Quantum Workspace |
++| Light legacy route | `--project-route-legacy-once` | APUPK/Shadow register → Quantum full science |
++| Shared Light preparation | `prepare_project_handoff_under_gcl` | Një witness, SHA-256, kontratë V164 dhe Vulë 500 për të dyja rrugët |
++| Quantum Workspace entry | `--project-workspace-once` | Validim dhe orientim project-only |
++| Quantum Workspace module | `project_workspace_router.rs` | Storage/chat/both + SHA-256 record identities |
++| Quantum legacy entry | `--project-process-once` | Rrjedha e plotë GCL/PD/TRL/Shadow e v1.6.4 |
++| Persistent project store | Shadow APUPK | Mbetet magazina e vetme persistente |
++| Token boundary | Existing LGC/Forge/PD modules | Byte-identikë; nuk importohen nga Workspace |
++| GCL/Living Trust | V164 contracts | Të pandryshuara; Workspace nuk është autoritet |
++| Historical record | `ess-mai.md` + `ess_mai.md` | Byte-identical progress v1.6.5 |
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/STATIC_AUDIT_V165.txt v1.6.5_ess_mai/ess_mai/STATIC_AUDIT_V165.txt
+--- v164_work/v1.6.4_ess_mai/ess_mai/STATIC_AUDIT_V165.txt	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/STATIC_AUDIT_V165.txt	2026-07-16 05:32:12.130471190 +0000
+@@ -0,0 +1,50 @@
++ESS-MAI v1.6.5 — STATIC AUDIT
++Baseline: v1.6.4_ess_mai
++Scope: Quantum Project Workspace + Light dual routing; no GCL/token domain change
++
++PASS	VERSION_MARKER
++PASS	TOML_light/Cargo.toml	1.6.5
++PASS	TOML_quantum/Cargo.toml	1.6.5
++PASS	TOML_shadow/Cargo.toml	1.6.5
++PASS	TOML_shadow-contracts/Cargo.toml	1.6.5
++PASS	TOML_ui/Cargo.toml	1.6.5
++PASS	TOML_light/ui/src-tauri/Cargo.toml	1.6.5
++PASS	JSON_ui/tauri.conf.json	1.6.5
++PASS	JSON_light/ui/src-tauri/tauri.conf.json	1.6.5
++PASS	RUST_TREE_SITTER_ALL_FILES	files=278 errors=0
++PASS	WORKSPACE_NO_TOKEN_API
++PASS	WORKSPACE_DOMAIN_V165
++PASS	WORKSPACE_THREE_ROUTES
++PASS	WORKSPACE_NO_AUTHORITY
++PASS	WORKSPACE_NO_PERSISTENCE
++PASS	QUANTUM_NEW_FLAG
++PASS	QUANTUM_LEGACY_FLAG
++PASS	WORKSPACE_FUNCTION_FOUND
++PASS	WORKSPACE_DOES_NOT_ENTER_RUN
++PASS	WORKSPACE_REQUIRES_SCIENTIFIC_PROJECT
++PASS	LEGACY_QUANTUM_FUNCTION_BYTE_IDENTICAL	7ce9378106c297c8128f33c0ae2b855fa6de69106d25eced9b7f22072fb6bc93
++PASS	QUANTUM_TOKEN_BOOT_SECTION_IDENTICAL	25a45c5c39394b4bb601b931fe99b6a3a074e236cee4eef9720152b5236f5150
++PASS	LIGHT_DEFAULT_WORKSPACE_FLAG
++PASS	LIGHT_LEGACY_FLAGS
++PASS	LIGHT_VALIDATES_WORKSPACE_RESPONSE
++PASS	SINGLE_GCL_PREPARATION
++PASS	BOTH_LIGHT_ROUTES
++PASS	TOKEN_CRITICAL_FILES_BYTE_IDENTICAL	files=26 changed=[]
++PASS	GCL_PROJECT_CONTRACTS_IDENTICAL	d98616df506b9a5a2a9456c4dd084ccad83f1b481dab3219e63b6ea01f5ca60d
++PASS	LIVING_TRUST_CONTRACTS_IDENTICAL	7107a2db3b8fd8e05fa2ad12093cd4fa55cf5fb35e76154189a88edecab4bcc2
++PASS	RECEIPT_CONTRACTS_IDENTICAL	93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
++PASS	GCL_CONTRACT_UNCHANGED_FROM_V164
++PASS	LIVING_TRUST_UNCHANGED_FROM_V164
++PASS	SHADOW_SOURCE_UNCHANGED
++PASS	SHADOW_CONTRACT_SOURCE_UNCHANGED
++PASS	OLD_UI_SOURCE_UNCHANGED
++PASS	PROTOCOL_V9_UNCHANGED
++PASS	GCL_DOMAINS_REMAIN_V164
++PASS	TRUST_DOMAINS_REMAIN_V164
++PASS	PARALLEL_DOC_BYTE_IDENTICAL
++PASS	V165_DOC_ENTRY
++
++PASSED=41
++FAILED=0
++RUST_FILES_PARSED=278
++TOKEN_CRITICAL_FILES_CHECKED=26
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/V165_SIMULATION_MAP.md v1.6.5_ess_mai/ess_mai/V165_SIMULATION_MAP.md
+--- v164_work/v1.6.4_ess_mai/ess_mai/V165_SIMULATION_MAP.md	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/V165_SIMULATION_MAP.md	2026-07-16 05:29:35.637982468 +0000
+@@ -0,0 +1,59 @@
++# ESS-MAI v1.6.5 — Simulation Map
++
++## S1 — Upload default
++
++```text
++UI upload → Light --project-route-once
++→ Shadow APUPK witness
++→ Quantum --project-workspace-once
++→ PROJECT_STORAGE_AND_CONVERSATION
++```
++
++Pritshmëri: asnjë PD/TRL/verdict; `authority=NONE`, `token_policy=UNCHANGED`.
++
++## S2 — Project chat
++
++```text
++domain=project-chat + ScientificProjectInput
++→ PROJECT_CONVERSATION
++```
++
++Pritshmëri: `conversation_turn_sha256` lidhet me workspace dhe tekstin e turnit.
++
++## S3 — Project storage
++
++```text
++domain=project-storage + material/files
++→ PROJECT_STORAGE
++```
++
++Pritshmëri: `material_sha256` lidhet me titull, hipotezë, assumptions, description dhe files.
++
++## S4 — Legacy science
++
++```text
++Light --project-route-legacy-once
++→ Quantum --project-process-once
++→ run(...)
++→ GCL/PD/TRL/Shadow
++```
++
++Pritshmëri: sjellja e v1.6.4 ruhet.
++
++## S5 — Non-project request
++
++Request pa `ScientificProjectInput` drejt `--project-workspace-once`.
++
++Pritshmëri: fail-closed, exit 70.
++
++## S6 — Corrupt identity
++
++`project_id`, `trace_id`, `payload_sha256` ose `context_sha256` nuk përputhen.
++
++Pritshmëri: fail-closed para orientimit.
++
++## S7 — Token isolation
++
++Kërkim statik në modulin Workspace për LgcToken/LgcGate/token_forge/mint/SEAL.
++
++Pritshmëri: zero referenca ekzekutive.
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/VALIDATE_V165.ps1 v1.6.5_ess_mai/ess_mai/VALIDATE_V165.ps1
+--- v164_work/v1.6.4_ess_mai/ess_mai/VALIDATE_V165.ps1	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/VALIDATE_V165.ps1	2026-07-16 05:30:40.402428496 +0000
+@@ -0,0 +1,209 @@
++param(
++    [string]$LogRoot = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ESS_MAI_V165_LOGS')
++)
++
++$ErrorActionPreference = 'Stop'
++[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
++$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
++New-Item -ItemType Directory -Force -Path $LogRoot | Out-Null
++
++function Run-Logged {
++    param([string]$Name, [scriptblock]$Command)
++    $Path = Join-Path $LogRoot ($Name + '.log')
++    & $Command 2>&1 | Tee-Object -FilePath $Path
++    $Code = $LASTEXITCODE
++    "EXIT_CODE=$Code" | Add-Content -LiteralPath $Path -Encoding UTF8
++    if ($Code -ne 0) { throw "$Name failed with exit code $Code. See $Path" }
++}
++function Require-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -notmatch $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++function Reject-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -match $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++function Require-Hash {
++    param([string]$Path, [string]$Expected, [string]$Label)
++    $Actual = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
++    if ($Actual -ne $Expected) { throw "STATIC GUARD FAILED: $Label hash changed ($Actual)" }
++}
++function Require-SameHash {
++    param([string[]]$Paths, [string]$Label)
++    $Hashes = $Paths | ForEach-Object {
++        (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()
++    } | Select-Object -Unique
++    if ($Hashes.Count -ne 1) { throw "STATIC GUARD FAILED: $Label" }
++    "$Label=$($Hashes[0])"
++}
++
++Push-Location $Root
++try {
++    Run-Logged '00_toolchain' { cargo -Vv; rustc -Vv; rustup show; gcc --version }
++
++    foreach ($Manifest in @(
++        'light\Cargo.toml','quantum\Cargo.toml','shadow\Cargo.toml',
++        'shadow-contracts\Cargo.toml','ui\Cargo.toml','light\ui\src-tauri\Cargo.toml'
++    )) {
++        Require-Text (Join-Path $Root $Manifest) 'version\s*=\s*"1\.6\.5"' "$Manifest v1.6.5"
++    }
++    Require-Text (Join-Path $Root 'VERSION_ESSMAI.txt') 'ESS-MAI v1\.6\.5' 'version marker'
++
++    $QuantumMain = Join-Path $Root 'quantum\src\main.rs'
++    $Workspace = Join-Path $Root 'quantum\src\project_workspace_router.rs'
++    $LightProject = Join-Path $Root 'light\src\project_process_bridge.rs'
++    $LightSovereign = Join-Path $Root 'light\src\sovereign_bridges.rs'
++
++    # Project-only split: new default workspace route + explicit legacy route.
++    Require-Text $QuantumMain '--project-workspace-once' 'Quantum workspace entrypoint'
++    Require-Text $QuantumMain '--project-process-once' 'Quantum legacy scientific entrypoint'
++    Require-Text $QuantumMain 'dispatch_project_workspace_once' 'workspace dispatch before runtime stdin'
++    Require-Text $LightProject '--project-route-once' 'Light default workspace entrypoint'
++    Require-Text $LightProject '--project-route-legacy-once' 'Light legacy entrypoint'
++    Require-Text $LightProject '--project-workspace-once' 'Light invokes Quantum workspace'
++    Require-Text $LightProject '--project-process-once' 'Light preserves Quantum legacy'
++    Require-Text $LightSovereign 'route_project_workspace_under_gcl' 'Light workspace route'
++    Require-Text $LightSovereign 'route_scientific_project_under_gcl' 'Light legacy scientific route'
++    Require-Text $LightSovereign 'prepare_project_handoff_under_gcl' 'single APUPK/GCL preparation'
++
++    # Workspace is orientation only: no pipeline, no authority, no token API.
++    Require-Text $Workspace 'ESS_MAI_QUANTUM_PROJECT_WORKSPACE_V165' 'workspace SHA domain'
++    Require-Text $Workspace 'PROJECT_STORAGE' 'storage route'
++    Require-Text $Workspace 'PROJECT_CONVERSATION' 'conversation route'
++    Require-Text $Workspace 'authority=NONE' 'no authority declaration'
++    Require-Text $Workspace 'token_policy=UNCHANGED' 'token boundary declaration'
++    Reject-Text $Workspace 'LgcToken|LgcGate|CapHandle|SovereignGate|token_forge|ForgeToken|SEAL_[A-Z_]+|::mint\s*\(|\.mint\s*\(' 'workspace must not use token APIs'
++
++    $WorkspaceRun = [regex]::Match(
++        (Get-Content -LiteralPath $QuantumMain -Raw -Encoding UTF8),
++        'fn run_project_workspace_once\s*\((?<body>.*?)\n\}\n\nfn dispatch_project_process_once',
++        [Text.RegularExpressions.RegexOptions]::Singleline
++    ).Groups['body'].Value
++    if ([string]::IsNullOrWhiteSpace($WorkspaceRun)) { throw 'workspace function block not found' }
++    if ($WorkspaceRun -match '(?m)(^|[^a-zA-Z_])run\s*\(') {
++        throw 'STATIC GUARD FAILED: workspace route enters full reasoning run()'
++    }
++    if ($WorkspaceRun -match 'LgcToken|token_forge|ForgeToken|LgcGate|CapHandle') {
++        throw 'STATIC GUARD FAILED: workspace route touches token flow'
++    }
++
++    # Existing constitutional contracts deliberately remain V164.
++    Require-Text $LightSovereign 'GCL:SCIENTIFIC_PROJECT:V164' 'GCL project identity unchanged'
++    foreach ($Contract in @(
++        'light\src\gcl_project_contract.rs',
++        'quantum\src\gcl_project_contract.rs',
++        'shadow\src\gcl_project_contract.rs'
++    )) {
++        Require-Text (Join-Path $Root $Contract) 'ESS_MAI_GCL_PROJECT_CONTEXT_V164' "$Contract V164 context"
++        Require-Text (Join-Path $Root $Contract) 'ESS_MAI_GCL_SCIENTIFIC_PROJECT_EVIDENCE_V164' "$Contract V164 evidence"
++    }
++    foreach ($Contract in @(
++        'light\src\living_trust_contract.rs',
++        'quantum\src\living_trust_contract.rs',
++        'shadow\src\living_trust_contract.rs'
++    )) {
++        Require-Text (Join-Path $Root $Contract) 'GCL_LIVING_TRUST_V164' "$Contract V164 trust"
++        Require-Text (Join-Path $Root $Contract) 'GCL_LIVING_TRUST_TO_IZ_V164' "$Contract V164 iZ"
++    }
++    Require-Text (Join-Path $Root 'shadow-contracts\src\lib.rs') 'PROTOCOL_VERSION:\s*u16\s*=\s*9' 'wire protocol unchanged'
++
++    # Token-critical Quantum sources must remain byte-identical to v1.6.4.
++    $TokenHashes = @{
++        'quantum\src\bridge_shadow\mod.rs' = '9bf2294484036322910dad4870090ceaf209cfa1cae85211899804e89f6a4025'
++        'quantum\src\hcp_pro.rs' = '60295e1edcd7082fb8a567204aa4a18046c3a3518028249901d47e2a643ff936'
++        'quantum\src\lab_contracts\verification_receipt.rs' = '93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c'
++        'quantum\src\layer2\hcp_pro_l2.rs' = '51980f6baee02440cbce22f196142698b8459d5c55e2733441130fde7f17a9be'
++        'quantum\src\layer3\hcp_pro_l3.rs' = '75fbb66d258932079c06fea70160065a21562b7edae22725a1e8d00da02f0a74'
++        'quantum\src\progressive_debatic\runtime.rs' = '0459642c01a01b9896cd0d5bab458c0a4c78a5ad2cdc98b38d5abd136e469218'
++        'quantum\src\progressive_debatic\seal.rs' = '37dfe66a4b4efaae0ed85ffa202fff197706c5d3a9da8a92485bd479eeff954b'
++        'quantum\src\progressive_debatic\types.rs' = 'd7a77acefe3815e7ba2adb5ff7571eeaeaf1ccc524a816f5a82b1043ecc6a3dc'
++        'quantum\src\sovereign\lgc_gate.rs' = '375d4ed5071d7316f39c07e0ebd7bcffbaf7cfec0bf3259b10b92163c9e62ebe'
++        'quantum\src\sovereign\ring.rs' = 'a9db1effbe945b8df6c52bf126ccbecdd86987248d0a8f2612cb1dfce0fcce9c'
++        'quantum\src\sovereign\seal_registry.rs' = '6ce845f98657234306861addcc2557b02b2e14fb66e1b2b4cef2463879f9b78c'
++        'quantum\src\token_forge.rs' = '9b3182ae9164c4a00114405a8790cb2f79bd5fa25d4c34bfb39edc4de379b39e'
++    }
++    foreach ($Entry in $TokenHashes.GetEnumerator()) {
++        Require-Hash (Join-Path $Root $Entry.Key) $Entry.Value "token source $($Entry.Key)"
++    }
++
++    # Byte-identical governing contracts across platforms.
++    $ProjectHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\gcl_project_contract.rs'),
++        (Join-Path $Root 'quantum\src\gcl_project_contract.rs'),
++        (Join-Path $Root 'shadow\src\gcl_project_contract.rs')
++    ) 'GCL_PROJECT_CONTRACT_BYTE_IDENTICAL'
++    $TrustHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\living_trust_contract.rs'),
++        (Join-Path $Root 'quantum\src\living_trust_contract.rs'),
++        (Join-Path $Root 'shadow\src\living_trust_contract.rs')
++    ) 'LIVING_TRUST_CONTRACT_BYTE_IDENTICAL'
++    $ReceiptHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\lab_contracts\verification_receipt.rs'),
++        (Join-Path $Root 'quantum\src\lab_contracts\verification_receipt.rs'),
++        (Join-Path $Root 'shadow\src\lab_contracts\verification_receipt.rs')
++    ) 'VERIFICATION_RECEIPT_BYTE_IDENTICAL'
++
++    # UI still owns only upload and emotional reflection.
++    $OldUiRust = Join-Path $Root 'light\ui\src-tauri\src\main.rs'
++    Require-Text $OldUiRust '#\[tauri::command\]\s*fn upload_project' 'old UI upload'
++    Require-Text $OldUiRust '#\[tauri::command\]\s*fn reflect_system_emotion' 'old UI emotion'
++    Require-Text $OldUiRust '"--project-route-once"' 'old UI uses default Light route'
++    Reject-Text $OldUiRust 'shadow_platform|quantum-platform|--project-workspace-once|--project-process-once' 'old UI cannot bypass Light'
++
++    # Shadow remains unmodified in behavior and owns APUPK persistence.
++    Require-Text (Join-Path $Root 'shadow\src\process_bridge.rs') '--project-register-once' 'Shadow APUPK registration'
++    Require-Text (Join-Path $Root 'shadow\src\process_bridge.rs') 'validate_scientific_project_against_apupk' 'Shadow APUPK verification'
++    Require-Text (Join-Path $Root 'shadow\src\shadow_gj_legacy.rs') 'verify_project_gcl_stage' 'Shadow multi-stage GCL verification'
++
++    # Documentation identity.
++    Require-Text (Join-Path $Root 'ess-mai.md') 'Evolucioni v1\.6\.4 → v1\.6\.5' 'v1.6.5 evolution entry'
++    $ParallelDoc = Join-Path (Split-Path -Parent $Root) 'ess_mai.md'
++    if (-not (Test-Path -LiteralPath $ParallelDoc)) { throw 'parallel ess_mai.md missing' }
++    $DocHashes = @(
++        (Get-FileHash -LiteralPath (Join-Path $Root 'ess-mai.md') -Algorithm SHA256).Hash,
++        (Get-FileHash -LiteralPath $ParallelDoc -Algorithm SHA256).Hash
++    ) | Select-Object -Unique
++    if ($DocHashes.Count -ne 1) { throw 'parallel ess_mai.md is not byte-identical' }
++
++    @('STATIC_GUARDS_OK',$ProjectHash,$TrustHash,$ReceiptHash) |
++        Set-Content -LiteralPath (Join-Path $LogRoot '01_static_guards.log') -Encoding UTF8
++
++    # Ordered Cargo proof; Clippy is strict to prevent new warning debt.
++    Run-Logged '02_check_workspace_all_targets' { cargo check --workspace --all-targets -vv }
++    Run-Logged '03_build_workspace_all_targets' { cargo build --workspace --all-targets -vv }
++    Run-Logged '04_test_compile_only' { cargo test --workspace --all-targets --no-run -vv }
++    Run-Logged '05_test_workspace' { cargo test --workspace --all-targets -- --test-threads=1 }
++    Run-Logged '06_quantum_all_features' { cargo check -p quantum-platform --all-targets --all-features -vv }
++    Run-Logged '07_light_all_features' { cargo check -p light-platform --all-targets --all-features -vv }
++    Run-Logged '08_shadow_pure_rust' { cargo test -p shadow_platform --no-default-features --features pure_rust --no-run -vv }
++    Run-Logged '09_clippy_no_warning_debt' { cargo clippy --workspace --all-targets --all-features -- -D warnings }
++    Run-Logged '10_fmt_check' { cargo fmt --all -- --check }
++
++    Push-Location (Join-Path $Root 'ui')
++    try { Run-Logged '11_check_new_ui' { cargo check --all-targets -vv } }
++    finally { Pop-Location }
++    Push-Location (Join-Path $Root 'light\ui\src-tauri')
++    try { Run-Logged '12_check_old_ui' { cargo check --all-targets -vv } }
++    finally { Pop-Location }
++
++    $Manifest = Join-Path $Root 'ESS_MAI_V1_6_5_FILELIST.sha256'
++    $Failures = @()
++    foreach ($Line in Get-Content -LiteralPath $Manifest -Encoding UTF8) {
++        if ($Line -match '^([0-9a-f]{64})  (.+)$') {
++            $Expected = $Matches[1]
++            $Relative = $Matches[2].Replace('/', [IO.Path]::DirectorySeparatorChar)
++            $Target = Join-Path $Root $Relative
++            if (-not (Test-Path -LiteralPath $Target)) { $Failures += "MISSING $Relative"; continue }
++            $Actual = (Get-FileHash -LiteralPath $Target -Algorithm SHA256).Hash.ToLowerInvariant()
++            if ($Actual -ne $Expected) { $Failures += "HASH $Relative" }
++        }
++    }
++    $Failures | Set-Content -LiteralPath (Join-Path $LogRoot '13_hash_failures.log') -Encoding UTF8
++    if ($Failures.Count -ne 0) { throw "File-list verification failed: $($Failures.Count)" }
++
++    'CARGO_GREEN=TRUE' | Set-Content -LiteralPath (Join-Path $LogRoot '14_release_gate.log') -Encoding UTF8
++    Write-Host "ESS-MAI v1.6.5 validation completed. CARGO_GREEN=TRUE. Logs: $LogRoot"
++}
++finally { Pop-Location }
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/VERSION_ESSMAI.txt v1.6.5_ess_mai/ess_mai/VERSION_ESSMAI.txt
+--- v164_work/v1.6.4_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-16 05:25:20.278652287 +0000
+@@ -1 +1 @@
+-ESS-MAI v1.6.4
++ESS-MAI v1.6.5
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/ess-mai.md v1.6.5_ess_mai/ess_mai/ess-mai.md
+--- v164_work/v1.6.4_ess_mai/ess_mai/ess-mai.md	2026-07-15 23:59:03.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/ess-mai.md	2026-07-16 05:31:30.597393793 +0000
+@@ -2708,3 +2708,172 @@
+ ```
+ 
+ Ky ambient nuk kishte `cargo`, `rustc` ose PowerShell. Për këtë arsye v1.6.4 nuk shënohet `VERIFIED` ose `RELEASED` nga Cargo pa ekzekutimin e `VALIDATE_V164.ps1` në Windows GNU / Rust 1.96.0.
++
++---
++
++# Evolucioni v1.6.4 → v1.6.5 — Project Workspace në Quantum dhe rruga legacy
++
++## Vendimi arkitekturor
++
++v1.6.5 nuk e kthen Quantum-in në magazinë dhe nuk krijon memory paralele. Ai shton vetëm një **orientues të kufizuar për pjesën Project**, pasi projekti është regjistruar në APUPK nga Light përmes Shadow main.
++
++```text
++Rruga default e projektit
++UI upload
++→ Light --project-route-once
++→ APUPK + Shadow ProjectContextWitness
++→ Quantum --project-workspace-once
++→ Storage / Conversation / Storage+Conversation orientation
++
++Rruga legacy shkencore
++Light --project-route-legacy-once
++→ Quantum --project-process-once
++→ GCL / PD / Spine 9 / TRL 0–3 / Shadow verification
++```
++
++Inputi normal i përdoruesit, rrjedha stdin e Quantum, PD Continuum dhe urat e tjera nuk ridrejtohen në Project Workspace.
++
++## Quantum Project Workspace Orientation
++
++**Theory name:** Quantum Project Workspace Orientation  
++**Philosophy:** projekti ka nevojë për një orientim të qartë drejt magazinës dhe bisedës, por orientimi nuk duhet të marrë autoritetin e GCL, tokenit ose Shadow-it.  
++**Purpose:** të ndajë projektet nga inputet normale dhe nga procedimi i plotë shkencor.  
++**Mathematical model:**
++
++```text
++P_valid = APUPK_bound ∧ project_id≠0 ∧ trace_id≠0 ∧ SHA_context ∧ SHA_request
++Route(P) ∈ {STORAGE, CONVERSATION, STORAGE∧CONVERSATION}
++Authority(Route(P)) = ∅
++TokenMutation(Route(P)) = 0
++```
++
++**Runtime flow:** `--project-workspace-once → validate execution envelope → deserialize ScientificProjectInput → orient → SHA-256 record identities`.  
++**Contracts:** përdor `QuantumProjectExecutionRequestWire` vetëm si envelope ekzistues; përgjigjja e re është `ESSMAI_Q_PROJECT_WORKSPACE_V165`.  
++**Code location:** `quantum/src/project_workspace_router.rs`, `quantum/src/main.rs`.  
++**Version introduced:** v1.6.5.  
++**Verification evidence:** moduli nuk importon `LgcToken`, `LgcGate`, `CapHandle`, `token_forge`, `ForgeToken` ose `SEAL_*`; funksioni workspace nuk thërret `run`.  
++**Current status:** `IMPLEMENTED_PENDING_CARGO`.
++
++### Tri orientimet
++
++```text
++PROJECT_STORAGE
++PROJECT_CONVERSATION
++PROJECT_STORAGE_AND_CONVERSATION
++```
++
++Domain-et eksplicite `project-storage`, `project-chat` dhe `project-workspace` zgjedhin rrugën. Kur domain-i nuk është eksplicit, forma e materialit dhe prania e turnit të bisedës japin orientimin deterministik.
++
++### Identitetet e rekordeve
++
++Quantum prodhon:
++
++```text
++workspace_sha256
++material_sha256
++conversation_turn_sha256
++```
++
++Këto janë identitete domain-separated të rekordeve dhe **nuk janë token, receipt ose verdict**. Përgjigjja deklaron:
++
++```text
++authority=NONE
++token_policy=UNCHANGED
++legacy_route=--project-process-once
++```
++
++## Light Dual Project Route
++
++**Theory name:** Light Dual Project Route  
++**Philosophy:** Light mban një kufi APUPK/GCL të vetëm, pastaj zgjedh qartë destinacionin.  
++**Purpose:** të mos kopjojë ose ndryshojë Vulën 500 midis rrugës së re dhe asaj legacy.  
++**Runtime flow:**
++
++```text
++prepare_project_handoff_under_gcl
++├── route_project_workspace_under_gcl
++└── route_scientific_project_under_gcl
++```
++
++**Contracts:** të dyja rrugët përdorin të njëjtin `ProjectContextWitnessWire`, `content_sha256`, `GCL:SCIENTIFIC_PROJECT:V164` dhe `light_sovereign_flags`.  
++**Code location:** `light/src/sovereign_bridges.rs`, `light/src/project_process_bridge.rs`.  
++**Version introduced:** v1.6.5.  
++**Verification evidence:** default flag `--project-route-once`; legacy flag `--project-route-legacy-once`; përgjigjja Workspace riverifikohet fushë për fushë.  
++**Current status:** `RUNTIME_CONNECTED_PENDING_CARGO`.
++
++## Pse GCL dhe tokenët mbeten V164
++
++v1.6.5 nuk ndryshon materialin kushtetues të projektit, verdict-in, Living Trust ose iZ. Për këtë arsye nuk u ndryshuan:
++
++```text
++GCL:SCIENTIFIC_PROJECT:V164
++ESS_MAI_GCL_PROJECT_CONTEXT_V164
++ESS_MAI_GCL_SCIENTIFIC_PROJECT_EVIDENCE_V164
++ESS_MAI_GCL_SCIENTIFIC_PROJECT_VERDICT_V164
++GCL_LIVING_TRUST_V164
++GCL_LIVING_TRUST_TO_IZ_V164
++shadow-contracts PROTOCOL_VERSION = 9
++```
++
++Ndryshimi i këtyre domaineve vetëm për orientimin e workspace-it do të krijonte identitete të reja të Living Trust/receipt dhe do të rrezikonte vazhdimësinë e tokenëve. v1.6.5 shton vetëm:
++
++```text
++ESS_MAI_QUANTUM_PROJECT_WORKSPACE_V165
++```
++
++Ky domain nuk hyn në GCL token, ForgeToken, capability gate, receipt ose SupremeVerdict.
++
++## Rruga legacy
++
++Rruga e v1.6.4 nuk u hoq:
++
++```text
++light-platform --project-route-legacy-once REQUEST RESPONSE
++quantum-platform --project-process-once REQUEST RESPONSE
++```
++
++Ajo vazhdon procedimin e plotë shkencor dhe është e ndarë nga porta Workspace. Funksioni `run_project_process_once` ruan sjelljen e mëparshme.
++
++## Shadow dhe magazina
++
++Shadow mbetet pronari i magazinës persistente APUPK. Rendi default është:
++
++```text
++Light identity + Vula 500
++→ Shadow project-register-once
++→ ProjectContextWitness
++→ Quantum workspace orientation
++```
++
++Quantum nuk shkruan një vault të ri. Kjo mban një magazinë të vetme dhe shmang ndarjen e identitetit të projektit.
++
++## Provat e v1.6.5
++
++```text
++CHANGELOG_v1.6.5.md
++AUDIT_V165_QUANTUM_PROJECT_WORKSPACE.md
++ESS_MAI_V1_6_5_IMPLEMENTATION_MAP.md
++V165_SIMULATION_MAP.md
++STATIC_AUDIT_V165.txt
++CHANGED_FILES_V165.txt
++V1_6_5_FROM_V1_6_4.diff
++ESS_MAI_V1_6_5_FILELIST.sha256
++VALIDATE_V165.ps1
++```
++
++## Statusi i versionit
++
++```text
++Project-only Quantum split:        IMPLEMENTED
++Default storage/chat orientation:  RUNTIME_CONNECTED
++Legacy scientific route:          PRESERVED
++Normal Quantum stdin route:        UNCHANGED
++Shadow APUPK persistence:          UNCHANGED
++LGC/Forge/capability token files:  BYTE_IDENTICAL_WITH_V164
++GCL/Living Trust domains:          UNCHANGED_V164
++Rust syntax tree audit:            PASSED
++Cargo/clippy/fmt:                  PENDING_EXTERNAL_WINDOWS_GNU
++Release:                           PACKAGED_FOR_EXECUTIVE_VALIDATION
++```
++
++Ky ambient nuk kishte `cargo`, `rustc` ose PowerShell. `VALIDATE_V165.ps1` është porta ekzekutive që duhet të provojë Cargo-green dhe zero warning debt në Windows GNU / Rust 1.96.0.
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/light/Cargo.toml v1.6.5_ess_mai/ess_mai/light/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/light/Cargo.toml	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/light/Cargo.toml	2026-07-16 05:25:20.273561244 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "light-platform"
+-version     = "1.6.4"
++version     = "1.6.5"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Light Platform — Koordinues Sovran + APUPK/SNB/MiniEvolver + 0-copy + Layer 2 (zero if/else)"
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/light/src/project_process_bridge.rs v1.6.5_ess_mai/ess_mai/light/src/project_process_bridge.rs
+--- v164_work/v1.6.4_ess_mai/ess_mai/light/src/project_process_bridge.rs	2026-07-15 23:58:23.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/light/src/project_process_bridge.rs	2026-07-16 05:27:42.024527025 +0000
+@@ -61,16 +61,7 @@
+     payload: String,
+     witness: &ProjectContextWitnessWire,
+ ) -> Result<(), String> {
+-    let payload_sha256 = format!("{:x}", Sha256::digest(payload.as_bytes()));
+-    let request = shadow_contracts::QuantumProjectExecutionRequestWire {
+-        project_id: witness.project_id,
+-        project_trace_id: witness.trace_id,
+-        project_context_sha256: witness.context_sha256.clone(),
+-        payload_sha256,
+-        payload,
+-    };
+-    let request_bytes = shadow_contracts::encode_quantum_project_execution_request(&request);
+-    let request_sha256 = format!("{:x}", Sha256::digest(&request_bytes));
++    let (request_bytes, request_sha256) = quantum_project_request(payload, witness);
+     let response_bytes = invoke_quantum(
+         "--project-process-once",
+         &format!("project-{:016x}-{:016x}", witness.project_id, witness.trace_id),
+@@ -92,6 +83,101 @@
+     }
+ }
+ 
++/// v1.6.5 — orienton vetëm pjesën Project drejt magazinimit/bisedës.
++/// Përgjigjja nuk përmban token, receipt ose verdict; Light verifikon vetëm
++/// identitetin APUPK, SHA-256 dhe deklarimin e kufirit `authority=NONE`.
++pub fn orient_project_workspace_with_quantum_main(
++    payload: String,
++    witness: &ProjectContextWitnessWire,
++) -> Result<(), String> {
++    let (request_bytes, request_sha256) = quantum_project_request(payload, witness);
++    let response_bytes = invoke_quantum(
++        "--project-workspace-once",
++        &format!("project-workspace-{:016x}-{:016x}", witness.project_id, witness.trace_id),
++        &request_bytes,
++    )?;
++    let response = std::str::from_utf8(&response_bytes)
++        .map_err(|_| "Quantum Project Workspace response nuk është UTF-8".to_string())?;
++    validate_project_workspace_response(response, witness, &request_sha256)
++}
++
++fn quantum_project_request(
++    payload: String,
++    witness: &ProjectContextWitnessWire,
++) -> (Vec<u8>, String) {
++    let payload_sha256 = format!("{:x}", Sha256::digest(payload.as_bytes()));
++    let request = shadow_contracts::QuantumProjectExecutionRequestWire {
++        project_id: witness.project_id,
++        project_trace_id: witness.trace_id,
++        project_context_sha256: witness.context_sha256.clone(),
++        payload_sha256,
++        payload,
++    };
++    let request_bytes = shadow_contracts::encode_quantum_project_execution_request(&request);
++    let request_sha256 = format!("{:x}", Sha256::digest(&request_bytes));
++    (request_bytes, request_sha256)
++}
++
++fn validate_project_workspace_response(
++    response: &str,
++    witness: &ProjectContextWitnessWire,
++    request_sha256: &str,
++) -> Result<(), String> {
++    let mut route = "";
++    let mut project_id = "";
++    let mut project_trace_id = "";
++    let mut project_context_sha256 = "";
++    let mut returned_request_sha256 = "";
++    let mut workspace_sha256 = "";
++    let mut material_sha256 = "";
++    let mut conversation_turn_sha256 = "";
++    let mut legacy_route = "";
++    let mut authority = "";
++    let mut token_policy = "";
++
++    let mut parts = response.trim().split('|');
++    match parts.next() {
++        Some("ESSMAI_Q_PROJECT_WORKSPACE_V165") => {}
++        _ => return Err("Quantum Project Workspace magic/version e pavlefshme".to_string()),
++    }
++    for part in parts {
++        match part.split_once('=') {
++            Some(("route", value)) => route = value,
++            Some(("project_id", value)) => project_id = value,
++            Some(("project_trace_id", value)) => project_trace_id = value,
++            Some(("project_context_sha256", value)) => project_context_sha256 = value,
++            Some(("request_sha256", value)) => returned_request_sha256 = value,
++            Some(("workspace_sha256", value)) => workspace_sha256 = value,
++            Some(("material_sha256", value)) => material_sha256 = value,
++            Some(("conversation_turn_sha256", value)) => conversation_turn_sha256 = value,
++            Some(("legacy_route", value)) => legacy_route = value,
++            Some(("authority", value)) => authority = value,
++            Some(("token_policy", value)) => token_policy = value,
++            _ => {}
++        }
++    }
++
++    let route_valid = matches!(
++        route,
++        "PROJECT_STORAGE" | "PROJECT_CONVERSATION" | "PROJECT_STORAGE_AND_CONVERSATION"
++    );
++    let identity_valid = u64::from_str_radix(project_id, 16) == Ok(witness.project_id)
++        && u64::from_str_radix(project_trace_id, 16) == Ok(witness.trace_id)
++        && project_context_sha256 == witness.context_sha256
++        && returned_request_sha256 == request_sha256;
++    let hashes_valid = [workspace_sha256, material_sha256, conversation_turn_sha256]
++        .iter()
++        .all(|value| value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit()));
++    let boundary_valid = legacy_route == "--project-process-once"
++        && authority == "NONE"
++        && token_policy == "UNCHANGED";
++
++    match route_valid && identity_valid && hashes_valid && boundary_valid {
++        true => Ok(()),
++        false => Err("Quantum Project Workspace response nuk ruan kufirin/identitetin".to_string()),
++    }
++}
++
+ fn invoke(mode: &str, identity: &str, request_bytes: &[u8]) -> Result<Vec<u8>, String> {
+     let shadow_bin = resolve_shadow_binary()?;
+     let handoff_dir = handoff_dir()?;
+@@ -239,34 +325,87 @@
+         assert!(!shadow_executable_name().as_os_str().is_empty());
+         assert!(!quantum_executable_name().as_os_str().is_empty());
+     }
++
++
++    #[test]
++    fn workspace_response_is_bound_without_authority_or_token() {
++        let witness = ProjectContextWitnessWire {
++            project_id: 77,
++            user_id: 9,
++            trace_id: 88,
++            revision: 0,
++            content_sha256: "11".repeat(32),
++            light_sovereign_flags: 0x0000_A451,
++            context_sha256: "22".repeat(32),
++        };
++        let request_sha256 = "33".repeat(32);
++        let line = format!(
++            "ESSMAI_Q_PROJECT_WORKSPACE_V165|route=PROJECT_STORAGE_AND_CONVERSATION|project_id={:016x}|project_trace_id={:016x}|project_context_sha256={}|request_sha256={}|workspace_sha256={}|material_sha256={}|conversation_turn_sha256={}|legacy_route=--project-process-once|authority=NONE|token_policy=UNCHANGED\n",
++            witness.project_id,
++            witness.trace_id,
++            witness.context_sha256,
++            request_sha256,
++            "44".repeat(32),
++            "55".repeat(32),
++            "66".repeat(32),
++        );
++        assert!(validate_project_workspace_response(
++            &line,
++            &witness,
++            &request_sha256,
++        ).is_ok());
++    }
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++enum ProjectRouteMode {
++    Workspace,
++    LegacyScientific,
+ }
+ 
+ /// Porta runtime e Light-it për projektet e përdoruesit.
+ ///
+-/// `light-platform --project-route-once REQUEST RESPONSE`
+-///
+-/// Përgjigjja dëshmon vetëm se projekti u regjistrua APUPK dhe u dërgua në
+-/// Quantum nën GCL. Novel mund të shpallet vetëm më vonë nga Shadow supreme.
++/// - `--project-route-once`: magazinë + bisedë, pa procedim të plotë;
++/// - `--project-route-legacy-once`: rruga shkencore ekzistuese v1.6.4.
+ pub fn dispatch_project_route(args: &[String]) -> Option<i32> {
+-    match args {
+-        [_, flag, request_path, response_path] if flag == "--project-route-once" => {
+-            Some(match run_project_route(Path::new(request_path), Path::new(response_path)) {
+-                Ok(()) => 0,
+-                Err(error) => {
+-                    eprintln!("[LIGHT PROJECT/GCL] {error}");
+-                    70
+-                }
+-            })
+-        }
++    let selected = match args {
++        [_, flag, request_path, response_path] if flag == "--project-route-once" => Some((
++            ProjectRouteMode::Workspace,
++            Path::new(request_path),
++            Path::new(response_path),
++        )),
++        [_, flag, request_path, response_path] if flag == "--project-route-legacy-once" => Some((
++            ProjectRouteMode::LegacyScientific,
++            Path::new(request_path),
++            Path::new(response_path),
++        )),
+         [_, flag, ..] if flag.starts_with("--project-route") => {
+             eprintln!("[LIGHT PROJECT/GCL] argumente të pavlefshme");
+-            Some(64)
++            return Some(64);
+         }
+         _ => None,
++    };
++    match selected {
++        Some((mode, request_path, response_path)) => Some(match run_project_route(
++            request_path,
++            response_path,
++            mode,
++        ) {
++            Ok(()) => 0,
++            Err(error) => {
++                eprintln!("[LIGHT PROJECT/GCL] {error}");
++                70
++            }
++        }),
++        None => None,
+     }
+ }
+ 
+-fn run_project_route(request_path: &Path, response_path: &Path) -> Result<(), String> {
++fn run_project_route(
++    request_path: &Path,
++    response_path: &Path,
++    mode: ProjectRouteMode,
++) -> Result<(), String> {
+     let bytes = std::fs::read(request_path)
+         .map_err(|e| format!("kërkesa e projektit s'u lexua: {e}"))?;
+     let request = shadow_contracts::decode_light_project_intake_request(&bytes)
+@@ -301,18 +440,35 @@
+             let files = request.files.iter()
+                 .map(|file| (file.kind, file.bytes.clone()))
+                 .collect::<Vec<_>>();
+-            match crate::sovereign_bridges::ApupkShadowBridge::route_scientific_project_under_gcl(
+-                &mut gate,
+-                &coordinator,
+-                project,
+-                &request.domain,
+-                &request.lang_code,
+-                &request.evolve_summary,
+-                &request.hypothesis,
+-                &request.assumptions,
+-                &request.documentation_description,
+-                &files,
+-            ) {
++            let route_result = match mode {
++                ProjectRouteMode::Workspace =>
++                    crate::sovereign_bridges::ApupkShadowBridge::route_project_workspace_under_gcl(
++                        &mut gate,
++                        &coordinator,
++                        project,
++                        &request.domain,
++                        &request.lang_code,
++                        &request.evolve_summary,
++                        &request.hypothesis,
++                        &request.assumptions,
++                        &request.documentation_description,
++                        &files,
++                    ),
++                ProjectRouteMode::LegacyScientific =>
++                    crate::sovereign_bridges::ApupkShadowBridge::route_scientific_project_under_gcl(
++                        &mut gate,
++                        &coordinator,
++                        project,
++                        &request.domain,
++                        &request.lang_code,
++                        &request.evolve_summary,
++                        &request.hypothesis,
++                        &request.assumptions,
++                        &request.documentation_description,
++                        &files,
++                    ),
++            };
++            match route_result {
+                 Ok(witness) => shadow_contracts::LightProjectIntakeResponseWire {
+                     accepted_into_gcl: true,
+                     reason_code: 0,
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/light/src/sovereign_bridges.rs v1.6.5_ess_mai/ess_mai/light/src/sovereign_bridges.rs
+--- v164_work/v1.6.4_ess_mai/ess_mai/light/src/sovereign_bridges.rs	2026-07-15 23:46:31.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/light/src/sovereign_bridges.rs	2026-07-16 05:24:35.380559171 +0000
+@@ -107,9 +107,43 @@
+         crate::project_process_bridge::register_project(request)
+     }
+ 
+-    /// route_scientific_project_under_gcl — rrjedha e vetme Light për një
+-    /// projekt shkencor: APUPK identity → Shadow witness → Quantum input.
+-    /// Nuk jep akses në magazinën Shadow dhe nuk prodhon verdict në Light.
++    /// v1.6.5 — rruga default e magazinës/bisedës së projektit.
++    /// APUPK dhe Vula 500 mbeten identike; Quantum vetëm orienton workspace-in
++    /// dhe nuk aktivizon procedimin e plotë shkencor.
++    #[allow(clippy::too_many_arguments)]
++    pub fn route_project_workspace_under_gcl(
++        gate: &mut SovereignGate,
++        coordinator: &ApupkCoordinator,
++        project: ProjectUpload,
++        domain: &str,
++        lang_code: &str,
++        evolve_summary: &str,
++        hypothesis: &str,
++        assumptions: &[String],
++        documentation_description: &str,
++        files: &[(u8, Vec<u8>)],
++    ) -> Result<shadow_contracts::ProjectContextWitnessWire, String> {
++        let (witness, quantum_payload) = Self::prepare_project_handoff_under_gcl(
++            gate,
++            coordinator,
++            project,
++            domain,
++            lang_code,
++            evolve_summary,
++            hypothesis,
++            assumptions,
++            documentation_description,
++            files,
++        )?;
++        crate::project_process_bridge::orient_project_workspace_with_quantum_main(
++            quantum_payload, &witness,
++        ).map_err(|e| format!("Light→Quantum Project Workspace handoff dështoi: {e}"))?;
++        Ok(witness)
++    }
++
++    /// Rruga legacy e v1.6.4: APUPK identity → Shadow witness → Quantum
++    /// procedim i plotë shkencor. Mbahet e ndarë dhe nuk ndryshohet nga porta
++    /// e re e magazinimit/bisedës.
+     #[allow(clippy::too_many_arguments)]
+     pub fn route_scientific_project_under_gcl(
+         gate: &mut SovereignGate,
+@@ -123,6 +157,37 @@
+         documentation_description: &str,
+         files: &[(u8, Vec<u8>)],
+     ) -> Result<shadow_contracts::ProjectContextWitnessWire, String> {
++        let (witness, quantum_payload) = Self::prepare_project_handoff_under_gcl(
++            gate,
++            coordinator,
++            project,
++            domain,
++            lang_code,
++            evolve_summary,
++            hypothesis,
++            assumptions,
++            documentation_description,
++            files,
++        )?;
++        crate::project_process_bridge::execute_project_with_quantum_main(
++            quantum_payload, &witness,
++        ).map_err(|e| format!("Light→Quantum main project handoff dështoi: {e}"))?;
++        Ok(witness)
++    }
++
++    #[allow(clippy::too_many_arguments)]
++    fn prepare_project_handoff_under_gcl(
++        gate: &mut SovereignGate,
++        coordinator: &ApupkCoordinator,
++        project: ProjectUpload,
++        domain: &str,
++        lang_code: &str,
++        evolve_summary: &str,
++        hypothesis: &str,
++        assumptions: &[String],
++        documentation_description: &str,
++        files: &[(u8, Vec<u8>)],
++    ) -> Result<(shadow_contracts::ProjectContextWitnessWire, String), String> {
+         let project_title = project.project_name.clone();
+         let project_content = project.content.clone();
+         let (package, transfer) = Self::prepare_sealed(gate, coordinator, project);
+@@ -136,6 +201,7 @@
+         }
+         // Light është pronari i kufirit kushtetues. UI nuk furnizon kontratë
+         // ose Vulë: ato derivojnë vetëm nga rrjedha APUPK dhe witness-i real.
++        // Domain-i mbetet V164 sepse v1.6.5 nuk ndryshon GCL/Living Trust.
+         let contract_id = "GCL:SCIENTIFIC_PROJECT:V164";
+         let lgc_seal = format!(
+             "LGC::C|flags:0x{:08X}", witness.light_sovereign_flags,
+@@ -156,10 +222,7 @@
+             documentation_description,
+             files,
+         );
+-        crate::project_process_bridge::execute_project_with_quantum_main(
+-            quantum_payload, &witness,
+-        ).map_err(|e| format!("Light→Quantum main project handoff dështoi: {e}"))?;
+-        Ok(witness)
++        Ok((witness, quantum_payload))
+     }
+ 
+     pub fn validate_at_shadow(
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml v1.6.5_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-15 23:46:31.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-16 05:25:20.277316382 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name = "nura-legacy-ui"
+-version = "1.6.4"
++version = "1.6.5"
+ description = "Nura Legacy (ESS-MAI) UI Shell — lidhet me Light"
+ authors = ["Gjata Legacy"]
+ edition = "2021"
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/light/ui/src-tauri/tauri.conf.json v1.6.5_ess_mai/ess_mai/light/ui/src-tauri/tauri.conf.json
+--- v164_work/v1.6.4_ess_mai/ess_mai/light/ui/src-tauri/tauri.conf.json	2026-07-15 23:59:45.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/light/ui/src-tauri/tauri.conf.json	2026-07-16 05:25:20.278345482 +0000
+@@ -1,7 +1,7 @@
+ {
+   "$schema": "https://schema.tauri.app/config/2",
+   "productName": "Nura Legacy",
+-  "version": "1.6.4",
++  "version": "1.6.5",
+   "identifier": "com.gjata.nura_legacy",
+   "build": {
+     "frontendDist": "../src"
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/quantum/Cargo.toml v1.6.5_ess_mai/ess_mai/quantum/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-16 05:25:20.274373543 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "quantum-platform"
+-version     = "1.6.4"
++version     = "1.6.5"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Quantum — zero if/else + orkestratori + SHA-256 + Digital Lab + NPRO/NPIM + Layer 2"
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/lib.rs v1.6.5_ess_mai/ess_mai/quantum/src/lib.rs
+--- v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/lib.rs	2026-07-15 23:51:17.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/quantum/src/lib.rs	2026-07-16 05:21:50.332758877 +0000
+@@ -22,6 +22,7 @@
+ pub mod pd_spine_contract; // v1.5.6: kontrata PD→Spine9→Layer1/2/3 e lidhur me continuum
+ pub mod living_trust_contract; // v1.6.4: Living Trust lidh projektin me SHA-256 të plotë
+ pub mod gcl_project_contract; // v1.6.4: GCL Scientific Project Continuum
++pub mod project_workspace_router; // v1.6.5: project-only storage/conversation orientation
+ 
+ // ── KUSHTETUTA + KONTROLLI (Teorite 52, 32, 35) ──────────────────────────
+ pub mod laws;        // 5 ligjet sovereign
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/main.rs v1.6.5_ess_mai/ess_mai/quantum/src/main.rs
+--- v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/main.rs	2026-07-15 23:55:43.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/quantum/src/main.rs	2026-07-16 05:22:15.813452996 +0000
+@@ -1506,6 +1506,81 @@
+ }
+ 
+ 
++
++/// v1.6.5 — porta e re Project Workspace.
++///
++/// Kjo rrugë vetëm orienton projektin drejt magazinimit/bisedës dhe prodhon
++/// identitete SHA-256 të rekordeve. Ajo nuk thërret `run`, nuk aktivizon PD/TRL
++/// dhe nuk hap ose krijon token. Rruga legacy `--project-process-once` mbetet
++/// e pandryshuar poshtë saj.
++fn dispatch_project_workspace_once(args: &[String]) -> Option<i32> {
++    match args {
++        [_, flag, request_path, response_path] if flag == "--project-workspace-once" => {
++            Some(match run_project_workspace_once(
++                std::path::Path::new(request_path),
++                std::path::Path::new(response_path),
++            ) {
++                Ok(()) => 0,
++                Err(error) => {
++                    eprintln!("[QUANTUM PROJECT WORKSPACE] {error}");
++                    70
++                }
++            })
++        }
++        [_, flag, ..] if flag.starts_with("--project-workspace") => {
++            eprintln!("[QUANTUM PROJECT WORKSPACE] argumente të pavlefshme");
++            Some(64)
++        }
++        _ => None,
++    }
++}
++
++fn run_project_workspace_once(
++    request_path: &std::path::Path,
++    response_path: &std::path::Path,
++) -> Result<(), String> {
++    let bytes = std::fs::read(request_path)
++        .map_err(|e| format!("project workspace request s'u lexua: {e}"))?;
++    let request_sha256 = quantum_lim::sovereign::sha256_hex(&bytes);
++    let request = shadow_contracts::decode_quantum_project_execution_request(&bytes)
++        .map_err(|e| format!("project workspace request u refuzua: {e}"))?;
++    let payload_sha256 = quantum_lim::sovereign::sha256_hex(request.payload.as_bytes());
++    let input = QuantumInput::deserialize(&request.payload)
++        .map_err(|e| format!("QuantumInput i project workspace u refuzua: {e:?}"))?;
++    let project = input.scientific_project.as_ref()
++        .ok_or_else(|| "project workspace request nuk mban ScientificProjectInput".to_string())?;
++    let request_matches = request.project_id != 0
++        && request.project_trace_id != 0
++        && request.payload_sha256 == payload_sha256
++        && request.project_id == project.context.project_id
++        && request.project_trace_id == project.context.trace_id
++        && request.project_context_sha256 == project.context.context_sha256;
++    match request_matches {
++        true => {}
++        false => return Err(
++            "project workspace request nuk lidhet me payload/APUPK witness".to_string(),
++        ),
++    }
++
++    let orientation = quantum_lim::project_workspace_router::orient(
++        quantum_lim::project_workspace_router::ProjectWorkspaceMaterial {
++            project_id: request.project_id,
++            project_trace_id: request.project_trace_id,
++            project_context_sha256: &request.project_context_sha256,
++            request_sha256: &request_sha256,
++            domain: &input.domain,
++            turn_text: &input.text,
++            title: &project.title,
++            hypothesis: &project.hypothesis,
++            assumptions: &project.assumptions,
++            description: &project.description,
++            files: &project.files,
++        },
++    ).map_err(|error| format!("project workspace orientation u refuzua: {error:?}"))?;
++
++    atomic_write_project_response(response_path, orientation.encode_line().as_bytes())
++}
++
+ fn dispatch_project_process_once(args: &[String]) -> Option<i32> {
+     match args {
+         [_, flag, request_path, response_path] if flag == "--project-process-once" => {
+@@ -1664,6 +1739,10 @@
+     }
+ 
+     let args: Vec<String> = std::env::args().collect();
++    match dispatch_project_workspace_once(&args) {
++        Some(code) => std::process::exit(code),
++        None => {}
++    }
+     match dispatch_project_process_once(&args) {
+         Some(code) => std::process::exit(code),
+         None => {}
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/project_workspace_router.rs v1.6.5_ess_mai/ess_mai/quantum/src/project_workspace_router.rs
+--- v164_work/v1.6.4_ess_mai/ess_mai/quantum/src/project_workspace_router.rs	1970-01-01 00:00:00.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/quantum/src/project_workspace_router.rs	2026-07-16 05:21:39.051561699 +0000
+@@ -0,0 +1,289 @@
++//! v1.6.5 — orientimi i izoluar i Project Workspace në Quantum.
++//!
++//! Kjo portë pranon vetëm një `ScientificProjectInput` të verifikuar nga
++//! Light/APUPK dhe prodhon orientim deterministik për:
++//! - magazinën e projektit;
++//! - bisedën e projektit;
++//! - ose të dyja bashkë.
++//!
++//! Kufiri është i qëllimshëm: moduli nuk ruan skedarë, nuk jep verdict,
++//! nuk aktivizon TRL/PD dhe nuk hap/krijon capability token. Rruga ekzistuese
++//! `--project-process-once` mbetet rruga legacy e procedimit shkencor GCL.
++
++use sha2::{Digest, Sha256};
++
++pub const PROJECT_WORKSPACE_VERSION: u32 = 0x0001_0605;
++pub const PROJECT_WORKSPACE_DOMAIN: &[u8] = b"ESS_MAI_QUANTUM_PROJECT_WORKSPACE_V165";
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++#[repr(u8)]
++pub enum ProjectWorkspaceRoute {
++    Storage = 1,
++    Conversation = 2,
++    StorageAndConversation = 3,
++}
++
++impl ProjectWorkspaceRoute {
++    pub const fn label(self) -> &'static str {
++        match self {
++            Self::Storage => "PROJECT_STORAGE",
++            Self::Conversation => "PROJECT_CONVERSATION",
++            Self::StorageAndConversation => "PROJECT_STORAGE_AND_CONVERSATION",
++        }
++    }
++}
++
++#[derive(Debug, Clone, Copy)]
++pub struct ProjectWorkspaceMaterial<'a> {
++    pub project_id: u64,
++    pub project_trace_id: u64,
++    pub project_context_sha256: &'a str,
++    pub request_sha256: &'a str,
++    pub domain: &'a str,
++    pub turn_text: &'a str,
++    pub title: &'a str,
++    pub hypothesis: &'a str,
++    pub assumptions: &'a [String],
++    pub description: &'a str,
++    pub files: &'a [(u8, Vec<u8>)],
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct ProjectWorkspaceOrientation {
++    pub route: ProjectWorkspaceRoute,
++    pub project_id: u64,
++    pub project_trace_id: u64,
++    pub project_context_sha256: String,
++    pub request_sha256: String,
++    pub workspace_sha256: String,
++    pub material_sha256: String,
++    pub conversation_turn_sha256: String,
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub enum ProjectWorkspaceError {
++    MissingProjectIdentity,
++    InvalidProjectContextSha256,
++    InvalidRequestSha256,
++    MissingProjectMaterial,
++}
++
++impl ProjectWorkspaceOrientation {
++    /// Wire i përgjigjes përmban vetëm identitete dhe orientim. Nuk ka token,
++    /// receipt ose verdict; `authority=NONE` është deklarim i kufirit.
++    pub fn encode_line(&self) -> String {
++        format!(
++            "ESSMAI_Q_PROJECT_WORKSPACE_V165|route={}|project_id={:016x}|project_trace_id={:016x}|project_context_sha256={}|request_sha256={}|workspace_sha256={}|material_sha256={}|conversation_turn_sha256={}|legacy_route=--project-process-once|authority=NONE|token_policy=UNCHANGED\n",
++            self.route.label(),
++            self.project_id,
++            self.project_trace_id,
++            self.project_context_sha256,
++            self.request_sha256,
++            self.workspace_sha256,
++            self.material_sha256,
++            self.conversation_turn_sha256,
++        )
++    }
++}
++
++pub fn orient(
++    material: ProjectWorkspaceMaterial<'_>,
++) -> Result<ProjectWorkspaceOrientation, ProjectWorkspaceError> {
++    match material.project_id != 0 && material.project_trace_id != 0 {
++        true => {}
++        false => return Err(ProjectWorkspaceError::MissingProjectIdentity),
++    }
++    match is_sha256(material.project_context_sha256) {
++        true => {}
++        false => return Err(ProjectWorkspaceError::InvalidProjectContextSha256),
++    }
++    match is_sha256(material.request_sha256) {
++        true => {}
++        false => return Err(ProjectWorkspaceError::InvalidRequestSha256),
++    }
++
++    let has_material = !material.title.trim().is_empty()
++        || !material.hypothesis.trim().is_empty()
++        || !material.description.trim().is_empty()
++        || !material.assumptions.is_empty()
++        || !material.files.is_empty();
++    let has_turn = !material.turn_text.trim().is_empty();
++    match has_material || has_turn {
++        true => {}
++        false => return Err(ProjectWorkspaceError::MissingProjectMaterial),
++    }
++
++    let route = route_from_domain_and_shape(material.domain, has_material, has_turn);
++    let workspace_sha256 = workspace_sha256(
++        material.project_id,
++        material.project_trace_id,
++        material.project_context_sha256,
++    );
++    let material_sha256 = project_material_sha256(&material);
++    let conversation_turn_sha256 = conversation_turn_sha256(&material, &workspace_sha256);
++
++    Ok(ProjectWorkspaceOrientation {
++        route,
++        project_id: material.project_id,
++        project_trace_id: material.project_trace_id,
++        project_context_sha256: material.project_context_sha256.to_ascii_lowercase(),
++        request_sha256: material.request_sha256.to_ascii_lowercase(),
++        workspace_sha256,
++        material_sha256,
++        conversation_turn_sha256,
++    })
++}
++
++fn route_from_domain_and_shape(
++    domain: &str,
++    has_material: bool,
++    has_turn: bool,
++) -> ProjectWorkspaceRoute {
++    let normalized = domain.trim().to_ascii_lowercase();
++    let explicit_storage = matches!(
++        normalized.as_str(),
++        "project-storage" | "project_store" | "project:store"
++    );
++    let explicit_conversation = matches!(
++        normalized.as_str(),
++        "project-conversation" | "project-chat" | "project:chat"
++    );
++    let explicit_both = matches!(
++        normalized.as_str(),
++        "project-workspace" | "project-storage-chat" | "project:workspace"
++    );
++
++    match (
++        explicit_both,
++        explicit_storage,
++        explicit_conversation,
++        has_material,
++        has_turn,
++    ) {
++        (true, _, _, _, _) => ProjectWorkspaceRoute::StorageAndConversation,
++        (false, true, _, _, _) => ProjectWorkspaceRoute::Storage,
++        (false, false, true, _, _) => ProjectWorkspaceRoute::Conversation,
++        (false, false, false, true, true) => ProjectWorkspaceRoute::StorageAndConversation,
++        (false, false, false, true, false) => ProjectWorkspaceRoute::Storage,
++        (false, false, false, false, true) => ProjectWorkspaceRoute::Conversation,
++        (false, false, false, false, false) => ProjectWorkspaceRoute::Conversation,
++    }
++}
++
++fn workspace_sha256(
++    project_id: u64,
++    project_trace_id: u64,
++    project_context_sha256: &str,
++) -> String {
++    let mut h = Sha256::new();
++    h.update(PROJECT_WORKSPACE_DOMAIN);
++    h.update(PROJECT_WORKSPACE_VERSION.to_le_bytes());
++    h.update(b"WORKSPACE_ID");
++    h.update(project_id.to_le_bytes());
++    h.update(project_trace_id.to_le_bytes());
++    update_text(&mut h, &project_context_sha256.to_ascii_lowercase());
++    hex(&h.finalize())
++}
++
++fn project_material_sha256(material: &ProjectWorkspaceMaterial<'_>) -> String {
++    let mut h = Sha256::new();
++    h.update(PROJECT_WORKSPACE_DOMAIN);
++    h.update(PROJECT_WORKSPACE_VERSION.to_le_bytes());
++    h.update(b"PROJECT_MATERIAL");
++    update_text(&mut h, material.title);
++    update_text(&mut h, material.hypothesis);
++    h.update((material.assumptions.len() as u64).to_le_bytes());
++    for assumption in material.assumptions {
++        update_text(&mut h, assumption);
++    }
++    update_text(&mut h, material.description);
++    h.update((material.files.len() as u64).to_le_bytes());
++    for (kind, bytes) in material.files {
++        h.update([*kind]);
++        h.update((bytes.len() as u64).to_le_bytes());
++        h.update(bytes);
++    }
++    hex(&h.finalize())
++}
++
++fn conversation_turn_sha256(
++    material: &ProjectWorkspaceMaterial<'_>,
++    workspace_sha256: &str,
++) -> String {
++    let mut h = Sha256::new();
++    h.update(PROJECT_WORKSPACE_DOMAIN);
++    h.update(PROJECT_WORKSPACE_VERSION.to_le_bytes());
++    h.update(b"PROJECT_CONVERSATION_TURN");
++    update_text(&mut h, workspace_sha256);
++    update_text(&mut h, material.domain);
++    update_text(&mut h, material.turn_text);
++    hex(&h.finalize())
++}
++
++fn is_sha256(value: &str) -> bool {
++    value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
++}
++
++fn update_text(h: &mut Sha256, value: &str) {
++    h.update((value.len() as u64).to_le_bytes());
++    h.update(value.as_bytes());
++}
++
++fn hex(bytes: &[u8]) -> String {
++    const HEX: &[u8; 16] = b"0123456789abcdef";
++    let mut out = String::with_capacity(bytes.len() * 2);
++    for byte in bytes {
++        out.push(HEX[(byte >> 4) as usize] as char);
++        out.push(HEX[(byte & 0x0F) as usize] as char);
++    }
++    out
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn material<'a>(domain: &'a str, turn_text: &'a str) -> ProjectWorkspaceMaterial<'a> {
++        ProjectWorkspaceMaterial {
++            project_id: 77,
++            project_trace_id: 88,
++            project_context_sha256: "aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11aa11",
++            request_sha256: "bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22bb22",
++            domain,
++            turn_text,
++            title: "Project NURA",
++            hypothesis: "A mund të mbahet konteksti i projektit i ndarë?",
++            assumptions: &[],
++            description: "Material i projektit",
++            files: &[],
++        }
++    }
++
++    #[test]
++    fn project_workspace_orients_without_authority_fields() {
++        let result = orient(material("project-workspace", "vazhdo bisedën"))
++            .expect("project workspace duhet të orientohet");
++        assert_eq!(result.route, ProjectWorkspaceRoute::StorageAndConversation);
++        let line = result.encode_line();
++        assert!(line.contains("authority=NONE"));
++        assert!(line.contains("token_policy=UNCHANGED"));
++        assert!(line.contains("legacy_route=--project-process-once"));
++        assert!(!line.to_ascii_lowercase().contains("lgctoken"));
++    }
++
++    #[test]
++    fn explicit_chat_stays_project_conversation_only() {
++        let result = orient(material("project-chat", "çfarë ndryshoi në projekt?"))
++            .expect("project chat duhet të orientohet");
++        assert_eq!(result.route, ProjectWorkspaceRoute::Conversation);
++    }
++
++    #[test]
++    fn same_input_produces_same_record_hashes() {
++        let first = orient(material("project-storage", "")).expect("first");
++        let second = orient(material("project-storage", "")).expect("second");
++        assert_eq!(first.workspace_sha256, second.workspace_sha256);
++        assert_eq!(first.material_sha256, second.material_sha256);
++        assert_eq!(first.conversation_turn_sha256, second.conversation_turn_sha256);
++    }
++}
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/shadow/Cargo.toml v1.6.5_ess_mai/ess_mai/shadow/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-16 05:25:20.275258915 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name    = "shadow_platform"
+-version = "1.6.4"
++version = "1.6.5"
+ edition = "2021"
+ autolib = false
+ autotests = false   # testi historik përfshihet nga main.rs si modul binar
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/shadow-contracts/Cargo.toml v1.6.5_ess_mai/ess_mai/shadow-contracts/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/shadow-contracts/Cargo.toml	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/shadow-contracts/Cargo.toml	2026-07-16 05:25:20.275913218 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name = "shadow_contracts"
+-version = "1.6.4"
++version = "1.6.5"
+ edition = "2021"
+ authors = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI public wire contracts for mediated Shadow process communication"
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/ui/Cargo.toml v1.6.5_ess_mai/ess_mai/ui/Cargo.toml
+--- v164_work/v1.6.4_ess_mai/ess_mai/ui/Cargo.toml	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/ui/Cargo.toml	2026-07-16 05:25:20.276641759 +0000
+@@ -5,7 +5,7 @@
+ # ═══════════════════════════════════════════════════════════════════════════
+ [package]
+ name    = "essmai_ui"
+-version = "1.6.4"
++version = "1.6.5"
+ edition = "2021"
+ 
+ # Shkëputja nga workspace-i i rrënjës — UI ndërtohet i pavarur.
+diff -ruN '--exclude=ESS_MAI_V1_6_4_FILELIST.sha256' '--exclude=ESS_MAI_V1_6_5_FILELIST.sha256' '--exclude=V1_6_5_FROM_V1_6_4.diff' v164_work/v1.6.4_ess_mai/ess_mai/ui/tauri.conf.json v1.6.5_ess_mai/ess_mai/ui/tauri.conf.json
+--- v164_work/v1.6.4_ess_mai/ess_mai/ui/tauri.conf.json	2026-07-15 23:46:11.000000000 +0000
++++ v1.6.5_ess_mai/ess_mai/ui/tauri.conf.json	2026-07-16 05:25:20.277816004 +0000
+@@ -1,7 +1,7 @@
+ {
+   "$schema": "https://schema.tauri.app/config/2",
+   "productName": "Nura Legacy",
+-  "version": "1.6.4",
++  "version": "1.6.5",
+   "identifier": "com.gjatalegacy.essmai.nura",
+   "build": {
+     "frontendDist": "dist"

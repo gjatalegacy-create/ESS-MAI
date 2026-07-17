@@ -1,0 +1,17 @@
+[package]
+name = "nura-legacy-ui"
+version = "1.6.5"
+description = "Nura Legacy (ESS-MAI) UI Shell — lidhet me Light"
+authors = ["Gjata Legacy"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+shadow_contracts = { path = "../../../shadow-contracts" }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

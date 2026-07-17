@@ -1,0 +1,4093 @@
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/AUDIT_V161_GCL_LIVING_TRUST.md /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/AUDIT_V161_GCL_LIVING_TRUST.md
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/AUDIT_V161_GCL_LIVING_TRUST.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/AUDIT_V161_GCL_LIVING_TRUST.md	2026-07-15 09:38:04.882558432 +0000
+@@ -0,0 +1,105 @@
++# Audit — ESS-MAI v1.6.1 GCL Living Trust
++
++## Objective
++
++Të provohet se paradigma “konvergjencë e lehtë → një SHA-256 në verdikt →
++Besim i shkallëzuar → farë e ciklit tjetër” është implementuar pa krijuar
++autoritet paralel ndaj GCL, Spine 9, Shadow ose PD.
++
++## Zbulimet reale të baseline v1.6.0
++
++1. `runtime_pulse` ruante READY/NOT_READY, por jo konvergjencën e aksioneve.
++2. L-500 ekzistonte në kernel dhe në test, por nuk hynte në identitetin e
++   verdiktit sovran.
++3. `SupremeVerdict` nuk prodhonte një SHA-256 të të gjithë proof-it.
++4. Quantum dhe Light nuk kishin kontratë byte-identike për rillogaritjen ×3.
++5. `VerificationReceipt` nuk lidhej me një identitet Besimi.
++6. iZ dhe `next_i0` nuk bartnin forcën/identitetin e Besimit.
++
++## Implementimi i verifikuar statikisht
++
++### Faza 1
++
++- `ACTION_STATE` fillon zero në çdo cikël.
++- PRO, NPRO, NPIM, PIM, APRO dhe MPRO thërrasin `mark_action` vetëm pasi
++  prodhojnë evidencën e tyre reale.
++- Konvergjenca përdor vetëm rotate/XOR/wrapping-add; nuk thërret SHA-256.
++
++### Faza 2
++
++- Të dyja daljet e `judge_supreme` kalojnë te `seal_living_trust`.
++- `LivingTrustProof::is_admissible()` kërkon action state, ligje, flags,
++  vlerën 500 dhe çift kushtetues.
++- `Sha256::digest` thirret një herë nga `compute_with_intensity` për një proof.
++- Intensiteti nuk hyn në SHA-256; ai lidhet më pas në `identity_digest`.
++
++### L-500
++
++- Konstantet private ekzistuese të Shadow krahasohen me kontratën ×3.
++- Vlera runtime llogaritet me `(flags & MASK) ^ XOR`.
++- Vetëm rezultati `500` është i pranueshëm.
++
++### ×3
++
++- Light, Quantum dhe Shadow mbajnë kontratë byte-identike.
++- Shadow prodhon; Quantum dhe Light rillogarisin.
++- SHA-256, intensiteti, kind dhe value500 krahasohen veçmas.
++
++### Receipt, iZ dhe next-i0
++
++- `receipt_id` përfshin `living_trust_digest`.
++- `PdVerificationCompletion` përfshin proof-in e Besimit.
++- `PdIzCompletion` dhe `PdNextI0` bartin SHA-256, intensitet, kind dhe digest.
++- Materiali i iZ hash-ohet me SHA-256 dhe lidhet me output/continuum/Trust.
++
++## Kryqëzimet e audituara
++
++### GCL ↔ Spine 9
++
++Nuk u krijua kryqëzim autoritetesh. Trust lind pas verdiktit Shadow; Layers
++mbeten thellim i procesit GCL dhe material i evidencës.
++
++### Shadow final ↔ Legacy Shadow
++
++Nuk u bashkuan. Final Shadow prodhon Trust për ciklin; Legacy Shadow vazhdon të
++vëzhgojë afrimin e primitivëve drejt Legacy.
++
++### Shadow ↔ Quantum
++
++Complete mediation ruhet. Quantum njeh wire proof, jo Shadow core.
++
++### Quantum ↔ Light
++
++Light nuk i beson handoff-it. Ai rillogarit Trust, receipt, output, iZ dhe
++continuum para dorëzimit.
++
++## Shkëputjet e mbyllura
++
++- action convergence → final evidence;
++- L-500 → supreme verdict;
++- supreme verdict → SHA-256 identity;
++- Shadow Trust → sovereign receipt;
++- receipt/Trust → PD completion;
++- Trust → iZ → next-i0;
++- Quantum Trust → Light replay;
++- Light replay → Nura dhe UI emocionale.
++
++## Kufijtë ku u ndal implementimi
++
++1. Nuk u shtua cipher konfidencial, sepse mungon kontrata e çelësave.
++2. Nuk u persistua vula si Knowledge state; kjo do të ndryshonte paradigmën.
++3. Nuk u ndryshua algoritmi i `legacy_score`; u përdor formula ekzistuese e
++   provuar me peshat 0.25/0.20/0.25/0.15/0.15.
++4. Nuk u bë Shadow të rigjenerojë evidencat e Quantum; ai i verifikon ato.
++
++## Verification status
++
++```text
++Rust files parsed:        273
++Rust syntax errors:       0
++Receipt call arity:       25/25 with 11 arguments
++TOML parse errors:        0 across 7 manifests
++Architecture checks:     81 PASS / 0 FAIL
++Contract byte identity:  PASS ×3
++Cargo build/test/clippy:  PENDING Windows GNU
++```
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/CHANGED_FILES_V161.txt /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/CHANGED_FILES_V161.txt
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/CHANGED_FILES_V161.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/CHANGED_FILES_V161.txt	2026-07-15 09:38:41.516756200 +0000
+@@ -0,0 +1,47 @@
++AUDIT_V161_GCL_LIVING_TRUST.md
++CHANGELOG_v1.6.1.md
++ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md
++STATIC_AUDIT_V161.txt
++V161_SIMULATION_MAP.md
++VALIDATE_V161.ps1
++VERSION_ESSMAI.txt
++ess-mai.md
++light/Cargo.toml
++light/src/lab_contracts/verification_receipt.rs
++light/src/living_trust_contract.rs
++light/src/main.rs
++light/src/pd_continuum_contract.rs
++light/src/pd_light.rs
++light/ui/src-tauri/Cargo.toml
++quantum/Cargo.toml
++quantum/src/bridge_shadow/mod.rs
++quantum/src/lab_contracts/verification_receipt.rs
++quantum/src/lib.rs
++quantum/src/living_trust_contract.rs
++quantum/src/main.rs
++quantum/src/pd_continuum_contract.rs
++quantum/src/progressive_debatic/runtime.rs
++quantum/src/progressive_debatic/types.rs
++quantum/src/runtime_pulse.rs
++quantum/src/shadow_process_bridge.rs
++shadow-contracts/Cargo.toml
++shadow-contracts/src/lib.rs
++shadow/Cargo.toml
++shadow/src/bridge/mod.rs
++shadow/src/bridge/quantum_in.rs
++shadow/src/bridge/shadow_callable.rs
++shadow/src/bridge/shadow_out.rs
++shadow/src/lab_contracts/verification_receipt.rs
++shadow/src/lib.rs
++shadow/src/living_trust_contract.rs
++shadow/src/main.rs
++shadow/src/pd_continuum_contract.rs
++shadow/src/process_bridge.rs
++shadow/src/shadow_gateway.rs
++shadow/src/shadow_gj_legacy.rs
++shadow/src/sovereign_ffi_gate.rs
++shadow/src/types.rs
++shadow/tests/integration.rs
++ui/Cargo.toml
++V1_6_1_FROM_V1_6_0.diff
++ESS_MAI_V1_6_1_FILELIST.sha256
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/CHANGELOG_v1.6.1.md /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/CHANGELOG_v1.6.1.md
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/CHANGELOG_v1.6.1.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/CHANGELOG_v1.6.1.md	2026-07-15 09:32:10.214838750 +0000
+@@ -0,0 +1,75 @@
++# ESS-MAI v1.6.1 — GCL Vula e Gjallë e Besimit
++
++## Baseline
++
++`v1.6.0_ess_mai`
++
++## Scope
++
++Ky version nuk zgjeron veçoritë e sistemit. Ai mbyll kontratën ekzekutive të
++Besimit pas verdiktit suprem, duke ruajtur hierarkinë:
++
++```text
++Royal Intelligent Systems (RIS)
++        ↓
++NurAtomic Architecture
++        ↓
++ESS-MAI / GCL
++```
++
++## Ndryshimet e implementuara
++
++1. U shtua kontrata byte-identike `living_trust_contract.rs` në Light, Quantum
++   dhe Shadow.
++2. Faza 1 e Besimit përdor `runtime_pulse::ACTION_STATE`: konvergjencë e lehtë
++   me rotacion, XOR dhe mbledhje wrapping; zero SHA-256 gjatë ciklit.
++3. PRO, NPRO, NPIM, PIM, APRO dhe MPRO derdhin aksionet e tyre reale në të
++   njëjtën gjendje konvergjence.
++4. Shadow `judge_supreme` prodhon pulsin e vetëm SHA-256 mbi:
++   - `action_state`;
++   - çiftin kushtetues `verified/primitive`;
++   - `knowledge_band`;
++   - `lgc_law` dhe bitet Legacy;
++   - vulën e 10 ligjeve aktive;
++   - provën runtime L-500.
++5. Konstantet ekzistuese `SGL_SEAL_XOR`, `SGL_SEAL_MASK` dhe
++   `SGL_SEAL_PRIMITIVE` përdoren në rrjedhën reale të verdiktit.
++6. Llojet e Besimit:
++   - `(1,1)` → Besim ndërtimi;
++   - `(0,0)` → Besim rigoroziteti negativ;
++   - çift i përzier → pa Besim dhe pa finalizim PD.
++7. Intensiteti fixed-point `0..10000` rrjedh nga `legacy_score`; ai është forca
++   pranë identitetit 32-byte, jo pjesë e materialit të SHA-256.
++8. Shadow, Quantum dhe Light e rillogarisin të njëjtën vulë 32-byte. Çdo
++   mospërputhje refuzohet fail-closed.
++9. `VerificationReceipt` u zgjerua me `living_trust_digest`, duke lidhur
++   identitetin, intensitetin, llojin dhe L-500 me receipt-in sovran.
++10. PD Quantum bart Besimin te `PdVerificationCompletion`, `PdIzCompletion` dhe
++    `PdNextI0`; iZ fiton SHA-256 të vet mbi output + vazhdimësi + Besim.
++11. PD Light e rillogarit vulën dhe receipt-in para se t'ia dorëzojë iZ Nura-s
++    dhe UI-së emocionale.
++12. Wire Shadow u ngrit në `PROTOCOL_VERSION = 3` dhe përmban materialin e
++    nevojshëm për verifikimin ×3.
++13. Complete mediation e v1.5.9 ruhet: Quantum nuk linkon Shadow core; Shadow
++    `main.rs` mbetet kushti i domosdoshëm.
++
++## Kufijtë e pandryshuar
++
++- Layer 1/2/3 mbeten thellim i procesit GCL, jo autoritet paralel.
++- PD Light mbetet korrier kontekstual, jo procesues i Spine 9.
++- Legacy Shadow mbetet vëzhgues i vazhdueshëm, jo dublikatë e verdiktit final.
++- Vula nuk persiston si objekt i pavarur në Knowledge Vault. Ajo kalon vetëm në
++  transportin e ndërmjetësuar dhe si farë e iZ/next-i0.
++- Nuk u shpik enkriptim konfidencial pa kontratë çelësash, rotacioni, revokimi
++  dhe autoritet ruajtjeje.
++
++## Statusi
++
++```text
++Theory:                COMPLETE_AS_DESIGN
++Contract:              IMPLEMENTED
++Runtime paths:          IMPLEMENTED
++Static verification:   PASSED
++Cargo check/test:       PENDING_WINDOWS_GNU
++Release:                PACKAGED_FOR_EXECUTIVE_VERIFICATION
++```
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md	2026-07-15 09:32:10.230643852 +0000
+@@ -0,0 +1,63 @@
++# ESS-MAI v1.6.1 — Implementation Map
++
++## Theory → Contract → Implementation → Runtime → Verification → Evidence
++
++| Hallka | Implementimi |
++|---|---|
++| Theory | GCL — Vula e Gjallë e Besimit |
++| Contract | `living_trust_contract.rs` byte-identik ×3 |
++| Phase 1 | `quantum/src/runtime_pulse.rs` |
++| Module actions | `quantum/src/main.rs` PRO/NPRO/NPIM/PIM/APRO/MPRO |
++| Final package | `shadow-contracts/src/lib.rs::FinalEvidenceWire` |
++| Supreme pulse | `shadow/src/shadow_gj_legacy.rs::seal_living_trust` |
++| L-500 runtime | `shadow/src/shadow_gj_legacy.rs` + contract constants |
++| Shadow transport | `ShadowVerdictWire` protocol v3 |
++| Sovereign binding | `VerificationReceipt::living_trust_digest` |
++| Quantum replay | `quantum/src/main.rs` |
++| PD binding | `progressive_debatic/{types,runtime}.rs` |
++| iZ/next-i0 | `pd_continuum_contract.rs` + PD runtime |
++| Light replay | `light/src/pd_light.rs` |
++| User delivery | Nura + Old Emotional UI → New UI |
++| Documentation | `ess-mai.md` + v1.6.1 evidence files |
++
++## Trust proof
++
++```text
++proof = action_state
++      || verified || primitive || knowledge_band
++      || lgc_law || legacy_bits(lgc_law)
++      || system_laws_seal(SYSTEM_LAWS)
++      || sovereign_flags || sovereign_value_500
++```
++
++```text
++identity_sha256 = SHA256("GCL_LIVING_TRUST_V161" || version || proof)
++intensity       = round(clamp(legacy_score,0,1) × 10000)
++kind            = pair(verified,primitive)
++trust_digest    = FNV64(identity_sha256 || intensity || kind || value500 || domain)
++```
++
++SHA-256 është identiteti i Besimit. `trust_digest` nuk e zëvendëson SHA-256; ai
++është lidhje kompakte për kontratat ekzistuese receipt/iZ.
++
++## Cross-platform map
++
++```text
++SHADOW
++SupremeVerdict → SHA256(proof) → LivingTrustSeal
++                         ↓ wire protocol v3
++QUANTUM
++recompute SHA256(proof) → compare → bind receipt → PD/iZ/next_i0
++                         ↓ handoff + CRC
++LIGHT
++recompute SHA256(proof) → recompute receipt/iZ → Nura || emotional UI
++```
++
++## Separation preserved
++
++- GCL governs all Layers.
++- Spine 9 deepens processing; it does not create the seal.
++- Shadow alone creates the sovereign verdict.
++- Quantum and Light only replay and verify the proof.
++- PD Light is courier only.
++- Legacy Shadow remains continuous observer.
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/STATIC_AUDIT_V161.txt /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/STATIC_AUDIT_V161.txt
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/STATIC_AUDIT_V161.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/STATIC_AUDIT_V161.txt	2026-07-15 09:38:03.534618854 +0000
+@@ -0,0 +1,93 @@
++ESS-MAI v1.6.1 — STATIC AUDIT
++Baseline: v1.6.0
++Generated: 2026-07-15 09:38:03 UTC
++
++RUST_FILES=273
++TOML_FILES=7
++RECEIPT_CALLS=25
++CHECKS=81
++PASS=81
++FAIL=0
++PASS | Rust files parsed | 273
++PASS | Rust syntax errors = 0 | []
++PASS | receipt_id calls exist | 25
++PASS | all receipt_id calls have 11 args | []
++PASS | TOML parse errors = 0 | []
++PASS | light/Cargo.toml version 1.6.1
++PASS | quantum/Cargo.toml version 1.6.1
++PASS | shadow/Cargo.toml version 1.6.1
++PASS | shadow-contracts/Cargo.toml version 1.6.1
++PASS | ui/Cargo.toml version 1.6.1
++PASS | light/ui/src-tauri/Cargo.toml version 1.6.1
++PASS | VERSION marker 1.6.1
++PASS | Living Trust byte-identical ×3 | 96c1273b85bfab8843e6416e67f6edab21ea0939e4b8b26d9e9ddde475579c44
++PASS | Verification Receipt byte-identical ×3 | 845712f1b645049a306175f8b556f9332608806c75853be18cf0ab7d6a13b46e
++PASS | PD Continuum byte-identical ×3 | 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
++PASS | PD Spine byte-identical ×3 | 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
++PASS | GCL Law byte-identical ×3 | 629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b
++PASS | Shadow autolib false
++PASS | Shadow has no [lib]
++PASS | Shadow has no rlib/staticlib
++PASS | Quantum depends on shadow-contracts
++PASS | Quantum has no direct Shadow core dependency
++PASS | Quantum source has no shadow_lib/core call
++PASS | E0521 static source contract
++PASS | Shadow main includes core
++PASS | Shadow main dispatches process bridge
++PASS | ACTION_STATE exists
++PASS | ACTION_STATE reset per cycle
++PASS | Phase 1 no SHA256
++PASS | Phase 1 rotate/XOR/add
++PASS | Pro calls mark_action
++PASS | Npro calls mark_action
++PASS | Npim calls mark_action
++PASS | Pim calls mark_action
++PASS | Apro calls mark_action
++PASS | Mpro calls mark_action
++PASS | action_state enters final evidence
++PASS | one SHA256 call in Trust contract | 1
++PASS | Trust SHA includes action_state
++PASS | Trust SHA includes verdict pair/band/law
++PASS | Trust SHA includes system laws + L500 proof
++PASS | Trust SHA excludes intensity
++PASS | Trust binding digest includes intensity/kind/value
++PASS | Trust rejects non-finite legacy score
++PASS | Constructive and rigorous negative kinds
++PASS | Both judge exits pass through Trust seal | 2
++PASS | SGL_SEAL_XOR runtime-live | 5
++PASS | SGL_SEAL_MASK runtime-live | 5
++PASS | SGL_SEAL_PRIMITIVE runtime-live | 5
++PASS | L500 runtime equality to 500
++PASS | legacy_score weighted formula preserved
++PASS | Wire protocol v3
++PASS | Wire carries living_trust_action_state
++PASS | Wire carries living_trust_system_laws_seal
++PASS | Wire carries living_trust_sovereign_flags
++PASS | Wire carries living_trust_sovereign_value
++PASS | Wire carries living_trust_sha256
++PASS | Wire carries living_trust_intensity
++PASS | Wire carries living_trust_kind
++PASS | Wire carries living_trust_digest
++PASS | light/src/lab_contracts/verification_receipt.rs receipt binds Trust
++PASS | quantum/src/lab_contracts/verification_receipt.rs receipt binds Trust
++PASS | shadow/src/lab_contracts/verification_receipt.rs receipt binds Trust
++PASS | Shadow receipt constructs Trust digest
++PASS | Quantum checks receipt Trust digest
++PASS | PD types carry full Trust SHA
++PASS | PD runtime binds Trust digest
++PASS | iZ contract has Trust domain
++PASS | next_i0 carries Trust
++PASS | Light recomputes Trust
++PASS | Light recomputes receipt
++PASS | Handoff schema is 35+CRC
++PASS | Trust not persisted in KnowledgeVault
++PASS | ess-mai v1.6.1 evolution documented
++PASS | parallel ess_mai.md exists
++PASS | parallel ess_mai.md byte-identical
++PASS | CHANGELOG_v1.6.1.md exists
++PASS | AUDIT_V161_GCL_LIVING_TRUST.md exists
++PASS | V161_SIMULATION_MAP.md exists
++PASS | ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md exists
++PASS | VALIDATE_V161.ps1 exists
++
++CARGO_STATUS=PENDING (cargo/rustc/rustfmt unavailable in packaging environment)
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/V161_SIMULATION_MAP.md /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/V161_SIMULATION_MAP.md
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/V161_SIMULATION_MAP.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/V161_SIMULATION_MAP.md	2026-07-15 09:32:10.222917571 +0000
+@@ -0,0 +1,134 @@
++# ESS-MAI v1.6.1 — Harta e stimulimit të Vulës së Gjallë
++
++## Modeli i stimuluar
++
++```text
++Mosbesim / no seal
++  ↓
++PRO ─┐
++NPRO ├─ rotacion + XOR + wrapping-add → action_state
++NPIM ┤
++PIM  ┤        (zero SHA-256)
++APRO ┤
++MPRO ┘
++  ↓
++PIM + NPIM + MPRO final evidence
++  ↓
++Shadow main.rs complete mediation
++  ↓
++Shadow verifikon evidencat, X/Y, GCL, Spine dhe L-500
++  ↓
++SupremeVerdict
++  ↓
++ONE SHA-256 per platform mbi të njëjtin proof
++  ├─ Shadow: prodhon
++  ├─ Quantum: rillogarit
++  └─ Light: rillogarit
++  ↓
++32-byte identity + fixed-point intensity + trust kind
++  ↓
++VerificationReceipt
++  ↓
++PD Quantum: output + iZ + Trust → next i0
++  ↓
++PD Light courier → Nura || Old Emotional UI → New UI
++```
++
++## Skenarët
++
++### S1 — Besim ndërtimi
++
++```text
++verified=1, primitive=1
++L-500=500
++all system laws seal nonzero
++action_state nonzero
++legacy_score finite
++```
++
++Pritja:
++
++- Shadow prodhon `TRUST_KIND_CONSTRUCTIVE`;
++- Quantum prodhon të njëjtin SHA-256 dhe intensitet;
++- receipt lidhet me `living_trust_digest`;
++- PD finalizon `Released`;
++- iZ dhe `next_i0` bartin farën e Besimit.
++
++### S2 — Besim rigoroziteti negativ
++
++```text
++verified=0, primitive=0
++L-500=500
++negative evidence verified and persisted
++action_state nonzero
++```
++
++Pritja:
++
++- Shadow prodhon `TRUST_KIND_RIGOROUS_NEGATIVE`;
++- negativa ruhet si aset;
++- PD finalizon vetëm pasi ruajtja negative është provuar;
++- `next_i0` lind si `RebuiltFromNegative`.
++
++### S3 — Çift kushtetues i përzier
++
++```text
++(verified, primitive) ∈ {(1,0),(0,1)}
++```
++
++Pritja:
++
++- `constitutional_kind = NONE`;
++- nuk lind Vula e Gjallë;
++- PD nuk prodhon iZ/next-i0 të besueshëm.
++
++### S4 — Manipulim i action_state
++
++Pritja:
++
++- SHA-256 Shadow ≠ Quantum/Light;
++- mospërputhja refuzohet para finalizimit PD.
++
++### S5 — Manipulim i ligjeve aktive
++
++Pritja:
++
++- `system_laws_seal()` ndryshon;
++- SHA-256 ×3 nuk përputhet;
++- receipt dhe iZ nuk verifikohen.
++
++### S6 — Manipulim i L-500
++
++Pritja:
++
++- `(flags & MASK) ^ XOR != 500`;
++- `LivingTrustProof::is_admissible()` dështon;
++- Shadow nuk lëshon Besim.
++
++### S7 — Manipulim i intensitetit
++
++Pritja:
++
++- identiteti 32-byte mbetet identiteti i të njëjtit proof;
++- `identity_digest()` ndryshon sepse lidh edhe intensitetin;
++- receipt/iZ/next-i0 refuzojnë forcën e manipuluar.
++
++### S8 — Manipulim i receipt-it
++
++Pritja:
++
++- `receipt_id` rillogaritet me `living_trust_digest`;
++- receipt i vjetër nuk pranon Trust të ri dhe anasjelltas.
++
++### S9 — Manipulim i handoff-it Quantum → Light
++
++Pritja:
++
++- CRC, receipt, Trust, output, iZ ose continuum mismatch;
++- PD Light nuk e dërgon sinjalin as te Nura dhe as te UI emocionale.
++
++## Kufijtë e simulimit
++
++Nuk u simulua konfidencialiteti kriptografik, sepse nuk ekziston kontratë për
++çelësat. U simulua integriteti, identiteti, lineage, complete mediation dhe
++fail-closed ndër-platformik.
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/VALIDATE_V161.ps1 /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/VALIDATE_V161.ps1
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/VALIDATE_V161.ps1	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/VALIDATE_V161.ps1	2026-07-15 09:37:32.215124261 +0000
+@@ -0,0 +1,213 @@
++param(
++    [string]$LogRoot = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ESS_MAI_V161_LOGS')
++)
++
++$ErrorActionPreference = 'Stop'
++[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
++$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
++New-Item -ItemType Directory -Force -Path $LogRoot | Out-Null
++
++function Run-Logged {
++    param([string]$Name, [scriptblock]$Command)
++    $Path = Join-Path $LogRoot ($Name + '.log')
++    & $Command 2>&1 | Tee-Object -FilePath $Path
++    if ($LASTEXITCODE -ne 0) {
++        throw "$Name failed with exit code $LASTEXITCODE. See $Path"
++    }
++}
++
++function Require-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -notmatch $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++
++function Reject-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -match $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++
++function Require-SameHash {
++    param([string[]]$Paths, [string]$Label)
++    $Hashes = $Paths | ForEach-Object {
++        (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()
++    } | Select-Object -Unique
++    if ($Hashes.Count -ne 1) { throw "STATIC GUARD FAILED: $Label" }
++    "$Label = $($Hashes[0])"
++}
++
++Push-Location $Root
++try {
++    Run-Logged '00_toolchain' { cargo --version; rustc --version }
++
++    foreach ($Manifest in @(
++        'light\Cargo.toml', 'quantum\Cargo.toml', 'shadow\Cargo.toml',
++        'shadow-contracts\Cargo.toml', 'ui\Cargo.toml',
++        'light\ui\src-tauri\Cargo.toml'
++    )) {
++        Require-Text (Join-Path $Root $Manifest) 'version\s*=\s*"1\.6\.1"' "$Manifest must be v1.6.1"
++    }
++    Require-Text (Join-Path $Root 'VERSION_ESSMAI.txt') 'ESS-MAI v1\.6\.1' 'version marker'
++
++    # Complete mediation remains non-bypassable.
++    Require-Text (Join-Path $Root 'shadow\Cargo.toml') 'autolib\s*=\s*false' 'Shadow binary-only'
++    Reject-Text  (Join-Path $Root 'shadow\Cargo.toml') '(?m)^\[lib\]' 'Shadow [lib] target must not return'
++    Reject-Text  (Join-Path $Root 'shadow\Cargo.toml') 'rlib|staticlib' 'Shadow linkable crate-types must not return'
++    Require-Text (Join-Path $Root 'shadow\src\main.rs') 'include!\("lib\.rs"\)' 'Shadow main owns core'
++    Require-Text (Join-Path $Root 'shadow\src\main.rs') 'process_bridge::dispatch_from_args' 'Shadow main owns mediation'
++    Require-Text (Join-Path $Root 'quantum\Cargo.toml') 'shadow_contracts\s*=\s*\{\s*path\s*=\s*"\.\./shadow-contracts"' 'Quantum knows only wire contracts'
++    Reject-Text  (Join-Path $Root 'quantum\Cargo.toml') 'path\s*=\s*"\.\./shadow"|package\s*=\s*"shadow_platform"' 'Quantum must not link Shadow core'
++    Reject-Text  (Join-Path $Root 'quantum\src\main.rs') 'shadow_lib::|shadow_platform::' 'Quantum main must not call Shadow core'
++    Require-Text (Join-Path $Root 'quantum\src\main.rs') "source:\s*&'static\s+str" 'E0521 correction remains'
++
++    # Byte-identical governing contracts.
++    $TrustHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\living_trust_contract.rs'),
++        (Join-Path $Root 'quantum\src\living_trust_contract.rs'),
++        (Join-Path $Root 'shadow\src\living_trust_contract.rs')
++    ) 'LIVING_TRUST_CONTRACT_BYTE_IDENTICAL'
++    $ReceiptHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\lab_contracts\verification_receipt.rs'),
++        (Join-Path $Root 'quantum\src\lab_contracts\verification_receipt.rs'),
++        (Join-Path $Root 'shadow\src\lab_contracts\verification_receipt.rs')
++    ) 'VERIFICATION_RECEIPT_BYTE_IDENTICAL'
++    $ContinuumHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\pd_continuum_contract.rs'),
++        (Join-Path $Root 'quantum\src\pd_continuum_contract.rs'),
++        (Join-Path $Root 'shadow\src\pd_continuum_contract.rs')
++    ) 'PD_CONTINUUM_BYTE_IDENTICAL'
++    $SpineHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\pd_spine_contract.rs'),
++        (Join-Path $Root 'quantum\src\pd_spine_contract.rs'),
++        (Join-Path $Root 'shadow\src\pd_spine_contract.rs')
++    ) 'PD_SPINE_BYTE_IDENTICAL'
++    $GclHash = Require-SameHash @(
++        (Join-Path $Root 'light\src\lab_contracts\gjata_collapse_law.rs'),
++        (Join-Path $Root 'quantum\src\lab_contracts\gjata_collapse_law.rs'),
++        (Join-Path $Root 'shadow\src\lab_contracts\gjata_collapse_law.rs')
++    ) 'GCL_LAW_BYTE_IDENTICAL'
++
++    # Living Trust Phase 1: zero-SHA action convergence.
++    $Pulse = Join-Path $Root 'quantum\src\runtime_pulse.rs'
++    Require-Text $Pulse 'static ACTION_STATE:\s*AtomicU64' 'global per-cycle action state'
++    Require-Text $Pulse 'ACTION_STATE\.store\(0' 'distrust resets every cycle'
++    Require-Text $Pulse 'pub fn converge_words' 'light convergence exists'
++    Require-Text $Pulse 'rotate_left' 'rotation convergence'
++    Require-Text $Pulse 'wrapping_add' 'wrapping addition convergence'
++    Reject-Text  $Pulse 'Sha256|sha2::' 'Phase 1 must contain zero SHA-256'
++    foreach ($Stage in @('Pro','Npro','Npim','Pim','Apro','Mpro')) {
++        Require-Text (Join-Path $Root 'quantum\src\main.rs') "Stage::$Stage" "action stage $Stage"
++    }
++    Require-Text (Join-Path $Root 'quantum\src\main.rs') 'runtime_pulse::action_state\(\)' 'action state enters final evidence'
++
++    # Living Trust Phase 2 and L-500.
++    foreach ($Contract in @(
++        'light\src\living_trust_contract.rs',
++        'quantum\src\living_trust_contract.rs',
++        'shadow\src\living_trust_contract.rs'
++    )) {
++        $P = Join-Path $Root $Contract
++        Require-Text $P 'Sha256::digest\(&material\)' "$Contract real SHA-256"
++        Require-Text $P 'GCL_LIVING_TRUST_V161' "$Contract domain separator"
++        Require-Text $P 'SOVEREIGN_SEAL_PRIMITIVE:\s*u32\s*=\s*500' "$Contract L-500"
++        Require-Text $P 'TRUST_KIND_CONSTRUCTIVE' "$Contract constructive trust"
++        Require-Text $P 'TRUST_KIND_RIGOROUS_NEGATIVE' "$Contract negative trust"
++        Require-Text $P '&self\.intensity\.to_le_bytes\(\)' "$Contract intensity bound outside identity"
++    }
++    $Supreme = Join-Path $Root 'shadow\src\shadow_gj_legacy.rs'
++    Require-Text $Supreme 'fn seal_living_trust' 'supreme trust pulse'
++    Require-Text $Supreme 'SGL_SEAL_XOR' 'existing L-500 XOR live'
++    Require-Text $Supreme 'SGL_SEAL_MASK' 'existing L-500 mask live'
++    Require-Text $Supreme 'SGL_SEAL_PRIMITIVE' 'existing L-500 primitive live'
++    Require-Text $Supreme 'Self::seal_living_trust\(verdict\)' 'all supreme exits seal trust'
++    Require-Text $Supreme 'legacy_score_compute' 'existing weighted trust intensity source'
++
++    # Wire ×3, receipt and PD/iZ/next-i0 binding.
++    $Wire = Join-Path $Root 'shadow-contracts\src\lib.rs'
++    Require-Text $Wire 'PROTOCOL_VERSION:\s*u16\s*=\s*3' 'wire protocol v3'
++    Require-Text $Wire 'pub living_trust_sha256:\s*String' 'full trust identity on wire'
++    Require-Text $Wire 'pub living_trust_digest:\s*u64' 'receipt trust binding on wire'
++    Require-Text $Wire 'w\.string\(&v\.living_trust_sha256\)' 'wire encoder carries Trust'
++    Require-Text $Wire 'living_trust_sha256:\s*r\.string\(\)\?' 'wire decoder carries Trust'
++
++    foreach ($Receipt in @(
++        'light\src\lab_contracts\verification_receipt.rs',
++        'quantum\src\lab_contracts\verification_receipt.rs',
++        'shadow\src\lab_contracts\verification_receipt.rs'
++    )) {
++        Require-Text (Join-Path $Root $Receipt) 'living_trust_digest:\s*u64' "$Receipt receipt binds Trust"
++        Require-Text (Join-Path $Root $Receipt) '&living_trust_digest\.to_le_bytes\(\)' "$Receipt receipt ID material"
++    }
++
++    Require-Text (Join-Path $Root 'shadow\src\sovereign_ffi_gate.rs') 'living_trust_digest' 'Shadow sovereign receipt binds Trust'
++    Require-Text (Join-Path $Root 'quantum\src\main.rs') 'verification_receipt\.living_trust_digest == living_trust_digest' 'Quantum verifies receipt Trust binding'
++    Require-Text (Join-Path $Root 'quantum\src\progressive_debatic\types.rs') 'pub living_trust_sha256:\s*\[u8;\s*32\]' 'PD carries full Trust identity'
++    Require-Text (Join-Path $Root 'quantum\src\progressive_debatic\runtime.rs') 'living_trust_digest' 'PD runtime binds Trust'
++    Require-Text (Join-Path $Root 'quantum\src\pd_continuum_contract.rs') 'PD_COMPLETES_IZ_WITH_LIVING_TRUST_V161' 'Trust seeds iZ'
++    Require-Text (Join-Path $Root 'light\src\pd_light.rs') 'compute_with_intensity' 'Light independently recomputes Trust'
++    Require-Text (Join-Path $Root 'light\src\pd_light.rs') '35 fushat e trupit' 'v1.6.1 handoff schema'
++    Require-Text (Join-Path $Root 'quantum\src\main.rs') '35 fusha trupi \+ CRC \(36 total\)' 'Quantum/Light handoff count'
++
++    # Documentation and parallel document.
++    Require-Text (Join-Path $Root 'ess-mai.md') 'Evolucioni v1\.6\.0 → v1\.6\.1' 'authoritative evolution entry'
++    $ParallelDoc = Join-Path (Split-Path -Parent $Root) 'ess_mai.md'
++    if (-not (Test-Path -LiteralPath $ParallelDoc)) { throw 'parallel ess_mai.md missing' }
++    $DocHashes = @(
++        (Get-FileHash -LiteralPath (Join-Path $Root 'ess-mai.md') -Algorithm SHA256).Hash,
++        (Get-FileHash -LiteralPath $ParallelDoc -Algorithm SHA256).Hash
++    ) | Select-Object -Unique
++    if ($DocHashes.Count -ne 1) { throw 'parallel ess_mai.md is not byte-identical' }
++
++    @(
++        'STATIC_GUARDS_OK',
++        $TrustHash, $ReceiptHash, $ContinuumHash, $SpineHash, $GclHash
++    ) | Set-Content -LiteralPath (Join-Path $LogRoot '01_static_guards.log') -Encoding UTF8
++
++    Run-Logged '02_build_workspace_all_targets' { cargo build --workspace --all-targets }
++    Run-Logged '03_check_workspace_all_targets' { cargo check --workspace --all-targets }
++    Run-Logged '04_test_compile_only' { cargo test --workspace --all-targets --no-run }
++    Run-Logged '05_test_workspace' { cargo test --workspace }
++    Run-Logged '06_clippy_workspace' { cargo clippy --workspace --all-targets -- -W clippy::all }
++
++    $FmtLog = Join-Path $LogRoot '07_fmt_check_report.log'
++    cargo fmt --all -- --check 2>&1 | Tee-Object -FilePath $FmtLog
++    "FMT_EXIT_CODE=$LASTEXITCODE" | Add-Content -LiteralPath $FmtLog -Encoding UTF8
++
++    Push-Location (Join-Path $Root 'ui')
++    try { Run-Logged '08_check_new_ui' { cargo check --all-targets } }
++    finally { Pop-Location }
++
++    Push-Location (Join-Path $Root 'light\ui\src-tauri')
++    try { Run-Logged '09_check_old_ui_emotional_engine' { cargo check --all-targets } }
++    finally { Pop-Location }
++
++    $ShadowExe = Join-Path $Root 'target\debug\shadow_platform.exe'
++    if (-not (Test-Path -LiteralPath $ShadowExe)) {
++        throw "Shadow main executable missing after workspace build: $ShadowExe"
++    }
++
++    $Manifest = Join-Path $Root 'ESS_MAI_V1_6_1_FILELIST.sha256'
++    $Failures = @()
++    foreach ($Line in Get-Content -LiteralPath $Manifest -Encoding UTF8) {
++        if ($Line -match '^([0-9a-f]{64})  (.+)$') {
++            $Expected = $Matches[1]
++            $Relative = $Matches[2].Replace('/', [IO.Path]::DirectorySeparatorChar)
++            $Target = Join-Path $Root $Relative
++            if (-not (Test-Path -LiteralPath $Target)) {
++                $Failures += "MISSING $Relative"
++                continue
++            }
++            $Actual = (Get-FileHash -LiteralPath $Target -Algorithm SHA256).Hash.ToLowerInvariant()
++            if ($Actual -ne $Expected) { $Failures += "HASH $Relative" }
++        }
++    }
++    $Failures | Set-Content -LiteralPath (Join-Path $LogRoot '10_hash_failures.log') -Encoding UTF8
++    if ($Failures.Count -ne 0) { throw "File-list verification failed: $($Failures.Count)" }
++    'HASH_OK' | Set-Content -LiteralPath (Join-Path $LogRoot '10_hash_ok.log') -Encoding UTF8
++
++    Write-Host "ESS-MAI v1.6.1 validation completed. Logs: $LogRoot"
++}
++finally {
++    Pop-Location
++}
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/VERSION_ESSMAI.txt /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/VERSION_ESSMAI.txt
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-15 09:07:49.037534135 +0000
+@@ -1,2 +1,2 @@
+-ESS-MAI v1.6.0
+-Baseline: v1.5.9
++ESS-MAI v1.6.1
++Baseline: v1.6.0
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ess-mai.md /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ess-mai.md
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ess-mai.md	2026-07-15 07:13:46.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ess-mai.md	2026-07-15 09:38:04.883579845 +0000
+@@ -1171,3 +1171,292 @@
+ - PIM/NPIM/MPRO modules do not call Shadow separately; only the final package
+   crosses the process boundary.
+ - No license was invented or added.
++
++---
++
++# Evolucioni v1.6.0 → v1.6.1
++
++## Theory name
++
++**GCL — Vula e Gjallë e Besimit**
++
++## Philosophy
++
++ESS-MAI nuk i beson vetes gjatë përpunimit. Mosbesimi është gjendja
++konstitutive: gjatë PRO/NPRO/NPIM/PIM/APRO/MPRO nuk ekziston vulë Besimi.
++Organet vetëm konvergojnë aksionet e tyre në një gjendje të lehtë. Besimi lind
++vetëm pasi Shadow jep verdiktin suprem dhe vetëm kur ligjet aktive, L-500,
++verdikti dhe evidencat mbyllen në të njëjtin proof.
++
++Vula nuk është autoritet i ri mbi GCL. Ajo është dëshmia përfundimtare se i
++njëjti proces GCL, i thelluar nga Spine 9 dhe Layer 1/2/3, ka mbërritur në një
++verdikt kushtetues. Shadow e prodhon; Quantum dhe Light e rillogarisin.
++
++## Purpose
++
++- Të bëjë L-500 ligj runtime të lidhur me çdo Besim të prodhuar.
++- Të lidhë punën reale të moduleve me verdiktin suprem pa hash per-modul.
++- Të prodhojë një identitet SHA-256 të gjithë proof-it në kulmin e ciklit.
++- Të ndajë identitetin e Besimit nga intensiteti i tij.
++- Të lidhë Besimin me `VerificationReceipt`, iZ dhe `next_i0`.
++- Të kërkojë barazi të plotë Light ∥ Quantum ∥ Shadow.
++- Të ruajë mosbesimin si default: pa vulë, pa finalizim PD të besueshëm.
++
++## Mathematical model
++
++### Faza 1 — konvergjenca e aksioneve, zero SHA-256
++
++Për çdo organ të përfunduar realisht:
++
++```text
++A₀ = 0
++Aₙ₊₁ = ROTL(ROTL(Aₙ,11) + (CONVERGE(Eₙ) XOR STAGEₙ), 7)
++```
++
++ku `CONVERGE` përdor vetëm rotacion, XOR dhe mbledhje wrapping. Gjendja `A`
++është afrimi drejt vulës; ajo nuk është Besimi.
++
++Organet që kontribuojnë:
++
++```text
++PRO → NPRO → NPIM → PIM → APRO → MPRO
++```
++
++Rendi është rendi real i ekzekutimit të ciklit. Të gjitha kontributet lidhen në
++paketën finale PIM/NPIM/MPRO që Shadow verifikon.
++
++### Faza 2 — pulsi i vetëm SHA-256 në verdikt
++
++```text
++proof = action_state
++      || verdict.verified
++      || verdict.primitive
++      || verdict.knowledge_band
++      || verdict.lgc_law
++      || legacy_bits(verdict.lgc_law)
++      || system_laws_seal(SYSTEM_LAWS)
++      || sovereign_flags
++      || sovereign_value_500
++```
++
++```text
++living_trust_identity = SHA256(
++    "GCL_LIVING_TRUST_V161"
++    || contract_version
++    || proof
++)
++```
++
++SHA-256 nuk përmban intensitetin. Identiteti tregon **çfarë proof-i u vulos**;
++intensiteti tregon **sa forcë fitoi Besimi**.
++
++### Intensiteti
++
++Formula ekzistuese e Shadow ruhet:
++
++```text
++legacy_score = evidence_density     × 0.25
++             + logical_coherence    × 0.20
++             + causal_integrity     × 0.25
++             + convergence_strength × 0.15
++             + reproducibility      × 0.15
++```
++
++```text
++intensity = round(clamp(legacy_score, 0, 1) × 10000)
++```
++
++### Lloji kushtetues
++
++```text
++(verified, primitive) = (1,1) → CONSTRUCTIVE_TRUST
++(verified, primitive) = (0,0) → RIGOROUS_NEGATIVE_TRUST
++çdo çift tjetër                  → NO_TRUST
++```
++
++### Lidhja kompakte
++
++Kontratat ekzistuese përdorin një `u64` lidhës:
++
++```text
++living_trust_digest = FNV64(
++    identity_sha256 || intensity || kind || sovereign_value || domain
++)
++```
++
++Ky digest nuk është vula dhe nuk zëvendëson SHA-256. Ai lidh identitetin dhe
++forcën me receipt, iZ dhe `next_i0`.
++
++## Runtime flow
++
++```text
++i + U
++  ↓
++Light: koordinim + SHA256(input) → i0
++  ↓
++PD Quantum nën GCL
++  ↓
++Spine 9 → Layer 1 → Layer 2 → Layer 3
++  ↓
++PRO/NPRO/NPIM/PIM/APRO/MPRO → action_state (zero SHA)
++  ↓
++final evidence package
++  ↓
++Shadow main.rs complete mediation
++  ↓
++recompute evidence + verify X/Y + Matrix/Knowledge
++  ↓
++SupremeVerdict
++  ↓
++L-500 + system laws + action_state + verdict
++  ↓
++Shadow SHA256 → LivingTrustSeal
++  ↓
++VerificationReceipt binds living_trust_digest
++  ↓
++Quantum recomputes identical SHA256
++  ↓
++PD: output + iZ + Trust → next i0
++  ↓
++Light recomputes identical SHA256 + receipt + iZ
++  ↓
++PD Light courier
++  ├─ Nura → New UI
++  └─ Old Emotional UI → New UI
++```
++
++Paralelisht:
++
++```text
++Legacy Shadow C → vëzhgim i vazhdueshëm primitive → Legacy
++```
++
++Legacy Shadow nuk është prodhuesi i receipt-it final; ai mbetet vëzhguesi i
++vazhdueshëm i sistemit.
++
++## Contracts
++
++### `living_trust_contract.rs`
++
++Kontratë byte-identike në Light, Quantum dhe Shadow:
++
++- `LivingTrustProof`;
++- `LivingTrustSeal`;
++- llojet kushtetuese;
++- konstantet L-500;
++- SHA-256 kanonik;
++- fixed-point intensity;
++- lidhja kompakte `identity_digest`.
++
++### `VerificationReceipt`
++
++`living_trust_digest` është pjesë e materialit të `receipt_id`. Një receipt nuk
++mund të shkëputet nga Besimi që Shadow prodhoi.
++
++### PD Continuum
++
++`PdVerificationCompletion`, `PdIzCompletion` dhe `PdNextI0` bartin:
++
++- SHA-256 e Besimit;
++- intensitetin;
++- llojin;
++- vlerën sovrane 500;
++- digest-in lidhës.
++
++`iz_sha256` lidhet me output-in, continuum-in dhe Besimin.
++
++### Wire contract
++
++`shadow-contracts` përdor `PROTOCOL_VERSION = 3`. Wire-i bart proof-in e
++nevojshëm që Quantum dhe Light të mos i besojnë verbërisht Shadow-it, por ta
++rillogarisin vulën.
++
++## Code location
++
++```text
++light/src/living_trust_contract.rs
++light/src/lab_contracts/verification_receipt.rs
++light/src/pd_continuum_contract.rs
++light/src/pd_light.rs
++light/src/main.rs
++
++quantum/src/living_trust_contract.rs
++quantum/src/runtime_pulse.rs
++quantum/src/main.rs
++quantum/src/lab_contracts/verification_receipt.rs
++quantum/src/pd_continuum_contract.rs
++quantum/src/progressive_debatic/types.rs
++quantum/src/progressive_debatic/runtime.rs
++
++shadow/src/living_trust_contract.rs
++shadow/src/shadow_gj_legacy.rs
++shadow/src/sovereign_ffi_gate.rs
++shadow/src/lab_contracts/verification_receipt.rs
++shadow/src/pd_continuum_contract.rs
++shadow/src/process_bridge.rs
++shadow/src/types.rs
++shadow/src/bridge/*
++
++shadow-contracts/src/lib.rs
++```
++
++## Version introduced
++
++```text
++Theory:         v1.6.1 authoritative paradigm
++Contract:       v1.6.1
++Implementation: v1.6.1
++Static audit:   v1.6.1 packaging cycle
++Release status: packaged for Windows GNU verification
++```
++
++## Verification evidence
++
++Auditimi i stimulimit mbulon:
++
++1. `(1,1)` → Besim ndërtimi;
++2. `(0,0)` → Besim rigoroziteti negativ;
++3. çift i përzier → pa Besim;
++4. manipulim të `action_state`;
++5. manipulim të ligjeve aktive;
++6. manipulim të L-500;
++7. manipulim të intensitetit;
++8. manipulim të receipt-it;
++9. manipulim të handoff-it Quantum→Light.
++
++Provat statike të paketimit ruhen në:
++
++```text
++AUDIT_V161_GCL_LIVING_TRUST.md
++V161_SIMULATION_MAP.md
++ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md
++STATIC_AUDIT_V161.txt
++V1_6_1_FROM_V1_6_0.diff
++ESS_MAI_V1_6_1_FILELIST.sha256
++VALIDATE_V161.ps1
++```
++
++## Current status
++
++```text
++Theory:                    COMPLETE_AS_DESIGN
++Action convergence:        IMPLEMENTED
++L-500 runtime binding:     IMPLEMENTED
++Supreme SHA-256 pulse:     IMPLEMENTED
++Light/Quantum/Shadow ×3:   IMPLEMENTED
++Receipt binding:           IMPLEMENTED
++Trust → iZ → next_i0:      IMPLEMENTED
++Static syntax/contracts:   PASSED_81_OF_81
++Cargo check/test/clippy:   PENDING_EXTERNAL_WINDOWS_GNU
++Release:                   PACKAGED_FOR_EXECUTIVE_VERIFICATION
++```
++
++## Boundaries deliberately not crossed
++
++- Nuk u krijua autoritet i ri për Layers; ato mbeten thellim nën GCL.
++- Nuk u bë PD Light procesues i Spine 9.
++- Nuk u bashkua Legacy Shadow me Shadow final.
++- Nuk u persistua vula si Knowledge state i pavarur.
++- Nuk u ndryshuan peshat ekzistuese të `legacy_score`.
++- Nuk u shpik enkriptim konfidencial pa kontratë konkrete të çelësave,
++  rotacionit, revokimit dhe autoritetit të ruajtjes.
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/Cargo.toml	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/Cargo.toml	2026-07-15 08:32:23.630167516 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "light-platform"
+-version     = "1.6.0"
++version     = "1.6.1"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Light Platform — Koordinues Sovran + APUPK/SNB/MiniEvolver + 0-copy + Layer 2 (zero if/else)"
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/lab_contracts/verification_receipt.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/lab_contracts/verification_receipt.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/lab_contracts/verification_receipt.rs	2026-07-14 11:47:29.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/lab_contracts/verification_receipt.rs	2026-07-15 09:13:21.420787281 +0000
+@@ -1,6 +1,6 @@
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+ // ║ VERIFICATION_RECEIPT — KONTRATA KANONIKE E MBYLLJES XY                ║
+-// ║ v1.5.6: receipt-i lidhet edhe me kandidatin PD/Spine 9.                ║
++// ║ v1.6.1: receipt-i lidh kandidatin PD/Spine 9 me Vulën e Gjallë.       ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+ pub const VERIFICATION_SEAL_NAME: &[u8] = b"SHADOW_VERIFICATION_OUTPUT";
+@@ -26,6 +26,7 @@
+     xy_digest:         u64,
+     pd_binding_digest: u64,
+     pd_continuum_activation_digest: u64,
++    living_trust_digest: u64,
+     y_verdict:         u8,
+     x_verdict:         u8,
+     generation:        u64,
+@@ -39,6 +40,7 @@
+     proof.extend_from_slice(&xy_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_binding_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_continuum_activation_digest.to_le_bytes());
++    proof.extend_from_slice(&living_trust_digest.to_le_bytes());
+     proof.push(y_verdict);
+     proof.push(x_verdict);
+     proof.extend_from_slice(&generation.to_le_bytes());
+@@ -52,15 +54,17 @@
+ 
+     #[test]
+     fn receipt_is_deterministic_and_bound_to_parent_and_pd_candidate() {
+-        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 1, 1, 3, 11);
+-        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 1, 1, 3, 11);
++        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 19, 1, 1, 3, 11);
++        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 19, 1, 1, 3, 11);
++        let other_trust = receipt_id("s", "i0-a", 7, 9, 13, 17, 20, 1, 1, 3, 11);
+         assert_eq!(a, b);
+         assert_ne!(a, other_parent);
+         assert_ne!(a, other_pd);
+         assert_ne!(a, other_continuum);
++        assert_ne!(a, other_trust);
+     }
+ 
+     #[test]
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/living_trust_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/living_trust_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/living_trust_contract.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/living_trust_contract.rs	2026-07-15 09:27:47.148524871 +0000
+@@ -0,0 +1,226 @@
++// ╔══════════════════════════════════════════════════════════════════════════╗
++// ║ LIVING_TRUST_CONTRACT.RS — GCL VULA E GJALLË E BESIMIT v1.6.1          ║
++// ║                                                                          ║
++// ║ Faza 1 prodhon vetëm `action_state` të lehtë. Ky modul nuk hash-on       ║
++// ║ modulet veçmas. Faza 2 kryen NJË SHA-256 mbi gjendjen e konverguar,      ║
++// ║ verdiktin suprem, ligjet aktive dhe provën L-500.                        ║
++// ║                                                                          ║
++// ║ Skedari mbahet byte-identik në Light, Quantum dhe Shadow.                ║
++// ╚══════════════════════════════════════════════════════════════════════════╝
++
++use sha2::{Digest, Sha256};
++
++pub const LIVING_TRUST_CONTRACT_VERSION: u32 = 0x0001_0601;
++pub const TRUST_INTENSITY_SCALE: u32 = 10_000;
++pub const TRUST_KIND_NONE: u8 = 0;
++pub const TRUST_KIND_CONSTRUCTIVE: u8 = 1;
++pub const TRUST_KIND_RIGOROUS_NEGATIVE: u8 = 2;
++
++pub const SOVEREIGN_SEAL_XOR: u32 = 0xA5A5;
++pub const SOVEREIGN_SEAL_MASK: u32 = 0x0000_FFFF;
++pub const SOVEREIGN_SEAL_PRIMITIVE: u32 = 500;
++pub const LEGACY_BITS_MASK: u32 = 0x54; // LEGACY_PATH | NEGATIVE | ECO
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustProof {
++    pub action_state: u64,
++    pub verified: u8,
++    pub primitive: u8,
++    pub knowledge_band: u8,
++    pub lgc_law: u32,
++    pub system_laws_seal: u64,
++    pub sovereign_flags: u32,
++}
++
++impl LivingTrustProof {
++    pub fn legacy_bits(self) -> u32 {
++        self.lgc_law & LEGACY_BITS_MASK
++    }
++
++    pub fn sovereign_value(self) -> u32 {
++        (self.sovereign_flags & SOVEREIGN_SEAL_MASK) ^ SOVEREIGN_SEAL_XOR
++    }
++
++    pub fn constitutional_kind(self) -> u8 {
++        match (self.verified, self.primitive) {
++            (1, 1) => TRUST_KIND_CONSTRUCTIVE,
++            (0, 0) => TRUST_KIND_RIGOROUS_NEGATIVE,
++            _ => TRUST_KIND_NONE,
++        }
++    }
++
++    pub fn is_admissible(self) -> bool {
++        self.action_state != 0
++            && self.system_laws_seal != 0
++            && self.sovereign_flags != 0
++            && self.sovereign_value() == SOVEREIGN_SEAL_PRIMITIVE
++            && self.verified <= 1
++            && self.primitive <= 1
++            && self.constitutional_kind() != TRUST_KIND_NONE
++    }
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustSeal {
++    pub identity_sha256: [u8; 32],
++    pub intensity: u32,
++    pub kind: u8,
++    pub sovereign_value: u32,
++}
++
++impl LivingTrustSeal {
++    pub fn identity_hex(self) -> String {
++        hex_32(&self.identity_sha256)
++    }
++
++    pub fn identity_digest(self) -> u64 {
++        digest_parts(&[
++            self.identity_sha256.as_slice(),
++            &self.intensity.to_le_bytes(),
++            &[self.kind],
++            &self.sovereign_value.to_le_bytes(),
++            b"GCL_LIVING_TRUST_TO_IZ_V161",
++        ])
++    }
++
++    pub fn verifies(self, proof: LivingTrustProof, legacy_score: f32) -> bool {
++        match compute(proof, legacy_score) {
++            Some(expected) => expected == self,
++            None => false,
++        }
++    }
++}
++
++pub fn intensity_from_legacy_score(legacy_score: f32) -> Option<u32> {
++    match legacy_score.is_finite() {
++        true => Some(
++            (legacy_score.clamp(0.0, 1.0) * TRUST_INTENSITY_SCALE as f32)
++                .round() as u32,
++        ),
++        false => None,
++    }
++}
++
++/// Pulsi i vetëm SHA-256. Nuk ruan state dhe nuk kryen I/O.
++pub fn compute(proof: LivingTrustProof, legacy_score: f32) -> Option<LivingTrustSeal> {
++    let intensity = intensity_from_legacy_score(legacy_score)?;
++    compute_with_intensity(proof, intensity)
++}
++
++/// Riverifikimi ndër-platformik përdor intensitetin fixed-point të vulosur.
++/// Kjo shmang rikonstruksionin me float në kufirin Quantum → Light, ndërsa
++/// materiali kanonik i SHA-256 mbetet byte-identik në të tria platformat.
++pub fn compute_with_intensity(
++    proof: LivingTrustProof,
++    intensity: u32,
++) -> Option<LivingTrustSeal> {
++    match proof.is_admissible() && intensity <= TRUST_INTENSITY_SCALE {
++        true => {}
++        false => return None,
++    }
++    let kind = proof.constitutional_kind();
++    let sovereign_value = proof.sovereign_value();
++
++    let mut material = Vec::with_capacity(128);
++    material.extend_from_slice(b"GCL_LIVING_TRUST_V161");
++    material.extend_from_slice(&LIVING_TRUST_CONTRACT_VERSION.to_le_bytes());
++    material.extend_from_slice(&proof.action_state.to_le_bytes());
++    material.push(proof.verified);
++    material.push(proof.primitive);
++    material.push(proof.knowledge_band);
++    material.extend_from_slice(&proof.lgc_law.to_le_bytes());
++    material.extend_from_slice(&proof.legacy_bits().to_le_bytes());
++    material.extend_from_slice(&proof.system_laws_seal.to_le_bytes());
++    material.extend_from_slice(&proof.sovereign_flags.to_le_bytes());
++    material.extend_from_slice(&sovereign_value.to_le_bytes());
++
++    // Identiteti 32-byte ndjek formulën kushtetuese të paradigmës:
++    // action_state + verdict + ligjet aktive + L-500. Intensiteti dhe lloji
++    // janë forca/klasa e Besimit pranë identitetit; lidhen më pas te
++    // VerificationReceipt, iZ dhe next_i0 përmes `identity_digest()`.
++    let digest = Sha256::digest(&material);
++    let mut identity_sha256 = [0u8; 32];
++    identity_sha256.copy_from_slice(&digest);
++    Some(LivingTrustSeal {
++        identity_sha256,
++        intensity,
++        kind,
++        sovereign_value,
++    })
++}
++
++pub fn parse_hex_32(value: &str) -> Option<[u8; 32]> {
++    match value.len() == 64 && value.as_bytes().iter().all(u8::is_ascii_hexdigit) {
++        true => {}
++        false => return None,
++    }
++    let mut out = [0u8; 32];
++    for (index, slot) in out.iter_mut().enumerate() {
++        let start = index * 2;
++        *slot = u8::from_str_radix(&value[start..start + 2], 16).ok()?;
++    }
++    Some(out)
++}
++
++pub fn hex_32(value: &[u8; 32]) -> String {
++    let mut out = String::with_capacity(64);
++    for byte in value {
++        use std::fmt::Write as _;
++        let _ = write!(&mut out, "{byte:02x}");
++    }
++    out
++}
++
++pub fn digest_parts(parts: &[&[u8]]) -> u64 {
++    parts.iter().fold(0xcbf2_9ce4_8422_2325u64, |acc, part| {
++        part.iter().fold(acc, |hash, byte| {
++            (hash ^ u64::from(*byte)).wrapping_mul(0x0000_0100_0000_01b3)
++        })
++    })
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn proof(verified: u8, primitive: u8) -> LivingTrustProof {
++        LivingTrustProof {
++            action_state: 0x1122_3344_5566_7788,
++            verified,
++            primitive,
++            knowledge_band: 2,
++            lgc_law: 0x47,
++            system_laws_seal: 0x8877_6655_4433_2211,
++            sovereign_flags: 0xA451,
++        }
++    }
++
++    #[test]
++    fn constructive_and_rigorous_negative_are_constitutional() {
++        assert_eq!(compute(proof(1, 1), 0.75).unwrap().kind, TRUST_KIND_CONSTRUCTIVE);
++        assert_eq!(compute(proof(0, 0), 0.75).unwrap().kind, TRUST_KIND_RIGOROUS_NEGATIVE);
++        assert!(compute(proof(1, 0), 0.75).is_none());
++    }
++
++    #[test]
++    fn l500_and_action_state_are_mandatory() {
++        let mut p = proof(1, 1);
++        p.sovereign_flags = 0;
++        assert!(compute(p, 0.5).is_none());
++        p = proof(1, 1);
++        p.action_state = 0;
++        assert!(compute(p, 0.5).is_none());
++    }
++
++    #[test]
++    fn same_whole_system_produces_same_sha256() {
++        let a = compute(proof(1, 1), 0.75).unwrap();
++        let b = compute(proof(1, 1), 0.75).unwrap();
++        assert_eq!(a, b);
++        assert_eq!(compute_with_intensity(proof(1, 1), a.intensity), Some(a));
++        let stronger = compute_with_intensity(proof(1, 1), 9_000).unwrap();
++        assert_eq!(stronger.identity_sha256, a.identity_sha256);
++        assert_ne!(stronger.identity_digest(), a.identity_digest());
++        assert_eq!(parse_hex_32(&a.identity_hex()), Some(a.identity_sha256));
++    }
++}
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/main.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/main.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/main.rs	2026-07-15 06:39:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/main.rs	2026-07-15 09:07:19.374402799 +0000
+@@ -56,6 +56,7 @@
+ mod phase9_integration; // FAZA 9: lidh light_spine me rrjedhën (Light s'vendos)
+ mod pd_continuum_contract; // v1.5.6: i + U → i₀ → 1Q → output + iZ → next i₀
+ mod pd_spine_contract; // v1.5.6: kontrata identike PD/Spine9
++mod living_trust_contract; // v1.6.1: GCL vula e gjallë × Light/Quantum/Shadow
+ 
+ // ── GRUPI 6 —  Mini-Algoritmi Mbështetës (integruar) ─────────────
+ // APUPK (projektet e përdoruesit) + SNB (bug tracking) + Mini Evolver (usage).
+@@ -601,9 +602,9 @@
+ // gjuhësor i pastër. Fail-safe: file mungues / rresht i pavlefshëm → None.
+ // ─────────────────────────────────────────────────────────────────────────
+ fn read_pd_delivery(session_id: &str) -> Option<pd_light::VerifiedPdDelivery> {
+-    // URA 1 me STANDARDIN e Shadow-t (v1.4.0): rreshti GJYKOHET para çdo
+-    // interpretimi — i vulosur (25 fusha trupi + CRC = 26) / legacy / Corrupt.
+-    // Vetëm v1.5.6 me receipt + PD output + iZ + next i₀ mund të prodhojë
++    // URA 1 me STANDARDIN e Shadow-t (v1.6.1): rreshti GJYKOHET para çdo
++    // interpretimi — i vulosur (35 fusha trupi + CRC = 36) / legacy / Corrupt.
++    // Vetëm v1.6.1 me receipt + PD output + iZ + next i₀ + Living Trust mund të prodhojë
+     // `VerifiedPdSurface`; formatet më të vjetra mbeten audit, jo identitet Nura.
+     let dir = std::env::var("ESSMAI_HANDOFF_DIR")
+         .unwrap_or_else(|_| std::env::temp_dir().to_string_lossy().into_owned());
+@@ -626,7 +627,7 @@
+         .filter(|l| l.starts_with(prefix.as_str()))
+         .any(|l| l.contains("|c:"));
+     let line = content.lines().filter(|l| l.starts_with(prefix.as_str())).last()?;
+-    match (crate::lab_contracts::pa_wire::verify_line_generic(line, &[6, 7], 26), sealed_exists) {
++    match (crate::lab_contracts::pa_wire::verify_line_generic(line, &[6, 7], 36), sealed_exists) {
+         (crate::lab_contracts::pa_wire::PaWireVerdict::SealedOk, _) => {}
+         (crate::lab_contracts::pa_wire::PaWireVerdict::LegacyOk, false) => {
+             // v1.4.4: legacy me gjurmë — sipërfaqja e pranon, ledgeri e di.
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/pd_continuum_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/pd_continuum_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/pd_continuum_contract.rs	2026-07-14 17:04:04.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/pd_continuum_contract.rs	2026-07-15 08:39:31.582922154 +0000
+@@ -3,7 +3,7 @@
+ // ║ ESS-MAI v1.5.7 — byte-for-byte identike në Light/Quantum/Shadow          ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0507;
++pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0601;
+ pub const QUESTION_INCREMENT_UNITS: u32 = 1;
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+@@ -273,6 +273,7 @@
+     activation_digest: u64,
+     question_increment_digest: u64,
+     pd_output_digest: u64,
++    living_trust_digest: u64,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+ ) -> u64 {
+@@ -281,9 +282,10 @@
+         &activation_digest.to_le_bytes(),
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+-        b"PD_COMPLETES_IZ",
++        b"PD_COMPLETES_IZ_WITH_LIVING_TRUST_V161",
+     ])
+ }
+ 
+@@ -307,6 +309,7 @@
+     question_increment_digest: u64,
+     pd_output_digest: u64,
+     iz_digest: u64,
++    living_trust_digest: u64,
+     next_i0_id: &str,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+@@ -317,6 +320,7 @@
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
+         &iz_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         next_i0_id.as_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+@@ -331,6 +335,7 @@
+     pub question_increment_digest: u64,
+     pub pd_output_digest: u64,
+     pub iz_digest: u64,
++    pub living_trust_digest: u64,
+     pub next_i0_id: String,
+     pub verification_receipt_digest: u64,
+     pub basis: PdContinuumBasis,
+@@ -346,6 +351,7 @@
+         question_increment_digest: u64,
+         pd_output_digest: u64,
+         iz_digest: u64,
++        living_trust_digest: u64,
+         next_i0_id: String,
+         verification_receipt_id: &str,
+         basis: PdContinuumBasis,
+@@ -358,6 +364,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             &next_i0_id,
+             verification_receipt_id,
+             basis,
+@@ -368,6 +375,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             next_i0_id,
+             verification_receipt_digest,
+             basis,
+@@ -384,6 +392,7 @@
+             && self.question_increment_digest != 0
+             && self.pd_output_digest != 0
+             && self.iz_digest != 0
++            && self.living_trust_digest != 0
+             && self.next_i0_id == derive_next_i0_id(self.pd_output_digest, self.iz_digest)
+             && self.verification_receipt_digest == digest_parts(&[
+                 verification_receipt_id.as_bytes(),
+@@ -395,6 +404,7 @@
+                 self.question_increment_digest,
+                 self.pd_output_digest,
+                 self.iz_digest,
++                self.living_trust_digest,
+                 &self.next_i0_id,
+                 verification_receipt_id,
+                 self.basis,
+@@ -438,13 +448,14 @@
+             activation, 13, question, "receipt", "output text", 1, 1,
+             PdContinuumBasis::VerifiedPositive,
+         );
++        let trust = 99;
+         let iz = derive_iz_digest(
+-            activation, question, output, "receipt",
++            activation, question, output, trust, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         let next = derive_next_i0_id(output, iz);
+         let completion = PdContinuumCompletion::new(
+-            activation, question, output, iz, next, "receipt",
++            activation, question, output, iz, trust, next, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         assert!(completion.closes_formula("receipt"));
+@@ -459,8 +470,8 @@
+         let b_output = derive_pd_output_digest(
+             11, 13, 12, "receipt", "output B", 1, 1, basis,
+         );
+-        let a_iz = derive_iz_digest(11, 12, a_output, "receipt", basis);
+-        let b_iz = derive_iz_digest(11, 12, b_output, "receipt", basis);
++        let a_iz = derive_iz_digest(11, 12, a_output, 99, "receipt", basis);
++        let b_iz = derive_iz_digest(11, 12, b_output, 99, "receipt", basis);
+         assert_ne!(a_output, b_output);
+         assert_ne!(a_iz, b_iz);
+         assert_ne!(
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/pd_light.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/pd_light.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/src/pd_light.rs	2026-07-15 06:04:28.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/src/pd_light.rs	2026-07-15 09:16:36.900300270 +0000
+@@ -1,17 +1,20 @@
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+ // ║ pd_light.rs — adapteri i verifikuar PD Quantum → PD Light → Nura       ║
+-// ║ ESS-MAI v1.6.0 — korrier kontekstual iZ, pa procedim Layer 1/2/3       ║
++// ║ ESS-MAI v1.6.1 — korrier kontekstual iZ, pa procedim Layer 1/2/3       ║
+ // ║                                                                          ║
+-// ║ Light nuk arsyeton dhe nuk verifikon përsëri. Ai kontrollon kontratën    ║
+-// ║ identike të receipt-it dhe kontinuumin `PD output + iZ → next i₀`, pastaj║
++// ║ Light nuk arsyeton. Ai rillogarit vetëm provën kushtetuese të receipt-it║
++// ║ dhe Vulën e Gjallë ×3, mbyll `PD output + iZ → next i₀`, pastaj         ║
+ // ║ projekton surface-in e mbyllur për Nura.                                 ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+ use crate::pd_continuum_contract::{
+     self as continuum, PdContinuumBasis, PdContinuumCompletion,
+ };
++use crate::living_trust_contract::{
++    self as living_trust, LivingTrustProof, LivingTrustSeal,
++};
+ 
+-/// 25 fushat e trupit të wire-it v1.5.6 (CRC-ja është fusha e 26-të jashtë
++/// 35 fushat e trupit të wire-it v1.6.1 (CRC-ja është fusha e 36-të jashtë
+ /// këtij tipi dhe hiqet nga `pa_wire::open_body` para parsimit).
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct PdRenderInput {
+@@ -40,6 +43,16 @@
+     pub iz_digest: u64,
+     pub continuum_completion_digest: u64,
+     pub continuation_basis: String,
++    pub living_trust_action_state: u64,
++    pub living_trust_knowledge_band: u8,
++    pub living_trust_lgc_law: u32,
++    pub living_trust_system_laws_seal: u64,
++    pub living_trust_sovereign_flags: u32,
++    pub living_trust_sovereign_value: u32,
++    pub living_trust_sha256: [u8; 32],
++    pub living_trust_intensity: u32,
++    pub living_trust_kind: u8,
++    pub living_trust_digest: u64,
+ }
+ 
+ /// Vetëm `PdLight::deliver` mund ta krijojë pasi të jenë verifikuar Shadow dhe
+@@ -64,6 +77,9 @@
+     pub genius_score: u32,
+     pub y_verdict: u8,
+     pub x_verdict: u8,
++    pub living_trust_intensity: u32,
++    pub living_trust_kind: u8,
++    pub living_trust_digest: u64,
+     pub continuity_digest: u64,
+ }
+ 
+@@ -76,8 +92,11 @@
+             input.next_i0_id.as_bytes(),
+             input.continuation_basis.as_bytes(),
+             &input.continuum_completion_digest.to_le_bytes(),
++            &input.living_trust_digest.to_le_bytes(),
++            &input.living_trust_intensity.to_le_bytes(),
++            &[input.living_trust_kind],
+             &[input.y_verdict, input.x_verdict],
+-            b"PD_LIGHT_IZ_UI_CONTINUITY_V160",
++            b"PD_LIGHT_IZ_UI_CONTINUITY_V161",
+         ]);
+         Self {
+             session_id: input.session_id.clone(),
+@@ -89,13 +108,16 @@
+             genius_score: input.genius_score,
+             y_verdict: input.y_verdict,
+             x_verdict: input.x_verdict,
++            living_trust_intensity: input.living_trust_intensity,
++            living_trust_kind: input.living_trust_kind,
++            living_trust_digest: input.living_trust_digest,
+             continuity_digest,
+         }
+     }
+ 
+     pub fn as_wire(&self) -> String {
+         format!(
+-            "{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}",
++            "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}|{:016x}",
+             self.session_id,
+             self.iz_id,
+             self.next_i0_id,
+@@ -105,6 +127,9 @@
+             self.genius_score,
+             self.y_verdict,
+             self.x_verdict,
++            self.living_trust_intensity,
++            self.living_trust_kind,
++            self.living_trust_digest,
+             self.continuity_digest,
+         )
+     }
+@@ -145,7 +170,7 @@
+     }
+ 
+     /// Compatibility API: surface-i mbetet i njëjtë, por rruga autoritative
+-    /// e v1.6.0 është `deliver`, sepse iZ ndahet paralelisht te Nura dhe UI.
++    /// e v1.6.1 është `deliver`, sepse iZ ndahet paralelisht te Nura dhe UI.
+     pub fn render(input: &PdRenderInput) -> Option<VerifiedPdSurface> {
+         Self::deliver(input).map(|delivery| delivery.surface)
+     }
+@@ -225,7 +250,10 @@
+             [session, concept, mass, coherence, genius, trl, question, parent_i0,
+              next_i0, y, x, seal, generation, receipt, basis, anchor, xy,
+              binding, activation, question_increment, output_id, output_digest,
+-             iz_id, iz_digest, completion_digest] => {
++             iz_id, iz_digest, completion_digest, trust_action_state,
++             trust_knowledge_band, trust_lgc_law, trust_system_laws_seal,
++             trust_sovereign_flags, trust_sovereign_value, trust_sha256,
++             trust_intensity, trust_kind, trust_digest] => {
+                 let parsed = (
+                     mass.trim().parse::<u32>(),
+                     coherence.trim().parse::<u32>(),
+@@ -243,10 +271,22 @@
+                     u64::from_str_radix(output_digest.trim(), 16),
+                     u64::from_str_radix(iz_digest.trim(), 16),
+                     u64::from_str_radix(completion_digest.trim(), 16),
++                    u64::from_str_radix(trust_action_state.trim(), 16),
++                    trust_knowledge_band.trim().parse::<u8>(),
++                    u32::from_str_radix(trust_lgc_law.trim(), 16),
++                    u64::from_str_radix(trust_system_laws_seal.trim(), 16),
++                    u32::from_str_radix(trust_sovereign_flags.trim(), 16),
++                    u32::from_str_radix(trust_sovereign_value.trim(), 16),
++                    living_trust::parse_hex_32(trust_sha256.trim()),
++                    trust_intensity.trim().parse::<u32>(),
++                    trust_kind.trim().parse::<u8>(),
++                    u64::from_str_radix(trust_digest.trim(), 16),
+                 );
+                 match parsed {
+                     (Ok(m), Ok(c), Ok(g), Ok(t), Ok(yv), Ok(xv), Ok(s), Ok(gen),
+-                     Ok(pa), Ok(xyd), Ok(bind), Ok(act), Ok(qd), Ok(od), Ok(izd), Ok(cd)) =>
++                     Ok(pa), Ok(xyd), Ok(bind), Ok(act), Ok(qd), Ok(od), Ok(izd),
++                     Ok(cd), Ok(action), Ok(band), Ok(law), Ok(laws), Ok(flags),
++                     Ok(value), Some(sha), Ok(intensity), Ok(kind), Ok(td)) =>
+                         Some(PdRenderInput {
+                             session_id: session.trim().to_string(),
+                             dominant_concept: concept.trim().to_string(),
+@@ -273,6 +313,16 @@
+                             iz_digest: izd,
+                             continuum_completion_digest: cd,
+                             continuation_basis: basis.trim().to_string(),
++                            living_trust_action_state: action,
++                            living_trust_knowledge_band: band,
++                            living_trust_lgc_law: law,
++                            living_trust_system_laws_seal: laws,
++                            living_trust_sovereign_flags: flags,
++                            living_trust_sovereign_value: value,
++                            living_trust_sha256: sha,
++                            living_trust_intensity: intensity,
++                            living_trust_kind: kind,
++                            living_trust_digest: td,
+                         }),
+                     _ => None,
+                 }
+@@ -301,11 +351,38 @@
+             self.xy_digest,
+             self.pd_binding_digest,
+             self.pd_continuum_activation_digest,
++            self.living_trust_digest,
+             self.y_verdict,
+             self.x_verdict,
+             self.verification_generation,
+             self.verification_seal,
+         );
++        let trust_proof = LivingTrustProof {
++            action_state: self.living_trust_action_state,
++            verified: self.y_verdict,
++            primitive: self.x_verdict,
++            knowledge_band: self.living_trust_knowledge_band,
++            lgc_law: self.living_trust_lgc_law,
++            system_laws_seal: self.living_trust_system_laws_seal,
++            sovereign_flags: self.living_trust_sovereign_flags,
++        };
++        let expected_trust = match living_trust::compute_with_intensity(
++            trust_proof,
++            self.living_trust_intensity,
++        ) {
++            Some(value) => value,
++            None => return false,
++        };
++        let received_trust = LivingTrustSeal {
++            identity_sha256: self.living_trust_sha256,
++            intensity: self.living_trust_intensity,
++            kind: self.living_trust_kind,
++            sovereign_value: self.living_trust_sovereign_value,
++        };
++        let trust_complete = expected_trust == received_trust
++            && self.living_trust_system_laws_seal
++                == crate::lab_contracts::gjata_collapse_law::system_laws_seal()
++            && self.living_trust_digest == received_trust.identity_digest();
+         let expected_output = continuum::derive_pd_output_digest(
+             self.pd_continuum_activation_digest,
+             self.pd_binding_digest,
+@@ -320,6 +397,7 @@
+             self.pd_continuum_activation_digest,
+             self.question_increment_digest,
+             self.pd_output_digest,
++            self.living_trust_digest,
+             &self.verification_receipt_id,
+             basis,
+         );
+@@ -328,11 +406,13 @@
+             self.question_increment_digest,
+             self.pd_output_digest,
+             self.iz_digest,
++            self.living_trust_digest,
+             self.next_i0_id.clone(),
+             &self.verification_receipt_id,
+             basis,
+         );
+         bits
++            && trust_complete
+             && !self.session_id.is_empty()
+             && !self.parent_i0.is_empty()
+             && self.verification_seal == expected_seal
+@@ -369,21 +449,33 @@
+         let pd_binding_digest = 0xCC;
+         let activation = 0xDD;
+         let question_increment = 0xEE;
++        let basis = PdContinuumBasis::VerifiedPositive;
++        let trust_proof = LivingTrustProof {
++            action_state: 0x1122_3344_5566_7788,
++            verified: 1,
++            primitive: 1,
++            knowledge_band: 2,
++            lgc_law: 0x47,
++            system_laws_seal:
++                crate::lab_contracts::gjata_collapse_law::system_laws_seal(),
++            sovereign_flags: 0xA451,
++        };
++        let trust = living_trust::compute_with_intensity(trust_proof, 7_500).unwrap();
++        let trust_digest = trust.identity_digest();
+         let receipt = crate::lab_contracts::verification_receipt::receipt_id(
+             &session_id, &parent_i0, primitive_anchor, xy_digest,
+-            pd_binding_digest, activation, 1, 1, generation, seal,
++            pd_binding_digest, activation, trust_digest, 1, 1, generation, seal,
+         );
+-        let basis = PdContinuumBasis::VerifiedPositive;
+         let output_digest = continuum::derive_pd_output_digest(
+             activation, pd_binding_digest, question_increment, &receipt,
+             "Cila është prova?", 1, 1, basis,
+         );
+         let iz_digest = continuum::derive_iz_digest(
+-            activation, question_increment, output_digest, &receipt, basis,
++            activation, question_increment, output_digest, trust_digest, &receipt, basis,
+         );
+         let next_i0 = continuum::derive_next_i0_id(output_digest, iz_digest);
+         let completion = PdContinuumCompletion::new(
+-            activation, question_increment, output_digest, iz_digest,
++            activation, question_increment, output_digest, iz_digest, trust_digest,
+             next_i0.clone(), &receipt, basis,
+         );
+         PdRenderInput {
+@@ -412,6 +504,16 @@
+             iz_digest,
+             continuum_completion_digest: completion.completion_digest,
+             continuation_basis: basis.label().to_string(),
++            living_trust_action_state: trust_proof.action_state,
++            living_trust_knowledge_band: trust_proof.knowledge_band,
++            living_trust_lgc_law: trust_proof.lgc_law,
++            living_trust_system_laws_seal: trust_proof.system_laws_seal,
++            living_trust_sovereign_flags: trust_proof.sovereign_flags,
++            living_trust_sovereign_value: trust.sovereign_value,
++            living_trust_sha256: trust.identity_sha256,
++            living_trust_intensity: trust.intensity,
++            living_trust_kind: trust.kind,
++            living_trust_digest: trust_digest,
+         }
+     }
+ 
+@@ -433,6 +535,14 @@
+     }
+ 
+     #[test]
++    fn living_trust_tamper_is_rejected() {
++        let mut input = sample();
++        input.living_trust_sha256[0] ^= 1;
++        assert!(!input.is_verification_complete());
++        assert!(PdLight::render(&input).is_none());
++    }
++
++    #[test]
+     fn verified_output_text_tamper_is_rejected() {
+         let mut input = sample();
+         input.probe_hint.push_str(" e ndryshuar");
+@@ -451,10 +561,10 @@
+     }
+ 
+     #[test]
+-    fn round_trip_25_fields() {
++    fn round_trip_35_fields() {
+         let e = sample();
+         let line = format!(
+-            "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}|{}|{}|{}|{:016x}|{:016x}|{:016x}|{:016x}|{:016x}|{}|{:016x}|{}|{:016x}|{:016x}",
++            "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}|{}|{}|{}|{:016x}|{:016x}|{:016x}|{:016x}|{:016x}|{}|{:016x}|{}|{:016x}|{:016x}|{:016x}|{}|{:08x}|{:016x}|{:08x}|{:08x}|{}|{}|{}|{:016x}",
+             e.session_id, e.dominant_concept, e.accumulated_mass,
+             e.structural_coherence, e.genius_score, e.estimated_trl,
+             e.probe_hint, e.parent_i0, e.next_i0_id, e.y_verdict, e.x_verdict,
+@@ -463,7 +573,13 @@
+             e.primitive_anchor, e.xy_digest, e.pd_binding_digest,
+             e.pd_continuum_activation_digest, e.question_increment_digest,
+             e.pd_output_id, e.pd_output_digest, e.iz_id, e.iz_digest,
+-            e.continuum_completion_digest,
++            e.continuum_completion_digest, e.living_trust_action_state,
++            e.living_trust_knowledge_band, e.living_trust_lgc_law,
++            e.living_trust_system_laws_seal, e.living_trust_sovereign_flags,
++            e.living_trust_sovereign_value,
++            living_trust::hex_32(&e.living_trust_sha256),
++            e.living_trust_intensity, e.living_trust_kind,
++            e.living_trust_digest,
+         );
+         assert_eq!(PdLight::parse_handoff(&line), Some(e));
+     }
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-15 09:07:49.037010672 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name = "nura-legacy-ui"
+-version = "1.6.0"
++version = "1.6.1"
+ description = "Nura Legacy (ESS-MAI) UI Shell — lidhet me Light"
+ authors = ["Gjata Legacy"]
+ edition = "2021"
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-15 08:32:23.631239846 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "quantum-platform"
+-version     = "1.6.0"
++version     = "1.6.1"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Quantum — zero if/else + orkestratori + SHA-256 + Digital Lab + NPRO/NPIM + Layer 2"
+@@ -24,6 +24,7 @@
+ rust-stemmers        = { version = "1.2",  optional = true }
+ # v1.5.9: Quantum njeh vetëm FORMËN wire. Autoriteti Shadow nuk linkohet.
+ shadow_contracts = { path = "../shadow-contracts" }
++sha2 = "0.10"
+ 
+ [build-dependencies]
+ cc = "1"
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/bridge_shadow/mod.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/bridge_shadow/mod.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/bridge_shadow/mod.rs	2026-07-14 12:12:09.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/bridge_shadow/mod.rs	2026-07-15 09:18:41.158085793 +0000
+@@ -205,6 +205,7 @@
+     pub verification_xy_digest: u64,
+     pub verification_pd_binding_digest: u64,
+     pub verification_pd_continuum_activation_digest: u64,
++    pub verification_living_trust_digest: u64,
+     pub reason_code: u32,
+     pub failure_stage: &'static str,
+     pub source_module: &'static str,
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/lab_contracts/verification_receipt.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/lab_contracts/verification_receipt.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/lab_contracts/verification_receipt.rs	2026-07-14 11:47:29.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/lab_contracts/verification_receipt.rs	2026-07-15 09:13:21.420240768 +0000
+@@ -1,6 +1,6 @@
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+ // ║ VERIFICATION_RECEIPT — KONTRATA KANONIKE E MBYLLJES XY                ║
+-// ║ v1.5.6: receipt-i lidhet edhe me kandidatin PD/Spine 9.                ║
++// ║ v1.6.1: receipt-i lidh kandidatin PD/Spine 9 me Vulën e Gjallë.       ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+ pub const VERIFICATION_SEAL_NAME: &[u8] = b"SHADOW_VERIFICATION_OUTPUT";
+@@ -26,6 +26,7 @@
+     xy_digest:         u64,
+     pd_binding_digest: u64,
+     pd_continuum_activation_digest: u64,
++    living_trust_digest: u64,
+     y_verdict:         u8,
+     x_verdict:         u8,
+     generation:        u64,
+@@ -39,6 +40,7 @@
+     proof.extend_from_slice(&xy_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_binding_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_continuum_activation_digest.to_le_bytes());
++    proof.extend_from_slice(&living_trust_digest.to_le_bytes());
+     proof.push(y_verdict);
+     proof.push(x_verdict);
+     proof.extend_from_slice(&generation.to_le_bytes());
+@@ -52,15 +54,17 @@
+ 
+     #[test]
+     fn receipt_is_deterministic_and_bound_to_parent_and_pd_candidate() {
+-        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 1, 1, 3, 11);
+-        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 1, 1, 3, 11);
++        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 19, 1, 1, 3, 11);
++        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 19, 1, 1, 3, 11);
++        let other_trust = receipt_id("s", "i0-a", 7, 9, 13, 17, 20, 1, 1, 3, 11);
+         assert_eq!(a, b);
+         assert_ne!(a, other_parent);
+         assert_ne!(a, other_pd);
+         assert_ne!(a, other_continuum);
++        assert_ne!(a, other_trust);
+     }
+ 
+     #[test]
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/lib.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/lib.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/lib.rs	2026-07-14 11:45:42.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/lib.rs	2026-07-15 08:32:23.631721972 +0000
+@@ -20,6 +20,7 @@
+ pub mod phase9_integration; // FAZA 9: lidh quantum_spine me rrjedhën (5 ligjet)
+ pub mod pd_continuum_contract; // v1.5.6: i + U → i₀ → 1Q → output + iZ → next i₀
+ pub mod pd_spine_contract; // v1.5.6: kontrata PD→Spine9→Layer1/2/3 e lidhur me continuum
++pub mod living_trust_contract; // v1.6.1: GCL vula e gjallë × Light/Quantum/Shadow
+ 
+ // ── KUSHTETUTA + KONTROLLI (Teorite 52, 32, 35) ──────────────────────────
+ pub mod laws;        // 5 ligjet sovereign
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/living_trust_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/living_trust_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/living_trust_contract.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/living_trust_contract.rs	2026-07-15 09:27:47.149049601 +0000
+@@ -0,0 +1,226 @@
++// ╔══════════════════════════════════════════════════════════════════════════╗
++// ║ LIVING_TRUST_CONTRACT.RS — GCL VULA E GJALLË E BESIMIT v1.6.1          ║
++// ║                                                                          ║
++// ║ Faza 1 prodhon vetëm `action_state` të lehtë. Ky modul nuk hash-on       ║
++// ║ modulet veçmas. Faza 2 kryen NJË SHA-256 mbi gjendjen e konverguar,      ║
++// ║ verdiktin suprem, ligjet aktive dhe provën L-500.                        ║
++// ║                                                                          ║
++// ║ Skedari mbahet byte-identik në Light, Quantum dhe Shadow.                ║
++// ╚══════════════════════════════════════════════════════════════════════════╝
++
++use sha2::{Digest, Sha256};
++
++pub const LIVING_TRUST_CONTRACT_VERSION: u32 = 0x0001_0601;
++pub const TRUST_INTENSITY_SCALE: u32 = 10_000;
++pub const TRUST_KIND_NONE: u8 = 0;
++pub const TRUST_KIND_CONSTRUCTIVE: u8 = 1;
++pub const TRUST_KIND_RIGOROUS_NEGATIVE: u8 = 2;
++
++pub const SOVEREIGN_SEAL_XOR: u32 = 0xA5A5;
++pub const SOVEREIGN_SEAL_MASK: u32 = 0x0000_FFFF;
++pub const SOVEREIGN_SEAL_PRIMITIVE: u32 = 500;
++pub const LEGACY_BITS_MASK: u32 = 0x54; // LEGACY_PATH | NEGATIVE | ECO
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustProof {
++    pub action_state: u64,
++    pub verified: u8,
++    pub primitive: u8,
++    pub knowledge_band: u8,
++    pub lgc_law: u32,
++    pub system_laws_seal: u64,
++    pub sovereign_flags: u32,
++}
++
++impl LivingTrustProof {
++    pub fn legacy_bits(self) -> u32 {
++        self.lgc_law & LEGACY_BITS_MASK
++    }
++
++    pub fn sovereign_value(self) -> u32 {
++        (self.sovereign_flags & SOVEREIGN_SEAL_MASK) ^ SOVEREIGN_SEAL_XOR
++    }
++
++    pub fn constitutional_kind(self) -> u8 {
++        match (self.verified, self.primitive) {
++            (1, 1) => TRUST_KIND_CONSTRUCTIVE,
++            (0, 0) => TRUST_KIND_RIGOROUS_NEGATIVE,
++            _ => TRUST_KIND_NONE,
++        }
++    }
++
++    pub fn is_admissible(self) -> bool {
++        self.action_state != 0
++            && self.system_laws_seal != 0
++            && self.sovereign_flags != 0
++            && self.sovereign_value() == SOVEREIGN_SEAL_PRIMITIVE
++            && self.verified <= 1
++            && self.primitive <= 1
++            && self.constitutional_kind() != TRUST_KIND_NONE
++    }
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustSeal {
++    pub identity_sha256: [u8; 32],
++    pub intensity: u32,
++    pub kind: u8,
++    pub sovereign_value: u32,
++}
++
++impl LivingTrustSeal {
++    pub fn identity_hex(self) -> String {
++        hex_32(&self.identity_sha256)
++    }
++
++    pub fn identity_digest(self) -> u64 {
++        digest_parts(&[
++            self.identity_sha256.as_slice(),
++            &self.intensity.to_le_bytes(),
++            &[self.kind],
++            &self.sovereign_value.to_le_bytes(),
++            b"GCL_LIVING_TRUST_TO_IZ_V161",
++        ])
++    }
++
++    pub fn verifies(self, proof: LivingTrustProof, legacy_score: f32) -> bool {
++        match compute(proof, legacy_score) {
++            Some(expected) => expected == self,
++            None => false,
++        }
++    }
++}
++
++pub fn intensity_from_legacy_score(legacy_score: f32) -> Option<u32> {
++    match legacy_score.is_finite() {
++        true => Some(
++            (legacy_score.clamp(0.0, 1.0) * TRUST_INTENSITY_SCALE as f32)
++                .round() as u32,
++        ),
++        false => None,
++    }
++}
++
++/// Pulsi i vetëm SHA-256. Nuk ruan state dhe nuk kryen I/O.
++pub fn compute(proof: LivingTrustProof, legacy_score: f32) -> Option<LivingTrustSeal> {
++    let intensity = intensity_from_legacy_score(legacy_score)?;
++    compute_with_intensity(proof, intensity)
++}
++
++/// Riverifikimi ndër-platformik përdor intensitetin fixed-point të vulosur.
++/// Kjo shmang rikonstruksionin me float në kufirin Quantum → Light, ndërsa
++/// materiali kanonik i SHA-256 mbetet byte-identik në të tria platformat.
++pub fn compute_with_intensity(
++    proof: LivingTrustProof,
++    intensity: u32,
++) -> Option<LivingTrustSeal> {
++    match proof.is_admissible() && intensity <= TRUST_INTENSITY_SCALE {
++        true => {}
++        false => return None,
++    }
++    let kind = proof.constitutional_kind();
++    let sovereign_value = proof.sovereign_value();
++
++    let mut material = Vec::with_capacity(128);
++    material.extend_from_slice(b"GCL_LIVING_TRUST_V161");
++    material.extend_from_slice(&LIVING_TRUST_CONTRACT_VERSION.to_le_bytes());
++    material.extend_from_slice(&proof.action_state.to_le_bytes());
++    material.push(proof.verified);
++    material.push(proof.primitive);
++    material.push(proof.knowledge_band);
++    material.extend_from_slice(&proof.lgc_law.to_le_bytes());
++    material.extend_from_slice(&proof.legacy_bits().to_le_bytes());
++    material.extend_from_slice(&proof.system_laws_seal.to_le_bytes());
++    material.extend_from_slice(&proof.sovereign_flags.to_le_bytes());
++    material.extend_from_slice(&sovereign_value.to_le_bytes());
++
++    // Identiteti 32-byte ndjek formulën kushtetuese të paradigmës:
++    // action_state + verdict + ligjet aktive + L-500. Intensiteti dhe lloji
++    // janë forca/klasa e Besimit pranë identitetit; lidhen më pas te
++    // VerificationReceipt, iZ dhe next_i0 përmes `identity_digest()`.
++    let digest = Sha256::digest(&material);
++    let mut identity_sha256 = [0u8; 32];
++    identity_sha256.copy_from_slice(&digest);
++    Some(LivingTrustSeal {
++        identity_sha256,
++        intensity,
++        kind,
++        sovereign_value,
++    })
++}
++
++pub fn parse_hex_32(value: &str) -> Option<[u8; 32]> {
++    match value.len() == 64 && value.as_bytes().iter().all(u8::is_ascii_hexdigit) {
++        true => {}
++        false => return None,
++    }
++    let mut out = [0u8; 32];
++    for (index, slot) in out.iter_mut().enumerate() {
++        let start = index * 2;
++        *slot = u8::from_str_radix(&value[start..start + 2], 16).ok()?;
++    }
++    Some(out)
++}
++
++pub fn hex_32(value: &[u8; 32]) -> String {
++    let mut out = String::with_capacity(64);
++    for byte in value {
++        use std::fmt::Write as _;
++        let _ = write!(&mut out, "{byte:02x}");
++    }
++    out
++}
++
++pub fn digest_parts(parts: &[&[u8]]) -> u64 {
++    parts.iter().fold(0xcbf2_9ce4_8422_2325u64, |acc, part| {
++        part.iter().fold(acc, |hash, byte| {
++            (hash ^ u64::from(*byte)).wrapping_mul(0x0000_0100_0000_01b3)
++        })
++    })
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn proof(verified: u8, primitive: u8) -> LivingTrustProof {
++        LivingTrustProof {
++            action_state: 0x1122_3344_5566_7788,
++            verified,
++            primitive,
++            knowledge_band: 2,
++            lgc_law: 0x47,
++            system_laws_seal: 0x8877_6655_4433_2211,
++            sovereign_flags: 0xA451,
++        }
++    }
++
++    #[test]
++    fn constructive_and_rigorous_negative_are_constitutional() {
++        assert_eq!(compute(proof(1, 1), 0.75).unwrap().kind, TRUST_KIND_CONSTRUCTIVE);
++        assert_eq!(compute(proof(0, 0), 0.75).unwrap().kind, TRUST_KIND_RIGOROUS_NEGATIVE);
++        assert!(compute(proof(1, 0), 0.75).is_none());
++    }
++
++    #[test]
++    fn l500_and_action_state_are_mandatory() {
++        let mut p = proof(1, 1);
++        p.sovereign_flags = 0;
++        assert!(compute(p, 0.5).is_none());
++        p = proof(1, 1);
++        p.action_state = 0;
++        assert!(compute(p, 0.5).is_none());
++    }
++
++    #[test]
++    fn same_whole_system_produces_same_sha256() {
++        let a = compute(proof(1, 1), 0.75).unwrap();
++        let b = compute(proof(1, 1), 0.75).unwrap();
++        assert_eq!(a, b);
++        assert_eq!(compute_with_intensity(proof(1, 1), a.intensity), Some(a));
++        let stronger = compute_with_intensity(proof(1, 1), 9_000).unwrap();
++        assert_eq!(stronger.identity_sha256, a.identity_sha256);
++        assert_ne!(stronger.identity_digest(), a.identity_digest());
++        assert_eq!(parse_hex_32(&a.identity_hex()), Some(a.identity_sha256));
++    }
++}
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/main.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/main.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/main.rs	2026-07-15 07:08:42.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/main.rs	2026-07-15 09:16:36.902160477 +0000
+@@ -137,6 +137,7 @@
+     println!("\n{}", "═".repeat(76));
+     println!("  {}", name);
+     println!("{}", "═".repeat(76));
++    quantum_lim::runtime_pulse::begin_cycle();
+ 
+     // ════════ LIGHT → QUANTUM (deserialize) ════════
+     let input = match QuantumInput::deserialize(light_payload) {
+@@ -327,7 +328,6 @@
+     };
+     let frags: Vec<String> = lim.collector().fragments().to_vec();
+     let lim_metric = scaffold.lim.clone();
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Mpro);
+     ucl_step(&mut ucl, UclEvent::MeasureLim8, &mut ucl_breach); // 8 akset u matën
+     println!("  [LIM]      mass={:.3}", scaffold.lim.epistemic_mass);
+ 
+@@ -422,7 +422,15 @@
+         Err(_)    => KnowledgeVault::new(), // herën e parë: bosh
+     };
+     let pro = ProEngine::activate(&hw, &frags, &mut vault);
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Pro);
++    let pro_action = [
++        pro.candidates.len() as u64,
++        pro.candidates.first().map(|c| u64::from(c.score.to_bits())).unwrap_or(0),
++        pro.candidates.last().map(|c| u64::from(c.score.to_bits())).unwrap_or(0),
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Pro,
++        &pro_action,
++    );
+     ucl_step(&mut ucl, UclEvent::SearchPro, &mut ucl_breach); // i≈XY u kërkua (4 op)
+     println!("  [PRO]      {} kandidatë", pro.candidates.len());
+ 
+@@ -453,7 +461,16 @@
+     // LIM ia përcaktoi sinjalet reale NPRO-s (density/continuity ↑); NPRO
+     // nxori forbidden_paths; tani termat e (Xi,Yi) që bien në to shënohen
+     // NEGATIVE — rrugë të eliminuara, të ruajtura si ASET (kurrë të fshira).
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Npro);
++    let npro_action = [
++        npro.eliminations.len() as u64,
++        u64::from(npro.weakness_signal.avg_weakness.to_bits()),
++        npro.weakness_signal.forbidden_paths.len() as u64,
++        u64::from(npro_hard.consensus_strength.to_bits()),
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Npro,
++        &npro_action,
++    );
+     let neg_paths = mark_negative_spaces(&psplit, &npro.weakness_signal);
+     println!("  [KOLAPS/2] eliminime hapësirash: {} rrugë negative (-Xi/-Yi)",
+         neg_paths.len());
+@@ -474,7 +491,17 @@
+ 
+     // NPIM → Shadow: NegativeInbound (byte-for-byte me Shadow NegativeContext).
+     let neg_inbound = quantum_lim::NpimShadowBridge::build(&npim, territory);
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Npim);
++    let npim_action = [
++        u64::from(npim.negativity.failure_density.to_bits()),
++        u64::from(npim.negativity.contradiction_strength.to_bits()),
++        u64::from(npim.negativity.elimination_certainty.to_bits()),
++        u64::from(npim.negativity.negativity_score.to_bits()),
++        npim.arguments.len() as u64,
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Npim,
++        &npim_action,
++    );
+     println!("  [NPIM→SHADOW] NegativeContext: reason={} process={} mass={:.3} freq={}",
+         neg_inbound.failure_reason_code, neg_inbound.process,
+         neg_inbound.mass_at_fail, neg_inbound.frequency);
+@@ -488,7 +515,18 @@
+         trl_candidate: 2, pro_mode: "deep".to_string(),
+     };
+     let pass = PassInfoMetric::measure(&reasoning, &state, &input.trace_id);
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Pim);
++    let pim_action = [
++        u64::from(pass.potentiality.evidence_density.to_bits()),
++        u64::from(pass.potentiality.logical_coherence.to_bits()),
++        u64::from(pass.potentiality.causal_integrity.to_bits()),
++        u64::from(pass.potentiality.convergence_strength.to_bits()),
++        u64::from(pass.potentiality.reproducibility.to_bits()),
++        pass.proof_chain.len() as u64,
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Pim,
++        &pim_action,
++    );
+ 
+     // ══ FORMULA: XiYi → XY — kolapsi i arsyetimit në propozim.
+     // PRO-fryma: i~ (indicia e përbashkët) = bashkëprezenca më e fortë e një
+@@ -506,7 +544,16 @@
+ 
+     // ══ APRO — argumenton kandidatët e PRO dhe eliminimet e NPRO (ligji: i≈XY → APRO).
+     let apro_arg = quantum_lim::apro::Apro::argue(&pro, &npro);
+-    quantum_lim::runtime_pulse::mark_ready(quantum_lim::runtime_pulse::Stage::Apro);
++    let apro_action = [
++        u64::from(apro_arg.measures[0]),
++        u64::from(apro_arg.measures[1]),
++        u64::from(apro_arg.measures[2]),
++        u64::from(apro_arg.measures[3]),
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Apro,
++        &apro_action,
++    );
+     println!("  [APRO]     {}", apro_arg.report());
+     ucl_step(&mut ucl, UclEvent::ArgueApro, &mut ucl_breach); // 4 argumentet qëndruan
+ 
+@@ -546,6 +593,19 @@
+         sv.mass.saturating_mul(evidence_mass_fixed.raw())
+             / quantum_lim::pd_spine_contract::MASS_SCALE,
+     );
++    let mpro_action = [
++        u64::from(pro4[0]), u64::from(pro4[1]), u64::from(pro4[2]), u64::from(pro4[3]),
++        u64::from(npro4[0]), u64::from(npro4[1]), u64::from(npro4[2]), u64::from(npro4[3]),
++        u64::from(hpro4[0]), u64::from(hpro4[1]), u64::from(hpro4[2]), u64::from(hpro4[3]),
++        u64::from(apro_arg.measures[0]), u64::from(apro_arg.measures[1]),
++        u64::from(apro_arg.measures[2]), u64::from(apro_arg.measures[3]),
++        u64::from(sv.positives), u64::from(sv.total), u64::from(sv.mass),
++        u64::from(evidence_mass_fixed.raw()), u64::from(mpro_factic.raw()),
++    ];
++    quantum_lim::runtime_pulse::mark_action(
++        quantum_lim::runtime_pulse::Stage::Mpro,
++        &mpro_action,
++    );
+     println!("  [MPRO]     {}/{} matje → masë={} | × evidencë {} → FAKTIK={} | sealed={}",
+         sv.positives, sv.total,
+         quantum_lim::pd_spine_contract::FixedMass::new(sv.mass).decimal_4(),
+@@ -908,8 +968,17 @@
+             argument.weakness_score.to_bits(),
+         )
+     }).collect();
++    let quantum_action_state = quantum_lim::runtime_pulse::action_state();
++    match quantum_action_state != 0 {
++        true => {}
++        false => {
++            eprintln!("  [GCL/BESIM] FAIL-CLOSED: organet nuk konverguan në action_state");
++            return;
++        }
++    }
+     let mut final_evidence = shadow_contracts::FinalEvidenceWire {
+         pd_spine: pd_spine_evidence,
++        quantum_action_state,
+         light_input_sha256: input.input_sha256.to_ascii_lowercase(),
+         light_input_bytes: input.text.as_bytes().to_vec(),
+         pim_evidence_density: fixed(pass.potentiality.evidence_density),
+@@ -1020,6 +1089,71 @@
+         }
+     };
+ 
++    // GCL VULA E GJALLË × QUANTUM: marrësi rillogarit të njëjtin puls SHA-256.
++    // Shadow sjell verdiktin; Quantum sjell action_state-in e vet real dhe ligjet
++    // byte-identike. Asnjëra palë nuk i beson thjesht string-ut të wire-it.
++    let trust_wire_identity = match quantum_lim::living_trust_contract::parse_hex_32(
++        &shadow_response.verdict.living_trust_sha256,
++    ) {
++        Some(value) => value,
++        None => {
++            eprintln!("  [GCL/BESIM×Q] FAIL-CLOSED: SHA-256 i Shadow nuk është kanonik");
++            return;
++        }
++    };
++    let trust_proof = quantum_lim::living_trust_contract::LivingTrustProof {
++        action_state: quantum_action_state,
++        verified: shadow_response.verdict.verified,
++        primitive: shadow_response.verdict.primitive,
++        knowledge_band: shadow_response.verdict.knowledge_band,
++        lgc_law: shadow_response.verdict.lgc_law,
++        system_laws_seal:
++            quantum_lim::lab_contracts::gjata_collapse_law::system_laws_seal(),
++        sovereign_flags: inbound.primitive_flags,
++    };
++    let quantum_living_trust = match quantum_lim::living_trust_contract::compute(
++        trust_proof,
++        shadow_response.verdict.legacy_score,
++    ) {
++        Some(seal) => seal,
++        None => {
++            eprintln!("  [GCL/BESIM×Q] FAIL-CLOSED: verdikti nuk prodhoi Besim kushtetues");
++            return;
++        }
++    };
++    let trust_matches = shadow_response.verdict.living_trust_action_state
++            == quantum_action_state
++        && shadow_response.verdict.living_trust_system_laws_seal
++            == trust_proof.system_laws_seal
++        && shadow_response.verdict.living_trust_sovereign_flags
++            == trust_proof.sovereign_flags
++        && shadow_response.verdict.living_trust_sovereign_value
++            == quantum_living_trust.sovereign_value
++        && trust_wire_identity == quantum_living_trust.identity_sha256
++        && shadow_response.verdict.living_trust_intensity
++            == quantum_living_trust.intensity
++        && shadow_response.verdict.living_trust_kind == quantum_living_trust.kind;
++    match trust_matches {
++        true => println!(
++            "  [GCL/BESIM×Q] SHA256={} intensity={} kind={} (Shadow=Quantum ✓)",
++            quantum_living_trust.identity_hex(),
++            quantum_living_trust.intensity,
++            quantum_living_trust.kind,
++        ),
++        false => {
++            eprintln!("  [GCL/BESIM×Q] FAIL-CLOSED: Shadow dhe Quantum nuk prodhuan të njëjtën vulë");
++            return;
++        }
++    }
++    let living_trust_digest = quantum_living_trust.identity_digest();
++    match shadow_response.verification_receipt.living_trust_digest == living_trust_digest {
++        true => {}
++        false => {
++            eprintln!("  [GCL/BESIM×Q] FAIL-CLOSED: receipt-i sovran nuk mban digest-in e Besimit");
++            return;
++        }
++    }
++
+     // FAZA 2 E PD: nuk kërkon seal nga Shadow. Merr output-in aktual tashmë të
+     // mbyllur nga Shadow: receipt-i provon se seal-i i verifikimit hapi dhe
+     // konsumoi LgcToken brenda autoritetit të Shadow.
+@@ -1036,6 +1170,11 @@
+         verification_seal: shadow_response.verification_receipt.seal,
+         verification_generation: shadow_response.verification_receipt.generation,
+         verification_receipt_id: shadow_response.verification_receipt.receipt_id.clone(),
++        living_trust_sha256: quantum_living_trust.identity_sha256,
++        living_trust_intensity: quantum_living_trust.intensity,
++        living_trust_kind: quantum_living_trust.kind,
++        living_trust_sovereign_value: quantum_living_trust.sovereign_value,
++        living_trust_digest,
+     };
+ 
+     let pd_closure: Option<PdContinuumClosure> = match pd_pending_next {
+@@ -1124,11 +1263,13 @@
+             pkg,
+             closure,
+             &shadow_response.verification_receipt,
++            &shadow_response.verdict,
+         ),
+         (true, None, Some(closure)) => export_pd_probe(
+             &input.trace_id,
+             closure,
+             &shadow_response.verification_receipt,
++            &shadow_response.verdict,
+         ),
+         (false, _, Some(closure)) => eprintln!(
+             "  [PD→LIGHT] next-i₀={} u mbajt: Negative Knowledge s'u persistua",
+@@ -1809,6 +1950,7 @@
+     session_id: &str,
+     closure: &quantum_lim::progressive_debatic::PdContinuumClosure,
+     receipt: &shadow_contracts::VerificationReceiptWire,
++    verdict: &shadow_contracts::ShadowVerdictWire,
+ ) {
+     export_pd_verified_line(
+         session_id,
+@@ -1819,6 +1961,7 @@
+         0,
+         Some(closure),
+         receipt,
++        verdict,
+         "main::export_pd_probe",
+     );
+ }
+@@ -1828,6 +1971,7 @@
+     pkg: &quantum_lim::progressive_debatic::PdCognitivePackage,
+     closure: Option<&quantum_lim::progressive_debatic::PdContinuumClosure>,
+     receipt: &shadow_contracts::VerificationReceiptWire,
++    verdict: &shadow_contracts::ShadowVerdictWire,
+ ) {
+     export_pd_verified_line(
+         session_id,
+@@ -1838,6 +1982,7 @@
+         pkg.estimated_trl,
+         closure,
+         receipt,
++        verdict,
+         "main::export_pd_handoff",
+     );
+ 
+@@ -1865,9 +2010,11 @@
+     trl: u8,
+     closure: Option<&quantum_lim::progressive_debatic::PdContinuumClosure>,
+     receipt: &shadow_contracts::VerificationReceiptWire,
++    verdict: &shadow_contracts::ShadowVerdictWire,
+     source: &'static str,
+ ) {
+-    // v1.5.6: receipt-i dhe formula `PD output + iZ → next i₀` udhëtojnë bashkë.
++    // v1.6.1: receipt-i, Vula e Gjallë ×3 dhe formula
++    // `PD output + iZ(Besim) → next i₀` udhëtojnë në një dorëzim të vetëm.
+     let receipt_expected = quantum_lim::lab_contracts::verification_receipt::receipt_id(
+         &receipt.session_id,
+         &receipt.parent_i0,
+@@ -1875,6 +2022,7 @@
+         receipt.xy_digest,
+         receipt.pd_binding_digest,
+         receipt.pd_continuum_activation_digest,
++        receipt.living_trust_digest,
+         receipt.y_verdict,
+         receipt.x_verdict,
+         receipt.generation,
+@@ -1886,6 +2034,8 @@
+         && receipt.xy_digest != 0
+         && receipt.pd_binding_digest != 0
+         && receipt.pd_continuum_activation_digest != 0
++        && receipt.y_verdict == verdict.verified
++        && receipt.x_verdict == verdict.primitive
+         && quantum_lim::lab_contracts::verification_receipt::constitutional_pair(
+             receipt.y_verdict, receipt.x_verdict,
+         )
+@@ -1893,7 +2043,54 @@
+     match receipt_valid {
+         true => {}
+         false => {
+-            eprintln!("  [PD→LIGHT] ALARM: verification receipt nuk lidhet me i₀/XY aktual");
++            eprintln!("  [PD→LIGHT] ALARM: verification receipt nuk lidhet me i₀/XY/verdict-in aktual");
++            return;
++        }
++    }
++
++    let trust_identity = match quantum_lim::living_trust_contract::parse_hex_32(
++        &verdict.living_trust_sha256,
++    ) {
++        Some(value) => value,
++        None => {
++            eprintln!("  [PD→LIGHT] ALARM: Vula e Gjallë nuk ka SHA-256 kanonik");
++            return;
++        }
++    };
++    let trust_proof = quantum_lim::living_trust_contract::LivingTrustProof {
++        action_state: verdict.living_trust_action_state,
++        verified: verdict.verified,
++        primitive: verdict.primitive,
++        knowledge_band: verdict.knowledge_band,
++        lgc_law: verdict.lgc_law,
++        system_laws_seal: verdict.living_trust_system_laws_seal,
++        sovereign_flags: verdict.living_trust_sovereign_flags,
++    };
++    let trust = match quantum_lim::living_trust_contract::compute_with_intensity(
++        trust_proof,
++        verdict.living_trust_intensity,
++    ) {
++        Some(value) => value,
++        None => {
++            eprintln!("  [PD→LIGHT] ALARM: prova e Besimit nuk është kushtetuese");
++            return;
++        }
++    };
++    let trust_valid = trust.identity_sha256 == trust_identity
++        && trust.kind == verdict.living_trust_kind
++        && trust.sovereign_value == verdict.living_trust_sovereign_value;
++    match trust_valid {
++        true => {}
++        false => {
++            eprintln!("  [PD→LIGHT] ALARM: prova dhe vula e Besimit nuk përputhen");
++            return;
++        }
++    }
++    let living_trust_digest = trust.identity_digest();
++    match receipt.living_trust_digest == living_trust_digest {
++        true => {}
++        false => {
++            eprintln!("  [PD→LIGHT] ALARM: receipt-i nuk është lidhur me Vulën e Gjallë");
+             return;
+         }
+     }
+@@ -1915,6 +2112,13 @@
+                     && n.pd_binding_digest == receipt.pd_binding_digest
+                     && n.continuum_activation_digest
+                         == receipt.pd_continuum_activation_digest
++                    && n.living_trust_sha256 == trust.identity_sha256
++                    && n.living_trust_intensity == trust.intensity
++                    && n.living_trust_kind == trust.kind
++                    && n.living_trust_sovereign_value == trust.sovereign_value
++                    && n.living_trust_digest == living_trust_digest
++                    && c.iz.living_trust_digest == living_trust_digest
++                    && c.contract.living_trust_digest == living_trust_digest
+                     && c.contract.closes_formula(&receipt.receipt_id)
+                     && c.contract.completion_digest == n.continuum_completion_digest
+                     && c.output.output_digest == n.pd_output_digest
+@@ -1932,7 +2136,7 @@
+                         n.continuum_completion_digest,
+                     ),
+                     false => {
+-                        eprintln!("  [PD→LIGHT] ALARM: output+iZ nuk janë fëmijë të receipt-it final");
++                        eprintln!("  [PD→LIGHT] ALARM: output+iZ+Besim nuk janë fëmijë të receipt-it final");
+                         return;
+                     }
+                 }
+@@ -1940,9 +2144,9 @@
+             None => return,
+         };
+ 
+-    // 25 fusha trupi + CRC (26 total): Shadow receipt + kontinuumi PD.
++    // 35 fusha trupi + CRC (36 total): Shadow receipt, Vula e Gjallë ×3 dhe iZ.
+     let body = format!(
+-        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}|{}|{}|{}|{:016x}|{:016x}|{:016x}|{:016x}|{:016x}|{}|{:016x}|{}|{:016x}|{:016x}",
++        "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{:016x}|{}|{}|{}|{:016x}|{:016x}|{:016x}|{:016x}|{:016x}|{}|{:016x}|{}|{:016x}|{:016x}|{:016x}|{}|{:08x}|{:016x}|{:08x}|{:08x}|{}|{}|{}|{:016x}",
+         wire_clean(session_id),
+         wire_clean(concept),
+         mass,
+@@ -1968,6 +2172,16 @@
+         iz_id,
+         iz_digest,
+         completion_digest,
++        verdict.living_trust_action_state,
++        verdict.knowledge_band,
++        verdict.lgc_law,
++        verdict.living_trust_system_laws_seal,
++        verdict.living_trust_sovereign_flags,
++        verdict.living_trust_sovereign_value,
++        wire_clean(&verdict.living_trust_sha256),
++        verdict.living_trust_intensity,
++        verdict.living_trust_kind,
++        living_trust_digest,
+     );
+ 
+     let line = match quantum_lim::lab_contracts::pa_wire::seal_body_verified(
+@@ -1998,3 +2212,4 @@
+         Err(e) => eprintln!("  [PD→LIGHT] ALARM: quantum_pd_export.txt s'u hap ({e})"),
+     }
+ }
++
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/pd_continuum_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/pd_continuum_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/pd_continuum_contract.rs	2026-07-14 17:04:04.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/pd_continuum_contract.rs	2026-07-15 08:39:31.582660540 +0000
+@@ -3,7 +3,7 @@
+ // ║ ESS-MAI v1.5.7 — byte-for-byte identike në Light/Quantum/Shadow          ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0507;
++pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0601;
+ pub const QUESTION_INCREMENT_UNITS: u32 = 1;
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+@@ -273,6 +273,7 @@
+     activation_digest: u64,
+     question_increment_digest: u64,
+     pd_output_digest: u64,
++    living_trust_digest: u64,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+ ) -> u64 {
+@@ -281,9 +282,10 @@
+         &activation_digest.to_le_bytes(),
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+-        b"PD_COMPLETES_IZ",
++        b"PD_COMPLETES_IZ_WITH_LIVING_TRUST_V161",
+     ])
+ }
+ 
+@@ -307,6 +309,7 @@
+     question_increment_digest: u64,
+     pd_output_digest: u64,
+     iz_digest: u64,
++    living_trust_digest: u64,
+     next_i0_id: &str,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+@@ -317,6 +320,7 @@
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
+         &iz_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         next_i0_id.as_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+@@ -331,6 +335,7 @@
+     pub question_increment_digest: u64,
+     pub pd_output_digest: u64,
+     pub iz_digest: u64,
++    pub living_trust_digest: u64,
+     pub next_i0_id: String,
+     pub verification_receipt_digest: u64,
+     pub basis: PdContinuumBasis,
+@@ -346,6 +351,7 @@
+         question_increment_digest: u64,
+         pd_output_digest: u64,
+         iz_digest: u64,
++        living_trust_digest: u64,
+         next_i0_id: String,
+         verification_receipt_id: &str,
+         basis: PdContinuumBasis,
+@@ -358,6 +364,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             &next_i0_id,
+             verification_receipt_id,
+             basis,
+@@ -368,6 +375,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             next_i0_id,
+             verification_receipt_digest,
+             basis,
+@@ -384,6 +392,7 @@
+             && self.question_increment_digest != 0
+             && self.pd_output_digest != 0
+             && self.iz_digest != 0
++            && self.living_trust_digest != 0
+             && self.next_i0_id == derive_next_i0_id(self.pd_output_digest, self.iz_digest)
+             && self.verification_receipt_digest == digest_parts(&[
+                 verification_receipt_id.as_bytes(),
+@@ -395,6 +404,7 @@
+                 self.question_increment_digest,
+                 self.pd_output_digest,
+                 self.iz_digest,
++                self.living_trust_digest,
+                 &self.next_i0_id,
+                 verification_receipt_id,
+                 self.basis,
+@@ -438,13 +448,14 @@
+             activation, 13, question, "receipt", "output text", 1, 1,
+             PdContinuumBasis::VerifiedPositive,
+         );
++        let trust = 99;
+         let iz = derive_iz_digest(
+-            activation, question, output, "receipt",
++            activation, question, output, trust, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         let next = derive_next_i0_id(output, iz);
+         let completion = PdContinuumCompletion::new(
+-            activation, question, output, iz, next, "receipt",
++            activation, question, output, iz, trust, next, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         assert!(completion.closes_formula("receipt"));
+@@ -459,8 +470,8 @@
+         let b_output = derive_pd_output_digest(
+             11, 13, 12, "receipt", "output B", 1, 1, basis,
+         );
+-        let a_iz = derive_iz_digest(11, 12, a_output, "receipt", basis);
+-        let b_iz = derive_iz_digest(11, 12, b_output, "receipt", basis);
++        let a_iz = derive_iz_digest(11, 12, a_output, 99, "receipt", basis);
++        let b_iz = derive_iz_digest(11, 12, b_output, 99, "receipt", basis);
+         assert_ne!(a_output, b_output);
+         assert_ne!(a_iz, b_iz);
+         assert_ne!(
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/progressive_debatic/runtime.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/progressive_debatic/runtime.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/progressive_debatic/runtime.rs	2026-07-15 05:59:44.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/progressive_debatic/runtime.rs	2026-07-15 09:16:36.899637051 +0000
+@@ -146,6 +146,7 @@
+             completion.xy_digest,
+             completion.pd_binding_digest,
+             completion.pd_continuum_activation_digest,
++            completion.living_trust_digest,
+             completion.y_verdict,
+             completion.x_verdict,
+             completion.verification_generation,
+@@ -156,12 +157,31 @@
+         let continuum_bound = completion.pd_continuum_activation_digest != 0
+             && completion.pd_continuum_activation_digest
+                 == pending.spine_completion.request.continuum.activation_digest;
++        let expected_trust_kind = match (completion.y_verdict, completion.x_verdict) {
++            (1, 1) => crate::living_trust_contract::TRUST_KIND_CONSTRUCTIVE,
++            (0, 0) => crate::living_trust_contract::TRUST_KIND_RIGOROUS_NEGATIVE,
++            _ => crate::living_trust_contract::TRUST_KIND_NONE,
++        };
++        let living_trust = crate::living_trust_contract::LivingTrustSeal {
++            identity_sha256: completion.living_trust_sha256,
++            intensity: completion.living_trust_intensity,
++            kind: completion.living_trust_kind,
++            sovereign_value: completion.living_trust_sovereign_value,
++        };
++        let living_trust_valid = completion.living_trust_sha256 != [0u8; 32]
++            && completion.living_trust_intensity
++                <= crate::living_trust_contract::TRUST_INTENSITY_SCALE
++            && completion.living_trust_kind == expected_trust_kind
++            && completion.living_trust_sovereign_value
++                == crate::living_trust_contract::SOVEREIGN_SEAL_PRIMITIVE
++            && completion.living_trust_digest == living_trust.identity_digest();
+         let verification_sealed = completion.verification_seal
+                 == EXPECTED_SHADOW_VERIFICATION_SEAL
+             && completion.verification_generation != 0
+             && completion.primitive_anchor != 0
+             && completion.xy_digest != 0
+-            && completion.verification_receipt_id == expected_receipt;
++            && completion.verification_receipt_id == expected_receipt
++            && living_trust_valid;
+ 
+         match (
+             same_session,
+@@ -363,10 +383,12 @@
+         shared_basis,
+     );
+     let output_id = continuum::pd_output_id(output_digest);
++    let living_trust_digest = completion.living_trust_digest;
+     let iz_digest = continuum::derive_iz_digest(
+         activation.activation_digest,
+         question_increment_digest,
+         output_digest,
++        living_trust_digest,
+         &completion.verification_receipt_id,
+         shared_basis,
+     );
+@@ -377,6 +399,11 @@
+     iz_material.extend_from_slice(&question_increment_digest.to_le_bytes());
+     iz_material.extend_from_slice(&output_digest.to_le_bytes());
+     iz_material.extend_from_slice(completion.verification_receipt_id.as_bytes());
++    iz_material.extend_from_slice(completion.living_trust_sha256.as_slice());
++    iz_material.extend_from_slice(&completion.living_trust_intensity.to_le_bytes());
++    iz_material.push(completion.living_trust_kind);
++    iz_material.extend_from_slice(&completion.living_trust_sovereign_value.to_le_bytes());
++    iz_material.extend_from_slice(&living_trust_digest.to_le_bytes());
+     iz_material.extend_from_slice(pending.pre_seal.action_sha256.as_slice());
+     iz_material.extend_from_slice(pending.pre_seal.law_trace_sha256.as_slice());
+     let iz_sha256 = crate::sovereign::sha256(&iz_material);
+@@ -386,6 +413,7 @@
+         question_increment_digest,
+         output_digest,
+         iz_digest,
++        living_trust_digest,
+         next_i0_id.clone(),
+         &completion.verification_receipt_id,
+         shared_basis,
+@@ -420,6 +448,11 @@
+         pd_output_digest: output_digest,
+         verification_receipt_id: completion.verification_receipt_id.clone(),
+         basis,
++        living_trust_sha256: completion.living_trust_sha256,
++        living_trust_intensity: completion.living_trust_intensity,
++        living_trust_kind: completion.living_trust_kind,
++        living_trust_sovereign_value: completion.living_trust_sovereign_value,
++        living_trust_digest,
+     };
+     let next_i0 = PdNextI0 {
+         session_id: pending.session_id.clone(),
+@@ -442,6 +475,11 @@
+         iz_id,
+         iz_digest,
+         iz_sha256,
++        living_trust_sha256: completion.living_trust_sha256,
++        living_trust_intensity: completion.living_trust_intensity,
++        living_trust_kind: completion.living_trust_kind,
++        living_trust_sovereign_value: completion.living_trust_sovereign_value,
++        living_trust_digest,
+         continuum_completion_digest: contract.completion_digest,
+     };
+     Ok(PdContinuumClosure { output, iz, next_i0, contract })
+@@ -522,11 +560,23 @@
+             pending.spine_completion.request.continuum.activation_digest;
+         let verification_generation = 7;
+         let verification_seal = EXPECTED_SHADOW_VERIFICATION_SEAL;
++        let trust_kind = match (y, x) {
++            (1, 1) => crate::living_trust_contract::TRUST_KIND_CONSTRUCTIVE,
++            (0, 0) => crate::living_trust_contract::TRUST_KIND_RIGOROUS_NEGATIVE,
++            _ => crate::living_trust_contract::TRUST_KIND_NONE,
++        };
++        let living_trust = crate::living_trust_contract::LivingTrustSeal {
++            identity_sha256: [0xAB; 32],
++            intensity: 7_500,
++            kind: trust_kind,
++            sovereign_value: crate::living_trust_contract::SOVEREIGN_SEAL_PRIMITIVE,
++        };
++        let living_trust_digest = living_trust.identity_digest();
+         let verification_receipt_id =
+             crate::lab_contracts::verification_receipt::receipt_id(
+                 &session_id, &parent_i0, primitive_anchor, xy_digest,
+                 pd_binding_digest, pd_continuum_activation_digest,
+-                y, x, verification_generation, verification_seal,
++                living_trust_digest, y, x, verification_generation, verification_seal,
+             );
+         PdVerificationCompletion {
+             session_id,
+@@ -540,6 +590,11 @@
+             verification_seal,
+             verification_generation,
+             verification_receipt_id,
++            living_trust_sha256: living_trust.identity_sha256,
++            living_trust_intensity: living_trust.intensity,
++            living_trust_kind: living_trust.kind,
++            living_trust_sovereign_value: living_trust.sovereign_value,
++            living_trust_digest,
+         }
+     }
+ 
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/progressive_debatic/types.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/progressive_debatic/types.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/progressive_debatic/types.rs	2026-07-14 17:02:32.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/progressive_debatic/types.rs	2026-07-15 08:40:38.566630021 +0000
+@@ -347,6 +347,11 @@
+     pub verification_seal:            u64,
+     pub verification_generation:      u64,
+     pub verification_receipt_id:      String,
++    pub living_trust_sha256:           [u8; 32],
++    pub living_trust_intensity:        u32,
++    pub living_trust_kind:             u8,
++    pub living_trust_sovereign_value:  u32,
++    pub living_trust_digest:           u64,
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+@@ -386,6 +391,11 @@
+     pub iz_id:                    String,
+     pub iz_digest:                u64,
+     pub iz_sha256:                [u8; 32],
++    pub living_trust_sha256:      [u8; 32],
++    pub living_trust_intensity:   u32,
++    pub living_trust_kind:        u8,
++    pub living_trust_sovereign_value: u32,
++    pub living_trust_digest:      u64,
+     pub continuum_completion_digest: u64,
+ }
+ 
+@@ -414,6 +424,11 @@
+     pub pd_output_digest: u64,
+     pub verification_receipt_id: String,
+     pub basis: PdContinuationBasis,
++    pub living_trust_sha256: [u8; 32],
++    pub living_trust_intensity: u32,
++    pub living_trust_kind: u8,
++    pub living_trust_sovereign_value: u32,
++    pub living_trust_digest: u64,
+ }
+ 
+ #[derive(Debug, Clone)]
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/runtime_pulse.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/runtime_pulse.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/runtime_pulse.rs	2026-07-14 12:11:12.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/runtime_pulse.rs	2026-07-15 08:33:34.398652510 +0000
+@@ -13,7 +13,7 @@
+ // ║  s'urdhëron (Shadow mbetet autoriteti; Quantum s'bëhet mur).             ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-use std::sync::atomic::{AtomicU8, Ordering};
++use std::sync::atomic::{AtomicU64, AtomicU8, Ordering};
+ use crate::lab_contracts::gcl_presume::GclReadiness;
+ 
+ /// Organet që rrahin — një slot pulsi për secilin.
+@@ -35,6 +35,8 @@
+ const N: usize = 11;
+ 
+ /// Kodet e pulsit: 0=I-PA-RRAHUR, 1=READY, 2=NOT_READY, 3=BOSH-I-DEKLARUAR.
++static ACTION_STATE: AtomicU64 = AtomicU64::new(0);
++
+ static PULSE: [AtomicU8; N] = [
+     AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0),
+     AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0),
+@@ -58,6 +60,45 @@
+     }
+ }
+ 
++
++
++/// Nis një cikël të ri: mosbesimi është gjendja e paracaktuar.
++/// Asnjë vulë nuk trashëgohet; statuset dhe afrimi i aksioneve kthehen në zero.
++pub fn begin_cycle() {
++    for pulse in &PULSE {
++        pulse.store(0, Ordering::SeqCst);
++    }
++    ACTION_STATE.store(0, Ordering::SeqCst);
++}
++
++fn stage_word(stage: Stage) -> u64 {
++    (idx(stage) as u64 + 1).wrapping_mul(0x9E37_79B9_7F4A_7C15)
++}
++
++/// Konvergjencë e lehtë: zero SHA-256. Aksionet përzihen vetëm me rotacion,
++/// XOR dhe mbledhje wrapping; SHA-256 lind një herë te verdikti suprem.
++pub fn converge_words(words: &[u64]) -> u64 {
++    words.iter().enumerate().fold(0x6A09_E667_F3BC_C909u64, |state, (index, word)| {
++        state.rotate_left(((index as u32) % 47) + 5)
++            ^ word.rotate_left(((index as u32) % 31) + 1)
++            .wrapping_add(0x3C6E_F372_FE94_F82B ^ index as u64)
++    })
++}
++
++/// Regjistron mbarimin real të një organi dhe derdh aksionin e tij në gjendjen
++/// e përbashkët. `action_state` është vetëm afrimi drejt vulës, jo Besimi.
++pub fn mark_action(stage: Stage, evidence_words: &[u64]) {
++    mark_ready(stage);
++    let contribution = converge_words(evidence_words) ^ stage_word(stage);
++    let _ = ACTION_STATE.fetch_update(Ordering::SeqCst, Ordering::SeqCst, |current| {
++        Some(current.rotate_left(11).wrapping_add(contribution).rotate_left(7))
++    });
++}
++
++pub fn action_state() -> u64 {
++    ACTION_STATE.load(Ordering::SeqCst)
++}
++
+ /// Organi rrahu me sukses në runtime.
+ pub fn mark_ready(s: Stage)    { PULSE[idx(s)].store(1, Ordering::SeqCst); }
+ /// Organi dështoi realisht (detajet → rrjedha_ledger në vendin e ngjarjes).
+@@ -112,6 +153,17 @@
+     use super::*;
+ 
+     #[test]
++    fn action_state_lind_vetem_pas_aksionit_real() {
++        begin_cycle();
++        assert_eq!(action_state(), 0);
++        mark_action(Stage::Pro, &[4, 11, 22]);
++        let after_pro = action_state();
++        assert_ne!(after_pro, 0);
++        mark_action(Stage::Npro, &[4, 33, 44]);
++        assert_ne!(action_state(), after_pro);
++    }
++
++    #[test]
+     fn default_pulse_is_degraded_not_ready_lie() {
+         // Para se organi të rrahë, presume s'thotë kurrë READY.
+         match apro_status() {
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs	2026-07-15 09:29:32.411073820 +0000
+@@ -1,4 +1,4 @@
+-//! v1.6.0 — Quantum client for the mandatory Shadow executable boundary.
++//! v1.6.1 — Quantum client for the mandatory Shadow executable boundary.
+ //!
+ //! Quantum links only `shadow_contracts`. It cannot construct `Shadow`, call
+ //! `ingest_bridged`, open the vault, issue tokens, or seal receipts. Every real
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-15 06:18:32.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-15 08:32:23.630815457 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name    = "shadow_platform"
+-version = "1.6.0"
++version = "1.6.1"
+ edition = "2021"
+ autolib = false
+ autotests = false   # testi historik përfshihet nga main.rs si modul binar
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/mod.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/mod.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/mod.rs	2026-07-15 06:03:20.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/mod.rs	2026-07-15 08:51:19.589478043 +0000
+@@ -89,6 +89,7 @@
+             hcp_token_nonce:      None,
+             hcp_directive_bit:    None,
+             final_evidence_digest: 0,
++            quantum_action_state: 0x1122_3344_5566_7788,
+             pd_gcl_process_digest: 0,
+             spine_completion_digest: 0,
+         }
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/quantum_in.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/quantum_in.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/quantum_in.rs	2026-07-15 06:05:47.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/quantum_in.rs	2026-07-15 08:36:13.125410043 +0000
+@@ -69,6 +69,7 @@
+ 
+     /// Paketimi final PIM/NPIM/MPRO i verifikuar në kufirin Shadow main.rs.
+     pub final_evidence_digest: u64,
++    pub quantum_action_state: u64,
+     /// Procesi GCL që qeverisi PD→Spine9→Layer1→2→3.
+     pub pd_gcl_process_digest: u64,
+     pub spine_completion_digest: u64,
+@@ -93,6 +94,7 @@
+             candidate_scores:     self.candidate_scores,
+             suggested_verdict:    self.suggested_verdict.min(2),
+             final_evidence_digest: self.final_evidence_digest,
++            quantum_action_state: self.quantum_action_state,
+             pd_gcl_process_digest: self.pd_gcl_process_digest,
+             spine_completion_digest: self.spine_completion_digest,
+             raw_bytes:            self.raw_bytes,
+@@ -162,7 +164,7 @@
+             // këtu (split i pastër transporti) shpërfillen eksplicit.
+             xy_x: _, xy_y: _, xy_mass: _, pd_binding_digest: _, pd_continuum_activation_digest: _, pd_parent_i0: _,
+             collapse_refused: _, negative_paths: _,
+-            final_evidence_digest, pd_gcl_process_digest, spine_completion_digest,
++            final_evidence_digest, quantum_action_state, pd_gcl_process_digest, spine_completion_digest,
+         } = self;
+ 
+         // PassPackage merr fushat propozuese + raw_bytes (ku lexohet realisht). MOVE.
+@@ -181,6 +183,7 @@
+             candidate_scores,
+             suggested_verdict:    suggested_verdict.min(2),
+             final_evidence_digest,
++            quantum_action_state,
+             pd_gcl_process_digest,
+             spine_completion_digest,
+             raw_bytes,  // MOVE — pa klon (shkon te rruga që e lexon)
+@@ -232,6 +235,7 @@
+             hcp_token_nonce:      None,
+             hcp_directive_bit:    None,
+             final_evidence_digest: 0,
++            quantum_action_state: 0x1122_3344_5566_7788,
+             pd_gcl_process_digest: 0,
+             spine_completion_digest: 0,
+         }
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/shadow_callable.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/shadow_callable.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/shadow_callable.rs	2026-07-15 06:02:53.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/shadow_callable.rs	2026-07-15 09:18:41.149620575 +0000
+@@ -95,6 +95,7 @@
+     pub verification_xy_digest: u64,
+     pub verification_pd_binding_digest: u64,
+     pub verification_pd_continuum_activation_digest: u64,
++    pub verification_living_trust_digest: u64,
+ }
+ 
+ impl LightResponse {
+@@ -119,6 +120,8 @@
+             verification_pd_binding_digest: r.verification_pd_binding_digest,
+             verification_pd_continuum_activation_digest:
+                 r.verification_pd_continuum_activation_digest,
++            verification_living_trust_digest:
++                r.verification_living_trust_digest,
+         }
+     }
+ }
+@@ -164,6 +167,7 @@
+                 verification_xy_digest: 0,
+                 verification_pd_binding_digest: 0,
+                 verification_pd_continuum_activation_digest: 0,
++                verification_living_trust_digest: 0,
+                 reason_code:   0x5040_0001,  // SHADOW_INGEST_FAIL (#12)
+                 failure_stage: "sovereign",
+                 source_module: "shadow_callable::call_for_quantum",
+@@ -236,6 +240,7 @@
+             hcp_token_nonce:      None,
+             hcp_directive_bit:    None,
+             final_evidence_digest: 0,
++            quantum_action_state: 0x1122_3344_5566_7788,
+             pd_gcl_process_digest: 0,
+             spine_completion_digest: 0,
+         };
+@@ -293,6 +298,7 @@
+             verification_xy_digest: 0xBB,
+             verification_pd_binding_digest: 0xCC,
+             verification_pd_continuum_activation_digest: 0xDD,
++            verification_living_trust_digest: 0xEE,
+             reason_code:   0,
+             failure_stage: "none",
+             source_module: "none",
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/shadow_out.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/shadow_out.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/bridge/shadow_out.rs	2026-07-14 12:04:45.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/bridge/shadow_out.rs	2026-07-15 09:18:41.148794366 +0000
+@@ -79,6 +79,7 @@
+     pub verification_xy_digest: u64,
+     pub verification_pd_binding_digest: u64,
+     pub verification_pd_continuum_activation_digest: u64,
++    pub verification_living_trust_digest: u64,
+     /// FIX #12/#13: kodi i arsyes (0 = sukses; jo-zero = shkaku specifik).
+     /// bit-i (0/1) mbetet i thjeshtë; diagnoza e plotë ruhet këtu.
+     pub reason_code:  u32,
+@@ -111,6 +112,7 @@
+             verification_pd_binding_digest: receipt.pd_binding_digest,
+             verification_pd_continuum_activation_digest:
+                 receipt.pd_continuum_activation_digest,
++            verification_living_trust_digest: receipt.living_trust_digest,
+             reason_code:   0,
+             failure_stage: "none",
+             source_module: "none",
+@@ -146,6 +148,7 @@
+                 verification_xy_digest: 0,
+                 verification_pd_binding_digest: 0,
+                 verification_pd_continuum_activation_digest: 0,
++                verification_living_trust_digest: 0,
+                 reason_code:   0x5040_0001,  // SHADOW_INGEST_FAIL (#12)
+                 failure_stage: "sovereign",
+                 source_module: "shadow_out::receive_from_light",
+@@ -186,6 +189,13 @@
+             lgc_law,
+             legacy_score: 0.5,
+             lgc_dsl: "LGC::SHADOW|test".to_string(),
++            living_trust_sha256: [0u8; 32],
++            living_trust_intensity: 0,
++            living_trust_kind: 0,
++            living_trust_action_state: 0,
++            living_trust_system_laws_seal: 0,
++            living_trust_sovereign_flags: 0,
++            living_trust_sovereign_value: 0,
+         }
+     }
+ 
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/lab_contracts/verification_receipt.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/lab_contracts/verification_receipt.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/lab_contracts/verification_receipt.rs	2026-07-14 11:47:29.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/lab_contracts/verification_receipt.rs	2026-07-15 09:13:21.421143728 +0000
+@@ -1,6 +1,6 @@
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+ // ║ VERIFICATION_RECEIPT — KONTRATA KANONIKE E MBYLLJES XY                ║
+-// ║ v1.5.6: receipt-i lidhet edhe me kandidatin PD/Spine 9.                ║
++// ║ v1.6.1: receipt-i lidh kandidatin PD/Spine 9 me Vulën e Gjallë.       ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+ pub const VERIFICATION_SEAL_NAME: &[u8] = b"SHADOW_VERIFICATION_OUTPUT";
+@@ -26,6 +26,7 @@
+     xy_digest:         u64,
+     pd_binding_digest: u64,
+     pd_continuum_activation_digest: u64,
++    living_trust_digest: u64,
+     y_verdict:         u8,
+     x_verdict:         u8,
+     generation:        u64,
+@@ -39,6 +40,7 @@
+     proof.extend_from_slice(&xy_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_binding_digest.to_le_bytes());
+     proof.extend_from_slice(&pd_continuum_activation_digest.to_le_bytes());
++    proof.extend_from_slice(&living_trust_digest.to_le_bytes());
+     proof.push(y_verdict);
+     proof.push(x_verdict);
+     proof.extend_from_slice(&generation.to_le_bytes());
+@@ -52,15 +54,17 @@
+ 
+     #[test]
+     fn receipt_is_deterministic_and_bound_to_parent_and_pd_candidate() {
+-        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 1, 1, 3, 11);
+-        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 1, 1, 3, 11);
+-        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 1, 1, 3, 11);
++        let a = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let b = receipt_id("s", "i0-a", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_parent = receipt_id("s", "i0-b", 7, 9, 13, 17, 19, 1, 1, 3, 11);
++        let other_pd = receipt_id("s", "i0-a", 7, 9, 14, 17, 19, 1, 1, 3, 11);
++        let other_continuum = receipt_id("s", "i0-a", 7, 9, 13, 18, 19, 1, 1, 3, 11);
++        let other_trust = receipt_id("s", "i0-a", 7, 9, 13, 17, 20, 1, 1, 3, 11);
+         assert_eq!(a, b);
+         assert_ne!(a, other_parent);
+         assert_ne!(a, other_pd);
+         assert_ne!(a, other_continuum);
++        assert_ne!(a, other_trust);
+     }
+ 
+     #[test]
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/lib.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/lib.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/lib.rs	2026-07-14 22:46:35.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/lib.rs	2026-07-15 08:32:23.632109481 +0000
+@@ -50,6 +50,7 @@
+ pub mod phase9_integration;  // FAZA 9: lidh spine+true_knowledge me rrjedhën (ligjet)
+ pub mod pd_continuum_contract; // v1.5.6: kontrata identike i₀→output+iZ→next i₀
+ pub mod pd_spine_contract; // v1.5.6: kontrata identike PD/Spine9
++pub mod living_trust_contract; // v1.6.1: GCL vula e gjallë × Light/Quantum/Shadow
+ pub mod ess_mai_heart_byte;  // HEART_BYTE: regjistron vendimet HCP_PRO te ledger ekzistues
+ pub mod sovereign_ffi_gate;
+ pub mod luvik;
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/living_trust_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/living_trust_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/living_trust_contract.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/living_trust_contract.rs	2026-07-15 09:27:47.149730637 +0000
+@@ -0,0 +1,226 @@
++// ╔══════════════════════════════════════════════════════════════════════════╗
++// ║ LIVING_TRUST_CONTRACT.RS — GCL VULA E GJALLË E BESIMIT v1.6.1          ║
++// ║                                                                          ║
++// ║ Faza 1 prodhon vetëm `action_state` të lehtë. Ky modul nuk hash-on       ║
++// ║ modulet veçmas. Faza 2 kryen NJË SHA-256 mbi gjendjen e konverguar,      ║
++// ║ verdiktin suprem, ligjet aktive dhe provën L-500.                        ║
++// ║                                                                          ║
++// ║ Skedari mbahet byte-identik në Light, Quantum dhe Shadow.                ║
++// ╚══════════════════════════════════════════════════════════════════════════╝
++
++use sha2::{Digest, Sha256};
++
++pub const LIVING_TRUST_CONTRACT_VERSION: u32 = 0x0001_0601;
++pub const TRUST_INTENSITY_SCALE: u32 = 10_000;
++pub const TRUST_KIND_NONE: u8 = 0;
++pub const TRUST_KIND_CONSTRUCTIVE: u8 = 1;
++pub const TRUST_KIND_RIGOROUS_NEGATIVE: u8 = 2;
++
++pub const SOVEREIGN_SEAL_XOR: u32 = 0xA5A5;
++pub const SOVEREIGN_SEAL_MASK: u32 = 0x0000_FFFF;
++pub const SOVEREIGN_SEAL_PRIMITIVE: u32 = 500;
++pub const LEGACY_BITS_MASK: u32 = 0x54; // LEGACY_PATH | NEGATIVE | ECO
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustProof {
++    pub action_state: u64,
++    pub verified: u8,
++    pub primitive: u8,
++    pub knowledge_band: u8,
++    pub lgc_law: u32,
++    pub system_laws_seal: u64,
++    pub sovereign_flags: u32,
++}
++
++impl LivingTrustProof {
++    pub fn legacy_bits(self) -> u32 {
++        self.lgc_law & LEGACY_BITS_MASK
++    }
++
++    pub fn sovereign_value(self) -> u32 {
++        (self.sovereign_flags & SOVEREIGN_SEAL_MASK) ^ SOVEREIGN_SEAL_XOR
++    }
++
++    pub fn constitutional_kind(self) -> u8 {
++        match (self.verified, self.primitive) {
++            (1, 1) => TRUST_KIND_CONSTRUCTIVE,
++            (0, 0) => TRUST_KIND_RIGOROUS_NEGATIVE,
++            _ => TRUST_KIND_NONE,
++        }
++    }
++
++    pub fn is_admissible(self) -> bool {
++        self.action_state != 0
++            && self.system_laws_seal != 0
++            && self.sovereign_flags != 0
++            && self.sovereign_value() == SOVEREIGN_SEAL_PRIMITIVE
++            && self.verified <= 1
++            && self.primitive <= 1
++            && self.constitutional_kind() != TRUST_KIND_NONE
++    }
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub struct LivingTrustSeal {
++    pub identity_sha256: [u8; 32],
++    pub intensity: u32,
++    pub kind: u8,
++    pub sovereign_value: u32,
++}
++
++impl LivingTrustSeal {
++    pub fn identity_hex(self) -> String {
++        hex_32(&self.identity_sha256)
++    }
++
++    pub fn identity_digest(self) -> u64 {
++        digest_parts(&[
++            self.identity_sha256.as_slice(),
++            &self.intensity.to_le_bytes(),
++            &[self.kind],
++            &self.sovereign_value.to_le_bytes(),
++            b"GCL_LIVING_TRUST_TO_IZ_V161",
++        ])
++    }
++
++    pub fn verifies(self, proof: LivingTrustProof, legacy_score: f32) -> bool {
++        match compute(proof, legacy_score) {
++            Some(expected) => expected == self,
++            None => false,
++        }
++    }
++}
++
++pub fn intensity_from_legacy_score(legacy_score: f32) -> Option<u32> {
++    match legacy_score.is_finite() {
++        true => Some(
++            (legacy_score.clamp(0.0, 1.0) * TRUST_INTENSITY_SCALE as f32)
++                .round() as u32,
++        ),
++        false => None,
++    }
++}
++
++/// Pulsi i vetëm SHA-256. Nuk ruan state dhe nuk kryen I/O.
++pub fn compute(proof: LivingTrustProof, legacy_score: f32) -> Option<LivingTrustSeal> {
++    let intensity = intensity_from_legacy_score(legacy_score)?;
++    compute_with_intensity(proof, intensity)
++}
++
++/// Riverifikimi ndër-platformik përdor intensitetin fixed-point të vulosur.
++/// Kjo shmang rikonstruksionin me float në kufirin Quantum → Light, ndërsa
++/// materiali kanonik i SHA-256 mbetet byte-identik në të tria platformat.
++pub fn compute_with_intensity(
++    proof: LivingTrustProof,
++    intensity: u32,
++) -> Option<LivingTrustSeal> {
++    match proof.is_admissible() && intensity <= TRUST_INTENSITY_SCALE {
++        true => {}
++        false => return None,
++    }
++    let kind = proof.constitutional_kind();
++    let sovereign_value = proof.sovereign_value();
++
++    let mut material = Vec::with_capacity(128);
++    material.extend_from_slice(b"GCL_LIVING_TRUST_V161");
++    material.extend_from_slice(&LIVING_TRUST_CONTRACT_VERSION.to_le_bytes());
++    material.extend_from_slice(&proof.action_state.to_le_bytes());
++    material.push(proof.verified);
++    material.push(proof.primitive);
++    material.push(proof.knowledge_band);
++    material.extend_from_slice(&proof.lgc_law.to_le_bytes());
++    material.extend_from_slice(&proof.legacy_bits().to_le_bytes());
++    material.extend_from_slice(&proof.system_laws_seal.to_le_bytes());
++    material.extend_from_slice(&proof.sovereign_flags.to_le_bytes());
++    material.extend_from_slice(&sovereign_value.to_le_bytes());
++
++    // Identiteti 32-byte ndjek formulën kushtetuese të paradigmës:
++    // action_state + verdict + ligjet aktive + L-500. Intensiteti dhe lloji
++    // janë forca/klasa e Besimit pranë identitetit; lidhen më pas te
++    // VerificationReceipt, iZ dhe next_i0 përmes `identity_digest()`.
++    let digest = Sha256::digest(&material);
++    let mut identity_sha256 = [0u8; 32];
++    identity_sha256.copy_from_slice(&digest);
++    Some(LivingTrustSeal {
++        identity_sha256,
++        intensity,
++        kind,
++        sovereign_value,
++    })
++}
++
++pub fn parse_hex_32(value: &str) -> Option<[u8; 32]> {
++    match value.len() == 64 && value.as_bytes().iter().all(u8::is_ascii_hexdigit) {
++        true => {}
++        false => return None,
++    }
++    let mut out = [0u8; 32];
++    for (index, slot) in out.iter_mut().enumerate() {
++        let start = index * 2;
++        *slot = u8::from_str_radix(&value[start..start + 2], 16).ok()?;
++    }
++    Some(out)
++}
++
++pub fn hex_32(value: &[u8; 32]) -> String {
++    let mut out = String::with_capacity(64);
++    for byte in value {
++        use std::fmt::Write as _;
++        let _ = write!(&mut out, "{byte:02x}");
++    }
++    out
++}
++
++pub fn digest_parts(parts: &[&[u8]]) -> u64 {
++    parts.iter().fold(0xcbf2_9ce4_8422_2325u64, |acc, part| {
++        part.iter().fold(acc, |hash, byte| {
++            (hash ^ u64::from(*byte)).wrapping_mul(0x0000_0100_0000_01b3)
++        })
++    })
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn proof(verified: u8, primitive: u8) -> LivingTrustProof {
++        LivingTrustProof {
++            action_state: 0x1122_3344_5566_7788,
++            verified,
++            primitive,
++            knowledge_band: 2,
++            lgc_law: 0x47,
++            system_laws_seal: 0x8877_6655_4433_2211,
++            sovereign_flags: 0xA451,
++        }
++    }
++
++    #[test]
++    fn constructive_and_rigorous_negative_are_constitutional() {
++        assert_eq!(compute(proof(1, 1), 0.75).unwrap().kind, TRUST_KIND_CONSTRUCTIVE);
++        assert_eq!(compute(proof(0, 0), 0.75).unwrap().kind, TRUST_KIND_RIGOROUS_NEGATIVE);
++        assert!(compute(proof(1, 0), 0.75).is_none());
++    }
++
++    #[test]
++    fn l500_and_action_state_are_mandatory() {
++        let mut p = proof(1, 1);
++        p.sovereign_flags = 0;
++        assert!(compute(p, 0.5).is_none());
++        p = proof(1, 1);
++        p.action_state = 0;
++        assert!(compute(p, 0.5).is_none());
++    }
++
++    #[test]
++    fn same_whole_system_produces_same_sha256() {
++        let a = compute(proof(1, 1), 0.75).unwrap();
++        let b = compute(proof(1, 1), 0.75).unwrap();
++        assert_eq!(a, b);
++        assert_eq!(compute_with_intensity(proof(1, 1), a.intensity), Some(a));
++        let stronger = compute_with_intensity(proof(1, 1), 9_000).unwrap();
++        assert_eq!(stronger.identity_sha256, a.identity_sha256);
++        assert_ne!(stronger.identity_digest(), a.identity_digest());
++        assert_eq!(parse_hex_32(&a.identity_hex()), Some(a.identity_sha256));
++    }
++}
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/main.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/main.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/main.rs	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/main.rs	2026-07-15 09:29:32.410209143 +0000
+@@ -9,7 +9,7 @@
+ mod integration_tests;
+ 
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+-// ║ SHADOW MAIN.RS — KUSHTI I DOMOSDOSHËM I AUTORITETIT (v1.6.0)          ║
++// ║ SHADOW MAIN.RS — KUSHTI I DOMOSDOSHËM I AUTORITETIT (v1.6.1)          ║
+ // ║ Gjata Legacy™ | ESS-MAI Shadow Platform                                ║
+ // ║                                                                          ║
+ // ║ Cargo vendos `autolib = false`: Shadow NUK prodhon rlib/staticlib.       ║
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/pd_continuum_contract.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/pd_continuum_contract.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/pd_continuum_contract.rs	2026-07-14 17:04:04.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/pd_continuum_contract.rs	2026-07-15 08:39:31.583072791 +0000
+@@ -3,7 +3,7 @@
+ // ║ ESS-MAI v1.5.7 — byte-for-byte identike në Light/Quantum/Shadow          ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0507;
++pub const PD_CONTINUUM_CONTRACT_VERSION: u32 = 0x0001_0601;
+ pub const QUESTION_INCREMENT_UNITS: u32 = 1;
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+@@ -273,6 +273,7 @@
+     activation_digest: u64,
+     question_increment_digest: u64,
+     pd_output_digest: u64,
++    living_trust_digest: u64,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+ ) -> u64 {
+@@ -281,9 +282,10 @@
+         &activation_digest.to_le_bytes(),
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+-        b"PD_COMPLETES_IZ",
++        b"PD_COMPLETES_IZ_WITH_LIVING_TRUST_V161",
+     ])
+ }
+ 
+@@ -307,6 +309,7 @@
+     question_increment_digest: u64,
+     pd_output_digest: u64,
+     iz_digest: u64,
++    living_trust_digest: u64,
+     next_i0_id: &str,
+     verification_receipt_id: &str,
+     basis: PdContinuumBasis,
+@@ -317,6 +320,7 @@
+         &question_increment_digest.to_le_bytes(),
+         &pd_output_digest.to_le_bytes(),
+         &iz_digest.to_le_bytes(),
++        &living_trust_digest.to_le_bytes(),
+         next_i0_id.as_bytes(),
+         verification_receipt_id.as_bytes(),
+         basis.label().as_bytes(),
+@@ -331,6 +335,7 @@
+     pub question_increment_digest: u64,
+     pub pd_output_digest: u64,
+     pub iz_digest: u64,
++    pub living_trust_digest: u64,
+     pub next_i0_id: String,
+     pub verification_receipt_digest: u64,
+     pub basis: PdContinuumBasis,
+@@ -346,6 +351,7 @@
+         question_increment_digest: u64,
+         pd_output_digest: u64,
+         iz_digest: u64,
++        living_trust_digest: u64,
+         next_i0_id: String,
+         verification_receipt_id: &str,
+         basis: PdContinuumBasis,
+@@ -358,6 +364,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             &next_i0_id,
+             verification_receipt_id,
+             basis,
+@@ -368,6 +375,7 @@
+             question_increment_digest,
+             pd_output_digest,
+             iz_digest,
++            living_trust_digest,
+             next_i0_id,
+             verification_receipt_digest,
+             basis,
+@@ -384,6 +392,7 @@
+             && self.question_increment_digest != 0
+             && self.pd_output_digest != 0
+             && self.iz_digest != 0
++            && self.living_trust_digest != 0
+             && self.next_i0_id == derive_next_i0_id(self.pd_output_digest, self.iz_digest)
+             && self.verification_receipt_digest == digest_parts(&[
+                 verification_receipt_id.as_bytes(),
+@@ -395,6 +404,7 @@
+                 self.question_increment_digest,
+                 self.pd_output_digest,
+                 self.iz_digest,
++                self.living_trust_digest,
+                 &self.next_i0_id,
+                 verification_receipt_id,
+                 self.basis,
+@@ -438,13 +448,14 @@
+             activation, 13, question, "receipt", "output text", 1, 1,
+             PdContinuumBasis::VerifiedPositive,
+         );
++        let trust = 99;
+         let iz = derive_iz_digest(
+-            activation, question, output, "receipt",
++            activation, question, output, trust, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         let next = derive_next_i0_id(output, iz);
+         let completion = PdContinuumCompletion::new(
+-            activation, question, output, iz, next, "receipt",
++            activation, question, output, iz, trust, next, "receipt",
+             PdContinuumBasis::VerifiedPositive,
+         );
+         assert!(completion.closes_formula("receipt"));
+@@ -459,8 +470,8 @@
+         let b_output = derive_pd_output_digest(
+             11, 13, 12, "receipt", "output B", 1, 1, basis,
+         );
+-        let a_iz = derive_iz_digest(11, 12, a_output, "receipt", basis);
+-        let b_iz = derive_iz_digest(11, 12, b_output, "receipt", basis);
++        let a_iz = derive_iz_digest(11, 12, a_output, 99, "receipt", basis);
++        let b_iz = derive_iz_digest(11, 12, b_output, 99, "receipt", basis);
+         assert_ne!(a_output, b_output);
+         assert_ne!(a_iz, b_iz);
+         assert_ne!(
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/process_bridge.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/process_bridge.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/process_bridge.rs	2026-07-15 07:09:26.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/process_bridge.rs	2026-07-15 09:29:32.410664234 +0000
+@@ -1,4 +1,4 @@
+-//! v1.6.0 — complete mediation + final-evidence verification boundary.
++//! v1.6.1 — complete mediation + final evidence + Living Trust boundary.
+ //!
+ //! Only the Shadow executable calls this module. It decodes public wire
+ //! contracts, opens the sovereign persistent vault, feeds the Light PA gate,
+@@ -86,8 +86,17 @@
+             verified: verdict.verified,
+             primitive: verdict.primitive,
+             knowledge_band: verdict.knowledge_band.as_u8(),
++            lgc_law: verdict.lgc_law,
+             legacy_score: verdict.legacy_score,
+             lgc_dsl: verdict.lgc_dsl,
++            living_trust_action_state: verdict.living_trust_action_state,
++            living_trust_system_laws_seal: verdict.living_trust_system_laws_seal,
++            living_trust_sovereign_flags: verdict.living_trust_sovereign_flags,
++            living_trust_sovereign_value: verdict.living_trust_sovereign_value,
++            living_trust_sha256:
++                crate::living_trust_contract::hex_32(&verdict.living_trust_sha256),
++            living_trust_intensity: verdict.living_trust_intensity,
++            living_trust_kind: verdict.living_trust_kind,
+         },
+         verification_receipt: VerificationReceiptWire {
+             session_id: receipt.session_id,
+@@ -96,6 +105,7 @@
+             xy_digest: receipt.xy_digest,
+             pd_binding_digest: receipt.pd_binding_digest,
+             pd_continuum_activation_digest: receipt.pd_continuum_activation_digest,
++            living_trust_digest: receipt.living_trust_digest,
+             y_verdict: receipt.y_verdict,
+             x_verdict: receipt.x_verdict,
+             seal: receipt.seal,
+@@ -327,6 +337,7 @@
+         hcp_token_nonce: q.hcp_token_nonce,
+         hcp_directive_bit: q.hcp_directive_bit,
+         final_evidence_digest: q.final_evidence.package_digest,
++        quantum_action_state: q.final_evidence.quantum_action_state,
+         pd_gcl_process_digest: q.final_evidence.pd_spine.gcl_process_digest,
+         spine_completion_digest: q.final_evidence.pd_spine.completion_digest,
+     }
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/shadow_gateway.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/shadow_gateway.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/shadow_gateway.rs	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/shadow_gateway.rs	2026-07-15 08:38:12.407171690 +0000
+@@ -994,6 +994,13 @@
+             verified: 0, primitive: 0,
+             knowledge_band: crate::types::KnowledgeBand::Hypothesis,
+             lgc_law: 0, legacy_score: 0.0, lgc_dsl: String::new(),
++            living_trust_sha256: [0u8; 32],
++            living_trust_intensity: 0,
++            living_trust_kind: 0,
++            living_trust_action_state: 0,
++            living_trust_system_laws_seal: 0,
++            living_trust_sovereign_flags: 0,
++            living_trust_sovereign_value: 0,
+         };
+         s.gcl_reinforce_on_verified("SES_GCL", &v0);
+         assert_eq!(s.vault.primitive_real_hits(pa), hits_para,
+@@ -1004,6 +1011,13 @@
+             verified: 1, primitive: 1,
+             knowledge_band: crate::types::KnowledgeBand::Hypothesis,
+             lgc_law: 0, legacy_score: 0.0, lgc_dsl: String::new(),
++            living_trust_sha256: [0u8; 32],
++            living_trust_intensity: 0,
++            living_trust_kind: 0,
++            living_trust_action_state: 0,
++            living_trust_system_laws_seal: 0,
++            living_trust_sovereign_flags: 0,
++            living_trust_sovereign_value: 0,
+         };
+         s.gcl_reinforce_on_verified("SES_GCL", &v1);
+         assert_eq!(s.vault.primitive_real_hits(pa), hits_para + 1,
+@@ -1103,6 +1117,13 @@
+             verified: 1, primitive: 1,
+             knowledge_band: crate::types::KnowledgeBand::Hypothesis,
+             lgc_law: 0, legacy_score: 0.0, lgc_dsl: String::new(),
++            living_trust_sha256: [0u8; 32],
++            living_trust_intensity: 0,
++            living_trust_kind: 0,
++            living_trust_action_state: 0,
++            living_trust_system_laws_seal: 0,
++            living_trust_sovereign_flags: 0,
++            living_trust_sovereign_value: 0,
+         };
+         s.gcl_reinforce_on_verified("SES_BRG", &v1);
+         assert_eq!(s.vault.primitive_real_hits(pa), hits_para,
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/shadow_gj_legacy.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/shadow_gj_legacy.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/shadow_gj_legacy.rs	2026-07-13 09:44:16.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/shadow_gj_legacy.rs	2026-07-15 09:08:46.665172050 +0000
+@@ -238,6 +238,7 @@
+         let mass         = passage.package.epistemic_mass;
+         let band         = passage.package.knowledge_band();
+         let legacy_score = Self::legacy_score_compute(&passage.package);
++        let action_state = passage.package.quantum_action_state;
+ 
+         // Inputet e maturimit (Copy) — llogariten para zhvendosjes.
+         let vector_points = (passage.package.evidence_density     * 0.25
+@@ -306,14 +307,22 @@
+                 crate::shadow_destfake::destfake().on_reject(reject);
+                 let _ = (raw_bytes, territory);    /* hidhet — s'është dije */
+                 let dsl = Self::emit_dsl(0, 0, band, 0x20);
+-                return Ok(SupremeVerdict {
++                let verdict = SupremeVerdict {
+                     verified:       0,
+                     primitive:      0,
+                     knowledge_band: band,
+                     lgc_law:        0x20,          /* PURGED — pa gjurmë */
+                     legacy_score,
+                     lgc_dsl:        dsl,
+-                });
++                    living_trust_sha256: [0u8; 32],
++                    living_trust_intensity: 0,
++                    living_trust_kind: 0,
++                    living_trust_action_state: action_state,
++                    living_trust_system_laws_seal: 0,
++                    living_trust_sovereign_flags: flags,
++                    living_trust_sovereign_value: 0,
++                };
++                return Self::seal_living_trust(verdict);
+             }
+             Ok(_) => {}
+         }
+@@ -347,14 +356,78 @@
+         // Gjurma e plotë regjistrohet → dija e ruajtur është plotësisht e gjurmueshme.
+         ledger().record(lineage);
+ 
+-        Ok(SupremeVerdict {
++        let verdict = SupremeVerdict {
+             verified,
+             primitive,
+             knowledge_band: band,
+             lgc_law:        lgc_law_eco,
+             legacy_score,
+             lgc_dsl,
+-        })
++            living_trust_sha256: [0u8; 32],
++            living_trust_intensity: 0,
++            living_trust_kind: 0,
++            living_trust_action_state: action_state,
++            living_trust_system_laws_seal: 0,
++            living_trust_sovereign_flags: flags,
++            living_trust_sovereign_value: 0,
++        };
++        Self::seal_living_trust(verdict)
++    }
++
++    /// FAZA 2 — pulsi i vetëm SHA-256 në kulmin e verdiktit.
++    /// Kur çifti nuk është kushtetues, verdict-i mbetet i vlefshëm por pa Besim.
++    fn seal_living_trust(
++        mut verdict: SupremeVerdict,
++    ) -> Result<SupremeVerdict, ShadowError> {
++        let system_laws_seal =
++            crate::lab_contracts::gjata_collapse_law::system_laws_seal();
++        let sovereign_value =
++            (verdict.living_trust_sovereign_flags & SGL_SEAL_MASK) ^ SGL_SEAL_XOR;
++        let l500_contract_sync = SGL_SEAL_XOR
++                == crate::living_trust_contract::SOVEREIGN_SEAL_XOR
++            && SGL_SEAL_MASK
++                == crate::living_trust_contract::SOVEREIGN_SEAL_MASK
++            && SGL_SEAL_PRIMITIVE
++                == crate::living_trust_contract::SOVEREIGN_SEAL_PRIMITIVE;
++        match l500_contract_sync {
++            true => {}
++            false => return Err(ShadowError::SealInvalid(
++                "L-500 nuk është byte-identik me kontratën e Vulës së Gjallë".to_string(),
++            )),
++        }
++        let proof = crate::living_trust_contract::LivingTrustProof {
++            action_state: verdict.living_trust_action_state,
++            verified: verdict.verified,
++            primitive: verdict.primitive,
++            knowledge_band: verdict.knowledge_band.as_u8(),
++            lgc_law: verdict.lgc_law,
++            system_laws_seal,
++            sovereign_flags: verdict.living_trust_sovereign_flags,
++        };
++        verdict.living_trust_system_laws_seal = system_laws_seal;
++        verdict.living_trust_sovereign_value = sovereign_value;
++        match crate::living_trust_contract::compute(proof, verdict.legacy_score) {
++            Some(seal) => match seal.sovereign_value == sovereign_value
++                && sovereign_value == SGL_SEAL_PRIMITIVE {
++                true => {
++                    verdict.living_trust_sha256 = seal.identity_sha256;
++                    verdict.living_trust_intensity = seal.intensity;
++                    verdict.living_trust_kind = seal.kind;
++                    verdict.living_trust_sovereign_value = seal.sovereign_value;
++                    Ok(verdict)
++                }
++                false => Err(ShadowError::SealInvalid(
++                    "L-500 nuk prodhoi vlerën sovrane 500 në verdict".to_string(),
++                )),
++            },
++            None => match proof.constitutional_kind() {
++                crate::living_trust_contract::TRUST_KIND_NONE => Ok(verdict),
++                _ => Err(ShadowError::SealInvalid(
++                    "GCL Vula e Gjallë: action_state/ligjet/L-500 nuk u mbyllën"
++                        .to_string(),
++                )),
++            },
++        }
+     }
+ 
+     /// Legacy Score — formula e plotë e maturimit (ZERO if/else).
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/sovereign_ffi_gate.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/sovereign_ffi_gate.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/sovereign_ffi_gate.rs	2026-07-14 11:52:31.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/sovereign_ffi_gate.rs	2026-07-15 09:17:27.460406546 +0000
+@@ -85,6 +85,7 @@
+     pub xy_digest:         u64,
+     pub pd_binding_digest: u64,
+     pub pd_continuum_activation_digest: u64,
++    pub living_trust_digest: u64,
+     pub y_verdict:         u8,
+     pub x_verdict:         u8,
+     pub seal:              u64,
+@@ -199,6 +200,12 @@
+     pd_continuum_activation_digest: u64,
+     verdict: &SupremeVerdict,
+ ) -> VerificationReceipt {
++    let living_trust_digest = crate::living_trust_contract::LivingTrustSeal {
++        identity_sha256: verdict.living_trust_sha256,
++        intensity: verdict.living_trust_intensity,
++        kind: verdict.living_trust_kind,
++        sovereign_value: verdict.living_trust_sovereign_value,
++    }.identity_digest();
+     let receipt_id = crate::lab_contracts::verification_receipt::receipt_id(
+         session_id,
+         parent_i0,
+@@ -206,6 +213,7 @@
+         xy_digest,
+         pd_binding_digest,
+         pd_continuum_activation_digest,
++        living_trust_digest,
+         verdict.verified,
+         verdict.primitive,
+         handle.gen,
+@@ -218,6 +226,7 @@
+         xy_digest,
+         pd_binding_digest,
+         pd_continuum_activation_digest,
++        living_trust_digest,
+         y_verdict: verdict.verified,
+         x_verdict: verdict.primitive,
+         seal: handle.nonce,
+@@ -422,6 +431,18 @@
+ 
+     #[test]
+     fn verification_output_is_sealed_by_single_use_token() {
++        let proof = crate::living_trust_contract::LivingTrustProof {
++            action_state: 0x1122_3344_5566_7788,
++            verified: 1,
++            primitive: 1,
++            knowledge_band: KnowledgeBand::Fact.as_u8(),
++            lgc_law: 0x03,
++            system_laws_seal:
++                crate::lab_contracts::gjata_collapse_law::system_laws_seal(),
++            sovereign_flags: 0xA451,
++        };
++        let trust = crate::living_trust_contract::compute(proof, 1.0)
++            .expect("Vula e Gjallë");
+         let verdict = SupremeVerdict {
+             verified: 1,
+             primitive: 1,
+@@ -429,6 +450,13 @@
+             lgc_law: 0x03,
+             legacy_score: 1.0,
+             lgc_dsl: "LGC::SHADOW".to_string(),
++            living_trust_sha256: trust.identity_sha256,
++            living_trust_intensity: trust.intensity,
++            living_trust_kind: trust.kind,
++            living_trust_action_state: proof.action_state,
++            living_trust_system_laws_seal: proof.system_laws_seal,
++            living_trust_sovereign_flags: proof.sovereign_flags,
++            living_trust_sovereign_value: trust.sovereign_value,
+         };
+         let receipt = seal_verified_output(
+             "sess-v", "i0-v", 0xAA, 0xBB, 0xCC, 0xDD, &verdict,
+@@ -439,6 +467,7 @@
+         assert_eq!(receipt.xy_digest, 0xBB);
+         assert_eq!(receipt.pd_binding_digest, 0xCC);
+         assert_eq!(receipt.pd_continuum_activation_digest, 0xDD);
++        assert_eq!(receipt.living_trust_digest, trust.identity_digest());
+         assert_eq!((receipt.y_verdict, receipt.x_verdict), (1, 1));
+         assert_eq!(receipt.seal, S_SHADOW_VERIFY);
+         assert_eq!(
+@@ -452,6 +481,7 @@
+             receipt.xy_digest,
+             receipt.pd_binding_digest,
+             receipt.pd_continuum_activation_digest,
++            receipt.living_trust_digest,
+             receipt.y_verdict,
+             receipt.x_verdict,
+             receipt.generation,
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/types.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/types.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/src/types.rs	2026-07-15 06:05:47.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/src/types.rs	2026-07-15 08:36:13.124835062 +0000
+@@ -279,6 +279,8 @@
+     /// Gjurmë e paketës finale PIM/NPIM/MPRO. Matrix e sheh si kontekst;
+     /// verifikimi matematik është kryer fail-closed te Shadow main.rs.
+     pub final_evidence_digest: u64,
++    /// Gjendja e konverguar e aksioneve Quantum; zero hash gjatë ciklit.
++    pub quantum_action_state: u64,
+     pub pd_gcl_process_digest: u64,
+     pub spine_completion_digest: u64,
+ 
+@@ -430,6 +432,14 @@
+     pub lgc_law:         u32,
+     pub legacy_score:    f32,
+     pub lgc_dsl:         String,
++    /// Vula e gjallë lind vetëm në këtë verdikt; nuk persiston si state.
++    pub living_trust_sha256: [u8; 32],
++    pub living_trust_intensity: u32,
++    pub living_trust_kind: u8,
++    pub living_trust_action_state: u64,
++    pub living_trust_system_laws_seal: u64,
++    pub living_trust_sovereign_flags: u32,
++    pub living_trust_sovereign_value: u32,
+ }
+ 
+ impl SupremeVerdict {
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/tests/integration.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/tests/integration.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow/tests/integration.rs	2026-07-14 22:53:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow/tests/integration.rs	2026-07-15 09:03:47.174714680 +0000
+@@ -35,6 +35,10 @@
+         candidate_scores:     vec![0.90, 0.92, 0.91],
+         suggested_verdict:    suggested,
+         raw_bytes:            b"epistemic-payload".to_vec(),
++        final_evidence_digest: 0,
++        quantum_action_state: 0x1122_3344_5566_7788,
++        pd_gcl_process_digest: 0,
++        spine_completion_digest: 0,
+     }
+ }
+ 
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow-contracts/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow-contracts/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow-contracts/Cargo.toml	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow-contracts/Cargo.toml	2026-07-15 08:32:23.631042394 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name = "shadow_contracts"
+-version = "1.6.0"
++version = "1.6.1"
+ edition = "2021"
+ authors = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI public wire contracts for mediated Shadow process communication"
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow-contracts/src/lib.rs /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow-contracts/src/lib.rs
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/shadow-contracts/src/lib.rs	2026-07-15 07:08:16.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/shadow-contracts/src/lib.rs	2026-07-15 09:19:43.535139732 +0000
+@@ -7,7 +7,7 @@
+ 
+ use std::fmt;
+ 
+-pub const PROTOCOL_VERSION: u16 = 2;
++pub const PROTOCOL_VERSION: u16 = 3;
+ pub const MASS_SCALE: u32 = 10_000;
+ pub const MPRO_EVALUATIONS: usize = 16;
+ pub const MAX_FRAME_BYTES: usize = 64 * 1024 * 1024;
+@@ -98,7 +98,7 @@
+ }
+ 
+ impl PdContinuumEvidenceWire {
+-    pub const CONTRACT_VERSION: u32 = 0x0001_0507;
++    pub const CONTRACT_VERSION: u32 = 0x0001_0601;
+     pub const QUESTION_INCREMENT_UNITS: u32 = 1;
+ 
+     pub fn recompute_stimulus_digest(&self) -> u64 {
+@@ -351,6 +351,9 @@
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct FinalEvidenceWire {
+     pub pd_spine: PdSpineEvidenceWire,
++    /// Faza 1 e Besimit: konvergjenca e lehtë e PRO/NPRO/MPRO/APRO/PIM/NPIM.
++    /// Nuk është hash dhe nuk është vula; Shadow e konsumon vetëm në verdikt.
++    pub quantum_action_state: u64,
+     /// SHA-256 dhe bytes e inputit që lindën në Light; Shadow i rillogarit.
+     pub light_input_sha256: String,
+     pub light_input_bytes: Vec<u8>,
+@@ -388,6 +391,7 @@
+         let mut w = Writer::new();
+         w.bytes.extend_from_slice(b"ESS_MAI_FINAL_EVIDENCE_V160");
+         put_pd_spine_evidence(&mut w, &self.pd_spine);
++        w.u64(self.quantum_action_state);
+         w.string(&self.light_input_sha256);
+         w.bytes(&self.light_input_bytes);
+         w.u32(self.pim_evidence_density);
+@@ -426,6 +430,7 @@
+         let expected_factic = self.mpro_vector_mass
+             .saturating_mul(self.mpro_evidence_mass) / MASS_SCALE;
+         self.pd_spine.verifies_internal()
++            && self.quantum_action_state != 0
+             && self.light_input_sha256.len() == 64
+             && self.light_input_sha256.chars().all(|c| c.is_ascii_hexdigit())
+             && !self.light_input_bytes.is_empty()
+@@ -530,6 +535,7 @@
+     pub xy_digest: u64,
+     pub pd_binding_digest: u64,
+     pub pd_continuum_activation_digest: u64,
++    pub living_trust_digest: u64,
+     pub y_verdict: u8,
+     pub x_verdict: u8,
+     pub seal: u64,
+@@ -542,8 +548,16 @@
+     pub verified: u8,
+     pub primitive: u8,
+     pub knowledge_band: u8,
++    pub lgc_law: u32,
+     pub legacy_score: f32,
+     pub lgc_dsl: String,
++    pub living_trust_action_state: u64,
++    pub living_trust_system_laws_seal: u64,
++    pub living_trust_sovereign_flags: u32,
++    pub living_trust_sovereign_value: u32,
++    pub living_trust_sha256: String,
++    pub living_trust_intensity: u32,
++    pub living_trust_kind: u8,
+ }
+ 
+ impl ShadowVerdictWire {
+@@ -923,6 +937,7 @@
+ 
+ fn put_final_evidence(w: &mut Writer, e: &FinalEvidenceWire) {
+     put_pd_spine_evidence(w, &e.pd_spine);
++    w.u64(e.quantum_action_state);
+     w.string(&e.light_input_sha256);
+     w.bytes(&e.light_input_bytes);
+     w.u32(e.pim_evidence_density);
+@@ -952,6 +967,7 @@
+ fn get_final_evidence(r: &mut Reader<'_>) -> Result<FinalEvidenceWire, WireError> {
+     Ok(FinalEvidenceWire {
+         pd_spine: get_pd_spine_evidence(r)?,
++        quantum_action_state: r.u64()?,
+         light_input_sha256: r.string()?,
+         light_input_bytes: r.bytes()?,
+         pim_evidence_density: r.u32()?,
+@@ -1028,20 +1044,31 @@
+ fn put_receipt(w: &mut Writer, x: &VerificationReceiptWire) {
+     w.string(&x.session_id); w.string(&x.parent_i0); w.u64(x.primitive_anchor);
+     w.u64(x.xy_digest); w.u64(x.pd_binding_digest); w.u64(x.pd_continuum_activation_digest);
+-    w.u8(x.y_verdict); w.u8(x.x_verdict); w.u64(x.seal); w.u64(x.generation); w.string(&x.receipt_id);
++    w.u64(x.living_trust_digest); w.u8(x.y_verdict); w.u8(x.x_verdict); w.u64(x.seal); w.u64(x.generation); w.string(&x.receipt_id);
+ }
+ fn get_receipt(r: &mut Reader<'_>) -> Result<VerificationReceiptWire, WireError> {
+     Ok(VerificationReceiptWire { session_id: r.string()?, parent_i0: r.string()?,
+         primitive_anchor: r.u64()?, xy_digest: r.u64()?, pd_binding_digest: r.u64()?,
+-        pd_continuum_activation_digest: r.u64()?, y_verdict: r.u8()?, x_verdict: r.u8()?,
++        pd_continuum_activation_digest: r.u64()?, living_trust_digest: r.u64()?,
++        y_verdict: r.u8()?, x_verdict: r.u8()?,
+         seal: r.u64()?, generation: r.u64()?, receipt_id: r.string()? })
+ }
+ fn put_verdict(w: &mut Writer, v: &ShadowVerdictWire) {
+-    w.u8(v.verified); w.u8(v.primitive); w.u8(v.knowledge_band); w.f32(v.legacy_score); w.string(&v.lgc_dsl);
++    w.u8(v.verified); w.u8(v.primitive); w.u8(v.knowledge_band); w.u32(v.lgc_law);
++    w.f32(v.legacy_score); w.string(&v.lgc_dsl);
++    w.u64(v.living_trust_action_state); w.u64(v.living_trust_system_laws_seal);
++    w.u32(v.living_trust_sovereign_flags); w.u32(v.living_trust_sovereign_value);
++    w.string(&v.living_trust_sha256); w.u32(v.living_trust_intensity); w.u8(v.living_trust_kind);
+ }
+ fn get_verdict(r: &mut Reader<'_>) -> Result<ShadowVerdictWire, WireError> {
+-    Ok(ShadowVerdictWire { verified: r.u8()?, primitive: r.u8()?, knowledge_band: r.u8()?,
+-        legacy_score: r.f32()?, lgc_dsl: r.string()? })
++    Ok(ShadowVerdictWire {
++        verified: r.u8()?, primitive: r.u8()?, knowledge_band: r.u8()?, lgc_law: r.u32()?,
++        legacy_score: r.f32()?, lgc_dsl: r.string()?,
++        living_trust_action_state: r.u64()?, living_trust_system_laws_seal: r.u64()?,
++        living_trust_sovereign_flags: r.u32()?, living_trust_sovereign_value: r.u32()?,
++        living_trust_sha256: r.string()?, living_trust_intensity: r.u32()?,
++        living_trust_kind: r.u8()?,
++    })
+ }
+ 
+ pub fn encode_cycle_request(x: &ShadowCycleRequest) -> Vec<u8> {
+@@ -1268,6 +1295,7 @@
+                 final_evidence: {
+                     let mut e = FinalEvidenceWire {
+                         pd_spine: pd_spine(),
++                        quantum_action_state: 0x1122_3344_5566_7788,
+                         light_input_sha256: "00".repeat(32), light_input_bytes: b"input".to_vec(),
+                         pim_evidence_density: 6000, pim_logical_coherence: 7000,
+                         pim_causal_integrity: 8000, pim_convergence_strength: 9000,
+@@ -1299,6 +1327,47 @@
+     }
+ 
+     #[test]
++    fn response_roundtrip_binds_living_trust_to_receipt() {
++        let response = ShadowCycleResponse {
++            session_id: "s".into(),
++            verdict: ShadowVerdictWire {
++                verified: 1,
++                primitive: 1,
++                knowledge_band: 2,
++                lgc_law: 0x47,
++                legacy_score: 0.75,
++                lgc_dsl: "LGC::SHADOW|PRIMITIVE|fact|LAW_1000111".into(),
++                living_trust_action_state: 0x1122_3344_5566_7788,
++                living_trust_system_laws_seal: 0x8877_6655_4433_2211,
++                living_trust_sovereign_flags: 0xA451,
++                living_trust_sovereign_value: 500,
++                living_trust_sha256: "ab".repeat(32),
++                living_trust_intensity: 7_500,
++                living_trust_kind: 1,
++            },
++            verification_receipt: VerificationReceiptWire {
++                session_id: "s".into(),
++                parent_i0: "i0".into(),
++                primitive_anchor: 7,
++                xy_digest: 9,
++                pd_binding_digest: 11,
++                pd_continuum_activation_digest: 13,
++                living_trust_digest: 15,
++                y_verdict: 1,
++                x_verdict: 1,
++                seal: 17,
++                generation: 19,
++                receipt_id: "r".into(),
++            },
++            negative_persisted: true,
++        };
++        assert_eq!(
++            decode_cycle_response(&encode_cycle_response(&response)).unwrap(),
++            response,
++        );
++    }
++
++    #[test]
+     fn negative_roundtrip() {
+         let request = ShadowNegativeRequest { negative: negative(), export_negative_knowledge: true };
+         assert_eq!(decode_negative_request(&encode_negative_request(&request)).unwrap(), request);
+diff -ruN '--exclude=target' '--exclude=V1_6_1_FROM_V1_6_0.diff' '--exclude=ESS_MAI_V1_6_1_FILELIST.sha256' /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ui/Cargo.toml /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ui/Cargo.toml
+--- /mnt/data/v160_ref/v1.6.0_ess_mai/ess_mai/ui/Cargo.toml	2026-07-15 06:11:27.000000000 +0000
++++ /mnt/data/v161_build/v1.6.1_ess_mai/ess_mai/ui/Cargo.toml	2026-07-15 09:07:49.036601831 +0000
+@@ -5,7 +5,7 @@
+ # ═══════════════════════════════════════════════════════════════════════════
+ [package]
+ name    = "essmai_ui"
+-version = "1.6.0"
++version = "1.6.1"
+ edition = "2021"
+ 
+ # Shkëputja nga workspace-i i rrënjës — UI ndërtohet i pavarur.

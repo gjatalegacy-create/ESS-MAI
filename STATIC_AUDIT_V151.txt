@@ -1,0 +1,51 @@
+ESS-MAI v1.5.1 — STATIC EVIDENCE AUDIT
+=======================================
+
+BASELINE_ZIP_SHA256=9be1d715040bdfa7d4a074a99de9ef2e665248e80663bed505b1e86e93e304f1
+ORIGINAL_ZIP_SHA256=5e9f8cfa15dfcb641ef897dd31c7193d2ab3ca86b6a5415869c4587f08d18b09
+BASELINE_ACTIVE_TREE=ess_mai_v1_5_0_PATCHED.zip/ess_mai/
+RUST_CARGO_AVAILABLE=NO
+DYNAMIC_VALIDATION_STATUS=PENDING_WINDOWS_MACHINE
+
+STATIC_CHECKS:
+TOML_PARSE=PASS
+JSON_PARSE=PASS
+BASH_SYNTAX=PASS
+VERSION_1_5_1=PASS
+VAULT_FFI_UNSAFE_COUNT_3=PASS
+SOVEREIGN_FFI_UNSAFE=PASS
+EMPTY_PAYLOAD_MINUS5=PASS
+VAULT_UNAVAILABLE_MINUS6=PASS
+WRITE_FAILED_MINUS7=PASS
+TRUNCATE_FALSE_TWO=PASS
+INTEGER_REJECTED_COUNT=PASS
+PUBLIC_RAW_PTR_FFI_SAFE_COUNT_ZERO=PASS
+PUB_USE_UNCHANGED=PASS
+SEAL_DECLARATIONS_UNCHANGED=PASS
+CARGO_MANIFESTS_UNCHANGED=PASS
+UI_TREE_UNCHANGED=PASS
+INSTALLER_TREE_UNCHANGED=PASS
+LIGHT_TREE_UNCHANGED=PASS
+
+EVIDENCE-BASED CORRECTIONS:
+- Preserved the seven verified Quantum corrections from the patched baseline.
+- Binary sovereign rejection count uses integer counting before score normalization.
+- Raw-pointer public FFI boundaries are unsafe extern C with explicit Safety contracts.
+- sovereign_validate_and_write returns -5 for empty payload, -6 for missing vault, -7 for write failure.
+- Lineage is recorded only after successful persistent write.
+- WAL and sovereign log explicitly preserve existing content with truncate(false).
+- C-kernel unsafe calls have concrete safety comments.
+
+DELIBERATELY NOT CHANGED:
+- Cargo child profile policy: exact per-package panic intent cannot be preserved via profile overrides.
+- RingBuffer concurrency APIs: unsafe impl warnings require a separate concurrency/ABI redesign, not a comment-only patch.
+- Light↔Quantum process transport: requires runtime evidence before modification.
+- UI/Tauri and installer/CI: no concrete source defect was proven in this static phase.
+- 431 warnings were not mechanically cleaned; no cargo fix was used.
+
+KNOWN LIMITATION:
+- This package is statically corrected but not claimed cargo-green until VALIDATE_V151.ps1 is run on the Windows toolchain.
+
+PARSE_ERRORS:
+BASH_ERRORS:
+BAD_SAFE_RAW_POINTER_FFI:

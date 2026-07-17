@@ -1,0 +1,38 @@
+[package]
+name        = "quantum-platform"
+version     = "1.6.5"
+edition     = "2021"
+authors     = ["Bledar Gjata <gjata@legacy.al>"]
+description = "ESS-MAI Quantum — zero if/else + orkestratori + SHA-256 + Digital Lab + NPRO/NPIM + Layer 2"
+
+[features]
+# runtime_mode: ekzekutim real i deklaruar qartë (default i prodhimit).
+# Marker semantik konsistent me Light; default = ekzekutim real, jo simulim.
+default        = ["runtime_mode"]
+runtime_mode   = []
+# dev_harness = skenat demonstruese në main() (JASHTË prodhimit; default OFF).
+# Prodhimi konsumon input real nga stdin; kjo izolon demo-t opt-in.
+dev_harness    = []
+nlp       = ["dep:unicode-segmentation", "dep:rust-stemmers"]
+# hw_kernel = kompilon kernelët C → lexon RAM/CPU/termik REAL
+hw_kernel = []
+# full = gjithçka
+full      = ["runtime_mode", "nlp", "hw_kernel"]
+
+[dependencies]
+unicode-segmentation = { version = "1.10", optional = true }
+rust-stemmers        = { version = "1.2",  optional = true }
+# v1.5.9: Quantum njeh vetëm FORMËN wire. Autoriteti Shadow nuk linkohet.
+shadow_contracts = { path = "../shadow-contracts" }
+sha2 = "0.10"
+
+[build-dependencies]
+cc = "1"
+
+[lib]
+name = "quantum_lim"
+path = "src/lib.rs"
+
+[[bin]]
+name = "quantum-platform"
+path = "src/main.rs"

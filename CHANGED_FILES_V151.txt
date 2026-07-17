@@ -1,0 +1,40 @@
+ESS-MAI v1.5.1 — FILE SCOPE
+================================
+
+BASELINE_FILES=317
+RELEASE_FILES=323
+
+SOURCE_OR_PROJECT FILES MODIFIED:
+- README.md
+- VERSION_ESSMAI.txt
+- quantum/src/hw_real/hw_manager.rs
+- quantum/src/lab_contracts/first_guardian.rs
+- quantum/src/lim_hw_bridge.rs
+- quantum/src/lim_hw_real_bridge.rs
+- quantum/src/npim.rs
+- quantum/src/npro_lim_bridge.rs
+- quantum/src/pro.rs
+- shadow/src/knowledge_vault.rs
+- shadow/src/shadow_gj_legacy.rs
+- shadow/src/sovereign_ffi_gate.rs
+- shadow/src/sovereign_log.rs
+- shadow/src/vault_disk.rs
+
+RELEASE/AUDIT ARTIFACTS ADDED:
+- CHANGED_FILES_V151.txt
+- CHANGELOG_v1.5.1.md
+- DIFF_FROM_V1_5_0_PATCHED.patch
+- SHA256SUMS.txt
+- STATIC_AUDIT_V151.txt
+- VALIDATE_V151.ps1
+
+REMOVED:
+- NONE
+
+SCOPE GUARANTEES:
+- Light tree unchanged.
+- UI tree unchanged.
+- installer tree unchanged.
+- Cargo manifests unchanged.
+- pub use lines unchanged.
+- seal declarations unchanged.

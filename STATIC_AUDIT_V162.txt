@@ -1,0 +1,166 @@
+ESS-MAI v1.6.2 — STATIC AUDIT EVIDENCE
+Date: 2026-07-15
+Baseline: v1.6.1_ess_mai
+Target: v1.6.2_ess_mai
+
+EXECUTIVE RESULT
+CHECKS=115 PASS=115 FAIL=0
+Cargo/rustc/rustfmt/PowerShell: unavailable in packaging environment
+Cargo status: PENDING_EXTERNAL_WINDOWS_GNU via VALIDATE_V162.ps1
+
+STRUCTURAL METRICS
+Rust files: 273
+Cargo TOML files parsed: 7 / 7
+JSON files parsed: 3 / 3
+Changed/new/removed files vs v1.6.1: 44
+Diff lines: 3532
+
+CONTRACT/WIRE METRICS
+VerificationReceipt call sites: 25
+Receipt arity: [11] (all canonical 11 arguments)
+Quantum handoff fields: 37 with 36 separators
+Light handoff fields: 37 with 36 separators
+
+BYTE-IDENTICAL CONTRACT SHA-256
+VerificationReceipt: 93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
+LivingTrust: b7a490c292d90eb107a95122692912bc950ba530e403a2a069df15989a9fc900
+PDContinuum: 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+PDSpine9: 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+GCL: 629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b
+
+ARCHITECTURAL CLOSURES VERIFIED
+- cycle begins with action_state/action_mask/ledger zero;
+- exact nine-organ order and schema are enforced;
+- SRK is an independent proof organ between PRO and PIM;
+- Shadow replays canonical evidence words and cross-binds every organ;
+- Living Trust requires the exact mask and L-500;
+- VerificationReceipt and TokenForge use SHA-256 identities;
+- Quantum has no direct Shadow-core dependency;
+- Trust is bound through receipt → iZ → next_i0 → PD Light;
+- stateful global tests are serialized only under cfg(test);
+- Cargo-green is retained as a release gate, not invented as unsigned runtime evidence;
+
+FULL CHECK RECORD
+CHECKS=115 PASS=115 FAIL=0
+PASS | exists:VERSION_ESSMAI.txt
+PASS | exists:ess-mai.md
+PASS | exists:CHANGELOG_v1.6.2.md
+PASS | exists:AUDIT_V162_UNTRUST_START_TO_END.md
+PASS | exists:V162_SIMULATION_MAP.md
+PASS | exists:ESS_MAI_V1_6_2_IMPLEMENTATION_MAP.md
+PASS | exists:VALIDATE_V162.ps1
+PASS | version-marker-v1.6.2
+PASS | cargo-version:light/Cargo.toml
+PASS | cargo-version:quantum/Cargo.toml
+PASS | cargo-version:shadow/Cargo.toml
+PASS | cargo-version:shadow-contracts/Cargo.toml
+PASS | cargo-version:ui/Cargo.toml
+PASS | cargo-version:light/ui/src-tauri/Cargo.toml
+PASS | toml:Cargo.toml
+PASS | toml:ui/Cargo.toml
+PASS | toml:quantum/Cargo.toml
+PASS | toml:shadow/Cargo.toml
+PASS | toml:light/Cargo.toml
+PASS | toml:shadow-contracts/Cargo.toml
+PASS | toml:light/ui/src-tauri/Cargo.toml
+PASS | json:ui/tauri.conf.json
+PASS | json:light/ui/src-tauri/tauri.conf.json
+PASS | contract-byte-identical:receipt | 93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
+PASS | contract-byte-identical:trust | b7a490c292d90eb107a95122692912bc950ba530e403a2a069df15989a9fc900
+PASS | contract-byte-identical:pd_continuum | 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+PASS | contract-byte-identical:pd_spine | 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+PASS | contract-byte-identical:gcl | 629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b
+PASS | untrust-begin-zero-state
+PASS | untrust-begin-zero-mask
+PASS | untrust-begin-clears-ledger
+PASS | required-action-mask-03fe
+PASS | required-action-order
+PASS | mark-action:Hpro
+PASS | stage-schema:Hpro
+PASS | mark-action:Pro
+PASS | stage-schema:Pro
+PASS | mark-action:Npro
+PASS | stage-schema:Npro
+PASS | mark-action:Srk
+PASS | stage-schema:Srk
+PASS | mark-action:Apro
+PASS | stage-schema:Apro
+PASS | mark-action:Mpro
+PASS | stage-schema:Mpro
+PASS | mark-action:Pim
+PASS | stage-schema:Pim
+PASS | mark-action:Npim
+PASS | stage-schema:Npim
+PASS | mark-action:Hcp
+PASS | stage-schema:Hcp
+PASS | mark-action-runtime-order | [('Hpro', 17270), ('Pro', 21210), ('Npro', 23245), ('Npim', 24828), ('Srk', 25752), ('Pim', 26514), ('Apro', 27767), ('Mpro', 31150), ('Hcp', 41073)]
+PASS | tokenforge-not-reasoning-action
+PASS | phase1-no-sha256
+PASS | action-ledger-raw-words
+PASS | action-replay-local
+PASS | action-convergence-exact
+PASS | shadow-contract-replay
+PASS | shadow-contract-canonical-order
+PASS | shadow-contract-exact-mask
+PASS | shadow-crossbind-hpro
+PASS | shadow-crossbind-pro
+PASS | shadow-crossbind-npro
+PASS | shadow-crossbind-srk
+PASS | shadow-crossbind-apro
+PASS | shadow-crossbind-mpro
+PASS | shadow-crossbind-pim
+PASS | shadow-crossbind-npim
+PASS | shadow-crossbind-hcp
+PASS | srk-real-process
+PASS | srk-evidence-chain
+PASS | pim-after-srk
+PASS | trust-sha256-real
+PASS | trust-requires-exact-mask
+PASS | trust-material-action-state
+PASS | trust-material-action-mask
+PASS | trust-material-laws
+PASS | trust-material-l500
+PASS | l500-live-xor
+PASS | judge-supreme-seals-trust
+PASS | trust-not-intensity-in-identity
+PASS | receipt-sha256
+PASS | receipt-64hex
+PASS | receipt-binds-full-trust
+PASS | receipt-id-no-fnv
+PASS | token-sha256
+PASS | token-no-fnv
+PASS | receipt-token-test-lock
+PASS | runtime-pulse-test-lock
+PASS | quantum-no-shadow-core-dep
+PASS | quantum-wire-contract-only
+PASS | shadow-binary-only
+PASS | shadow-protocol-v5
+PASS | shadow-main-process-bridge
+PASS | quantum-recomputes-receipt
+PASS | quantum-binds-trust-to-iz
+PASS | quantum-binds-trust-intensity
+PASS | light-recomputes-receipt
+PASS | light-recomputes-trust
+PASS | light-rejects-trust-tamper
+PASS | light-handoff-37
+PASS | e0521-static-source
+PASS | doc:Evolucioni v1.6.1 → v1.6.2
+PASS | doc:Untrust Start to End
+PASS | doc:SRK
+PASS | doc:TokenForge SHA-256
+PASS | doc:Receipt SHA-256
+PASS | doc:Cargo-green
+PASS | doc:Negative Knowledge
+PASS | doc:PD Light
+PASS | doc-version:AUDIT_V162_UNTRUST_START_TO_END.md
+PASS | doc-version:V162_SIMULATION_MAP.md
+PASS | doc-version:ESS_MAI_V1_6_2_IMPLEMENTATION_MAP.md
+PASS | doc-version:CHANGELOG_v1.6.2.md
+PASS | rust-lexical-delimiters
+RUST_FILES=273
+CONTRACT_HASHES
+light/src/lab_contracts/verification_receipt.rs=93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
+light/src/living_trust_contract.rs=b7a490c292d90eb107a95122692912bc950ba530e403a2a069df15989a9fc900
+light/src/pd_continuum_contract.rs=286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+light/src/pd_spine_contract.rs=8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+light/src/lab_contracts/gjata_collapse_law.rs=629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b

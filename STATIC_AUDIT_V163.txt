@@ -1,0 +1,140 @@
+ESS-MAI v1.6.3 — STATIC / CONTRACT / C AUDIT
+Date: 2026-07-15
+Baseline: ESS-MAI v1.6.2
+Target: ESS-MAI v1.6.3
+
+STATUS
+------
+Static architecture checks: 90 PASS / 0 FAIL
+Rust delimiter/string/comment scan: 277 files / 0 structural failures
+Cargo manifests parsed: 7 / 7
+JSON files parsed: 3 / 3
+C compilation evidence: 18 objects / GCC + Clang / 0 warnings / 0 errors
+Release manifest: 414 entries / 0 missing / 0 SHA-256 mismatches / relative paths only
+Cargo-green: PENDING — cargo/rustc/rustfmt/PowerShell unavailable in packaging environment
+
+CONTRACT IDENTITIES
+-------------------
+GCL Project Contract ×3:
+71230a51c3b008158ec791863a98ccb33a9b00c60eac2fa685b8779279fb6de2
+
+Living Trust Contract ×3:
+eba1dc21a4f49038a8f31c9e0bbb5f841e1d7c5b52b79ec775731e28284af03b
+
+PD Continuum Contract ×3:
+286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+
+PD Spine 9 Contract ×3:
+8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+
+C EVIDENCE
+----------
+Compiled with GCC and Clang:
+- Light bus kernel
+- Light legacy bus kernel
+- Light↔Shadow GJ kernel
+- Quantum hardware cooldown kernel
+- Quantum hardware resource kernel
+- Quantum hardware thermal kernel
+- Shadow bus kernel
+- Shadow legacy bus kernel
+- Shadow GJ kernel
+Each source produced one GCC object and one Clang object. All compiler logs were empty.
+
+IMPORTANT LIMIT
+---------------
+This report is not a Cargo proof. Rust code was structurally and contractually audited, but only the user’s Windows GNU environment can produce the authoritative cargo check/build/test result. Run VALIDATE_V163.ps1 from the ESS-MAI root.
+
+FULL CHECK OUTPUT
+-----------------
+CHECKS=90 PASS=90 FAIL=0
+PASS | Rust delimiter/string scan | 277 files; bad=[]
+PASS | Cargo.toml parse | 7 manifests; []
+PASS | JSON parse | 3 files; []
+PASS | version light/Cargo.toml | 1.6.3
+PASS | version quantum/Cargo.toml | 1.6.3
+PASS | version shadow/Cargo.toml | 1.6.3
+PASS | version shadow-contracts/Cargo.toml | 1.6.3
+PASS | version ui/Cargo.toml | 1.6.3
+PASS | version light/ui/src-tauri/Cargo.toml | 1.6.3
+PASS | version ui/tauri.conf.json | 1.6.3
+PASS | version light/ui/src-tauri/tauri.conf.json | 1.6.3
+PASS | VERSION_ESSMAI | ESS-MAI v1.6.3
+PASS | contract x3 gcl_project_contract.rs | 71230a51c3b008158ec791863a98ccb33a9b00c60eac2fa685b8779279fb6de2,71230a51c3b008158ec791863a98ccb33a9b00c60eac2fa685b8779279fb6de2,71230a51c3b008158ec791863a98ccb33a9b00c60eac2fa685b8779279fb6de2
+PASS | contract x3 living_trust_contract.rs | eba1dc21a4f49038a8f31c9e0bbb5f841e1d7c5b52b79ec775731e28284af03b,eba1dc21a4f49038a8f31c9e0bbb5f841e1d7c5b52b79ec775731e28284af03b,eba1dc21a4f49038a8f31c9e0bbb5f841e1d7c5b52b79ec775731e28284af03b
+PASS | contract x3 pd_continuum_contract.rs | 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e,286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e,286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+PASS | contract x3 pd_spine_contract.rs | 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84,8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84,8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+PASS | Quantum no Shadow core dependency | dict_keys(['unicode-segmentation', 'rust-stemmers', 'shadow_contracts', 'sha2'])
+PASS | Shadow autolib false | False
+PASS | Shadow main includes internal core
+PASS | Shadow main project register mode
+PASS | Shadow main bridge mode
+PASS | Negative once dev-gated
+PASS | run_integrated_lab_demo dev-gated
+PASS | persist_negative dev-gated
+PASS | Shadow fixture action_mask
+PASS | Shadow fixture required_mask
+PASS | Shadow fixture scientific_project
+PASS | Light project route dispatch
+PASS | Quantum project process dispatch
+PASS | Project uses real Quantum process
+PASS | Legacy bus labeled legacy
+PASS | APUPK durable store
+PASS | APUPK stores title
+PASS | APUPK stores Light flags
+PASS | APUPK owner check
+PASS | APUPK finite progress
+PASS | SovereignLog flush
+PASS | SovereignLog fsync
+PASS | SovereignLog checked append
+PASS | APUPK process lock create_new
+PASS | APUPK project-only lock
+PASS | light/src/living_trust_contract.rs full evidence sha
+PASS | light/src/living_trust_contract.rs full verdict sha
+PASS | quantum/src/living_trust_contract.rs full evidence sha
+PASS | quantum/src/living_trust_contract.rs full verdict sha
+PASS | shadow/src/living_trust_contract.rs full evidence sha
+PASS | shadow/src/living_trust_contract.rs full verdict sha
+PASS | light/src/gcl_project_contract.rs context sha
+PASS | light/src/gcl_project_contract.rs evidence sha
+PASS | light/src/gcl_project_contract.rs verdict sha
+PASS | quantum/src/gcl_project_contract.rs context sha
+PASS | quantum/src/gcl_project_contract.rs evidence sha
+PASS | quantum/src/gcl_project_contract.rs verdict sha
+PASS | shadow/src/gcl_project_contract.rs context sha
+PASS | shadow/src/gcl_project_contract.rs evidence sha
+PASS | shadow/src/gcl_project_contract.rs verdict sha
+PASS | wire encode_project_registration
+PASS | wire decode_project_registration
+PASS | wire encode_light_project_intake
+PASS | wire decode_light_project_intake
+PASS | wire encode_quantum_project_execution
+PASS | wire decode_quantum_project_execution
+PASS | protocol v8
+PASS | FinalEvidence carries project
+PASS | Verdict carries full project SHA
+PASS | Negative persist derived from verdict
+PASS | Positive cannot persist branch
+PASS | Novel factualization used
+PASS | Shadow file magic verification
+PASS | Novel factual status
+PASS | Rigorous negative status
+PASS | Project verdict bound to Trust
+PASS | Project adjudication within judge_supreme
+PASS | Quantum PD 45 placeholders | placeholders=45, sep=44
+PASS | Light PD expects 45 body fields
+PASS | Light main expects 46 sealed fields
+PASS | obsolete absent scientific_project_digest
+PASS | obsolete absent scientific_project_verdict_digest
+PASS | obsolete absent living_trust_scientific_project_digest
+PASS | light/src/main.rs mod gcl_project_contract;
+PASS | light/src/main.rs mod project_process_bridge;
+PASS | quantum/src/lib.rs pub mod gcl_project_contract;
+PASS | shadow/src/lib.rs pub mod gcl_project_contract;
+PASS | initializers LivingTrustProof | count=12; failures=[]
+PASS | initializers ProjectVerdictMaterial | count=10; failures=[]
+PASS | initializers ScientificProjectWire | count=3; failures=[]
+PASS | initializers ShadowVerdictWire | count=3; failures=[]
+PASS | initializers FinalEvidenceWire | count=3; failures=[]
+PASS | C objects GCC+Clang | objects=18
+PASS | C warnings zero | nonempty=0

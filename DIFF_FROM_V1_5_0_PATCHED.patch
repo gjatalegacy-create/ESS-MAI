@@ -1,0 +1,546 @@
+--- v1.5.0-patched/CHANGELOG_v1.5.1.md
++++ v1.5.1/CHANGELOG_v1.5.1.md
+@@ -0,0 +1,40 @@
++# ESS-MAI v1.5.1 — Static-Evidence Corrections
++
++## Baseline
++
++Kjo release ndërtohet mbi `ess_mai_v1_5_0_PATCHED.zip/ess_mai`. ZIP-i origjinal v1.5.0 ruhet si rollback.
++
++## Korrigjime me provë konkrete
++
++1. **Quantum test/runtime correctness**
++   - RAM floor llogaritet me `u64 / 10`, jo me `0.10f32`.
++   - Katër fixtures LIM plotësojnë kontratën reale pa ulur pragjet.
++   - Testi NPIM respekton semantikën: score i lartë = besueshmëri e lartë për eliminim negativ.
++   - First Guardian izolon state-in global vetëm nën `#[cfg(test)]`.
++
++2. **Shadow FFI safety**
++   - Katër hyrjet publike që mund të lexojnë raw pointers janë `unsafe extern "C"` me kontratë `# Safety`.
++   - ABI dhe emrat e simboleve C mbeten të pandryshuar.
++   - `sovereign_validate_and_write` kthen `-6` kur vault-i mungon dhe `-7` kur persistimi dështon.
++   - Lineage regjistrohet vetëm pasi shkrimi persistent ka përfunduar.
++   - Testet e payload-it bosh presin `-5`, sipas kontratës së dokumentuar.
++
++3. **Shadow persistence semantics**
++   - WAL dhe SovereignLog deklarojnë shprehimisht `.truncate(false)`.
++   - Riparimi i bishtit kryhet vetëm nga `set_len(good_len)` pas parse-it.
++
++4. **Binary decision counting**
++   - Refuzimet sovrane numërohen si `usize`, pastaj normalizohen në score.
++
++## Të paprekura
++
++- Arkitektura Light → Quantum → Shadow.
++- Formula dhe pragjet NPRO/NPIM.
++- `pub use`, seals dhe wire formats.
++- LIM runtime.
++- UI/Tauri dhe installer/CI.
++- Cargo profile policy; profile-t child mbeten për vendim të veçantë sepse Cargo i injoron në workspace dhe `panic` nuk mund të ruhet per-package me overrides.
++
++## Status validimi
++
++Ky mjedis nuk ka Rust/Cargo. Janë kryer validime statike, hash-e, parse TOML/JSON dhe kontroll i scope-it. Ekzekuto `VALIDATE_V151.ps1` në Windows për vulën dinamike.
+--- v1.5.0-patched/README.md
++++ v1.5.1/README.md
+@@ -28,6 +28,8 @@
+ | 11 | sovereign_commit payload bosh → sukses | **error -5 EmptyPayload** (jo 0) |
+ | 12 | ChainRejected humb shkakun | **reason_code + failure_stage** (bit-i mbetet i thjeshtë) |
+ | 13 | Verdiktet kompresohen herët | diagnoza e plotë ruhet; 0/1 vetëm në dalje |
++| 14 | FFI kthen sukses kur vault-i mungon | **error -6 VaultUnavailable**; zero nuk maskon shkrim të munguar |
++| 15 | Backend refuzon shkrimin por FFI kthen 0 | **error -7 VaultWriteFailed**; lineage regjistrohet vetëm pas persistimit |
+ 
+ ## Ndarja Prod vs Dev (#8)
+ 
+--- v1.5.0-patched/VALIDATE_V151.ps1
++++ v1.5.1/VALIDATE_V151.ps1
+@@ -0,0 +1,28 @@
++$ErrorActionPreference = "Continue"
++$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
++$Out = Join-Path $Root "validation_v151"
++New-Item -ItemType Directory -Force -Path $Out | Out-Null
++Set-Location $Root
++
++function Run-Step {
++    param([string]$Name, [string]$Command)
++    $Log = Join-Path $Out ($Name + ".txt")
++    cmd.exe /d /s /c "$Command > `"$Log`" 2>&1"
++    return $LASTEXITCODE
++}
++
++$QSerial = Run-Step "01_quantum_serial" "cargo --color never test -p quantum-platform --lib -- --test-threads=1"
++$QParallel = Run-Step "02_quantum_parallel" "cargo --color never test -p quantum-platform --lib"
++$Workspace = Run-Step "03_workspace_tests" "cargo --color never test --workspace"
++$Release = Run-Step "04_release_build" "cargo --color never build --release"
++$Clippy = Run-Step "05_clippy" "cargo --color never clippy --workspace --all-targets --all-features"
++
++@(
++    "QUANTUM_SERIAL_EXIT=$QSerial"
++    "QUANTUM_PARALLEL_EXIT=$QParallel"
++    "WORKSPACE_TEST_EXIT=$Workspace"
++    "RELEASE_BUILD_EXIT=$Release"
++    "CLIPPY_EXIT=$Clippy"
++) | Set-Content -Encoding utf8 (Join-Path $Out "00_summary.txt")
++
++notepad (Join-Path $Out "00_summary.txt")
+--- v1.5.0-patched/VERSION_ESSMAI.txt
++++ v1.5.1/VERSION_ESSMAI.txt
+@@ -1 +1 @@
+-1.5.0
++1.5.1
+--- v1.5.0-patched/quantum/src/hw_real/hw_manager.rs
++++ v1.5.1/quantum/src/hw_real/hw_manager.rs
+@@ -61,7 +61,7 @@
+             0 => ram_free_bytes,
+             t => t,
+         };
+-        // v1.5.0 (Korrigjimi A): floor AUTORITATIV me matematikë INTEGER u64 —
++        // v1.5.1 (Korrigjimi A): floor AUTORITATIV me matematikë INTEGER u64 —
+         // 10% = floor_base / 10, ekzakt në byte (8GB→858993459, 10GB→1073741824).
+         // f32(0.10) mbart epsilon (+13B në 8GB, +16B në 10GB) — i ndaluar për
+         // vendimin në byte. HW_FREE_FLOOR_PCT mbetet publik (re-export + cores).
+--- v1.5.0-patched/quantum/src/lab_contracts/first_guardian.rs
++++ v1.5.1/quantum/src/lab_contracts/first_guardian.rs
+@@ -221,7 +221,7 @@
+     fn s_rreh() -> bool { false }
+     fn tdir() -> String { std::env::temp_dir().to_string_lossy().into_owned() }
+ 
+-    // ── v1.5.0 (Korrigjimi D, VETËM #[cfg(test)]) ────────────────────────
++    // ── v1.5.1 (Korrigjimi D, VETËM #[cfg(test)]) ────────────────────────
+     // FRYMA_E_FUNDIT është gjendje globale e procesit; nën paralelizëm,
+     // attest() i një testi tjetër e mbishkruante mes attest→breath_status
+     // të këtij testi (provë: kalonte i izoluar dhe me --test-threads=1).
+--- v1.5.0-patched/quantum/src/lim_hw_bridge.rs
++++ v1.5.1/quantum/src/lim_hw_bridge.rs
+@@ -155,7 +155,7 @@
+     #[test]
+     fn shallow_still_allocates() {
+         // Input i dobët → Shallow → POR prapë merr budget (filozofia).
+-        // v1.5.0 (Korrigjimi B, TEST-ONLY): fixture plotëson kontratën reale
++        // v1.5.1 (Korrigjimi B, TEST-ONLY): fixture plotëson kontratën reale
+         // të LimCollector (≥2 fragmente, ≥8 fjalë — pragjet TË PAPREKURA);
+         // lutja kontradiktore (pohim + mohim mbi të njëjtën temë) e mban
+         // masën epistemike NËN 0.36 → profili mbetet realisht Shallow.
+--- v1.5.0-patched/quantum/src/lim_hw_real_bridge.rs
++++ v1.5.1/quantum/src/lim_hw_real_bridge.rs
+@@ -239,7 +239,7 @@
+     #[test]
+     fn shallow_still_allocates_with_real_hw() {
+         // Input i dobët → Shallow → gate real Bypass, POR budget jo-zero.
+-        // v1.5.0 (Korrigjimi B, TEST-ONLY): fixture plotëson kontratën reale
++        // v1.5.1 (Korrigjimi B, TEST-ONLY): fixture plotëson kontratën reale
+         // të LimCollector (≥2 fragmente, ≥8 fjalë — pragjet TË PAPREKURA);
+         // mohimi eksplicit mbi temë të përbashkët e mban masën NËN 0.36 →
+         // profili mbetet Shallow dhe gate-i real bën Bypass (jo Deep).
+--- v1.5.0-patched/quantum/src/npim.rs
++++ v1.5.1/quantum/src/npim.rs
+@@ -223,7 +223,7 @@
+ 
+     #[test]
+     fn strong_input_can_produce_decisive_negative_evidence() {
+-        // v1.5.0 (Korrigjimi C, TEST-ONLY): semantika AUTORITATIVE —
++        // v1.5.1 (Korrigjimi C, TEST-ONLY): semantika AUTORITATIVE —
+         // negativity_score është BESUESHMËRIA/intensiteti se një rrugë
+         // është negative dhe duhet eliminuar. Input i fortë MUND të japë
+         // eliminime negative shumë të qarta: score i lartë është i SAKTË
+--- v1.5.0-patched/quantum/src/npro_lim_bridge.rs
++++ v1.5.1/quantum/src/npro_lim_bridge.rs
+@@ -125,7 +125,7 @@
+     #[test]
+     fn full_npro_to_lim_flow() {
+         // Rrjedha e plotë: NPRO → WeaknessSignal → LIM scaffold.
+-        // v1.5.0 (Korrigjimi B, TEST-ONLY): NPRO mbetet mbi fragmentin e vetëm
++        // v1.5.1 (Korrigjimi B, TEST-ONLY): NPRO mbetet mbi fragmentin e vetëm
+         // të dobët (ana NPRO e rrjedhës); scaffold-i LIM ndërtohet nga fixture
+         // që plotëson kontratën reale (≥2 fragmente, ≥8 fjalë — pragjet
+         // TË PAPREKURA), që rrjedha NPRO→LIM të arrihet REALISHT.
+--- v1.5.0-patched/quantum/src/pro.rs
++++ v1.5.1/quantum/src/pro.rs
+@@ -249,7 +249,7 @@
+ 
+     #[test]
+     fn not_ready_produces_nothing() {
+-        // v1.5.0 (Korrigjimi B, TEST-ONLY): scaffold-i ndërtohet VALID nga
++        // v1.5.1 (Korrigjimi B, TEST-ONLY): scaffold-i ndërtohet VALID nga
+         // fixture që plotëson kontratën LIM (≥2 fragmente, ≥8 fjalë —
+         // pragjet TË PAPREKURA); pastaj ready_for_pro vendoset false në
+         // mënyrë DETERMINISTE (state i përcaktuar, jo varësi nga masa).
+--- v1.5.0-patched/shadow/src/knowledge_vault.rs
++++ v1.5.1/shadow/src/knowledge_vault.rs
+@@ -399,10 +399,13 @@
+             p.into_inner()
+         });
+         match store.is_empty() { true => return 0.0, false => {} }
+-        let rejected: f32 = store.iter()
+-            .map(|e| (1.0 - e.decision as f32))
+-            .sum();
+-        let conflict = rejected / store.len() as f32;
++        // Vendimi sovran është binar (0/1): numëro refuzimet si sasi diskrete,
++        // pastaj normalizo vetëm në kufirin e score-it. Kjo shmang aritmetikën
++        // float mbi një counter dhe nuk lejon vlera negative për decision jo-kanonik.
++        let rejected: usize = store.iter()
++            .filter(|e| e.decision == 0)
++            .count();
++        let conflict = rejected as f32 / store.len() as f32;
+         (conflict * (1.0 - reasoning_strength * 0.5)).clamp(0.0, 1.0)
+     }
+ 
+@@ -782,13 +785,20 @@
+     GLOBAL_VAULT.get().cloned()
+ }
+ 
++/// Callback ABI nga kerneli C për shkrim primitive.
++///
++/// # Safety
++/// Kur `pkg_len > 0`, `pkg_bytes` duhet të tregojë te të paktën `pkg_len` byte
++/// të lexueshëm dhe të mbetet valid gjatë thirrjes. ABI/simboli C nuk ndryshon;
++/// `unsafe` formalizon kontratën që C duhet të garantojë.
+ #[no_mangle]
+-pub extern "C" fn vault_write_primitive(
++pub unsafe extern "C" fn vault_write_primitive(
+     pkg_bytes: *const u8,
+     pkg_len:   u32,
+     ts_ns:     u64,
+ ) {
+     match pkg_bytes.is_null() || pkg_len == 0 { true => return, false => {} }
++    // SAFETY: kontrata e funksionit kërkon pointer të lexueshëm për `pkg_len` byte.
+     let bytes = unsafe { std::slice::from_raw_parts(pkg_bytes, pkg_len as usize) }.to_vec();
+     match get_global_vault() {
+         Some(vault) => match vault.write_primitive_raw(ts_ns, bytes, ts_ns) {
+@@ -799,14 +809,20 @@
+     }
+ }
+ 
++/// Callback ABI nga kerneli C për dije të verifikuar.
++///
++/// # Safety
++/// Kur `pkg_len > 0`, `pkg_bytes` duhet të tregojë te të paktën `pkg_len` byte
++/// të lexueshëm dhe të mbetet valid gjatë thirrjes.
+ #[no_mangle]
+-pub extern "C" fn vault_write_verified(
++pub unsafe extern "C" fn vault_write_verified(
+     pkg_bytes:      *const u8,
+     pkg_len:        u32,
+     knowledge_band: u8,
+     ts_ns:          u64,
+ ) {
+     match pkg_bytes.is_null() || pkg_len == 0 { true => return, false => {} }
++    // SAFETY: kontrata e funksionit kërkon pointer të lexueshëm për `pkg_len` byte.
+     let bytes = unsafe { std::slice::from_raw_parts(pkg_bytes, pkg_len as usize) }.to_vec();
+     let band = match knowledge_band {
+         1 => KnowledgeBand::Hypothesis,
+@@ -823,13 +839,19 @@
+     }
+ }
+ 
++/// Callback ABI nga kerneli C për dije negative.
++///
++/// # Safety
++/// Kur `pkg_len > 0`, `pkg_bytes` duhet të tregojë te të paktën `pkg_len` byte
++/// të lexueshëm dhe të mbetet valid gjatë thirrjes.
+ #[no_mangle]
+-pub extern "C" fn vault_write_negative(
++pub unsafe extern "C" fn vault_write_negative(
+     pkg_bytes: *const u8,
+     pkg_len:   u32,
+     ts_ns:     u64,
+ ) {
+     match pkg_bytes.is_null() || pkg_len == 0 { true => return, false => {} }
++    // SAFETY: kontrata e funksionit kërkon pointer të lexueshëm për `pkg_len` byte.
+     let bytes = unsafe { std::slice::from_raw_parts(pkg_bytes, pkg_len as usize) }.to_vec();
+     match get_global_vault() {
+         Some(vault) => {
+--- v1.5.0-patched/shadow/src/shadow_gj_legacy.rs
++++ v1.5.1/shadow/src/shadow_gj_legacy.rs
+@@ -84,13 +84,26 @@
+         fn shadow_lgc_seal_check(flags: u32) -> i32;
+     }
+ 
+-    pub fn init() -> i32 { unsafe { lgc_init() } }
+-    pub fn freeze(stage: i32) -> i32 { unsafe { lgc_freeze(stage) } }
+-    pub fn unfreeze() -> i32 { unsafe { lgc_unfreeze() } }
+-    pub fn seal_check(flags: u32) -> bool { unsafe { shadow_lgc_seal_check(flags) != 0 } }
++    pub fn init() -> i32 {
++        // SAFETY: `lgc_init` nuk merr pointera dhe inicializon singleton-in C.
++        unsafe { lgc_init() }
++    }
++    pub fn freeze(stage: i32) -> i32 {
++        // SAFETY: `stage` kalon me vlerë; kerneli C nuk mban referenca Rust.
++        unsafe { lgc_freeze(stage) }
++    }
++    pub fn unfreeze() -> i32 {
++        // SAFETY: funksioni C nuk merr argumente dhe nuk prek memorie Rust.
++        unsafe { lgc_unfreeze() }
++    }
++    pub fn seal_check(flags: u32) -> bool {
++        // SAFETY: `flags` kalon me vlerë dhe ABI-ja deklarohet identikisht në C.
++        unsafe { shadow_lgc_seal_check(flags) != 0 }
++    }
+ 
+     pub fn stats() -> KernelStats {
+         let mut s = LgcStats { total: 0, passed: 0, blocked: 0, state: 0, frozen: 0 };
++        // SAFETY: `s` është i inicializuar, unik dhe valid për shkrim gjatë thirrjes.
+         unsafe { lgc_get_stats(&mut s) };
+         KernelStats { total: s.total, passed: s.passed, blocked: s.blocked, frozen: s.frozen }
+     }
+@@ -110,6 +123,7 @@
+             req_id: [0u8; 48], decision: 0, state: 0,
+             sha256: [0u8; 65], reason: [0u8; 128], ts: 0,
+         };
++        // SAFETY: `req` dhe `res` janë repr(C), të inicializuar dhe jetojnë gjatë thirrjes.
+         let rc = unsafe { lgc_check(&req, &mut res) };
+         ((rc == 0) & (res.decision == 1)) as u8
+     }
+--- v1.5.0-patched/shadow/src/sovereign_ffi_gate.rs
++++ v1.5.1/shadow/src/sovereign_ffi_gate.rs
+@@ -19,7 +19,7 @@
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+ use crate::knowledge_lineage::{ledger, Lineage};
+-use crate::knowledge_vault::get_global_vault;
++use crate::knowledge_vault::{get_global_vault, KnowledgeVault};
+ use crate::types::{KnowledgeBand, NegativeContext};
+ use std::collections::HashMap;
+ use std::marker::PhantomData;
+@@ -168,8 +168,15 @@
+ ///        -3 = NonceMismatch
+ ///        -4 = NoTrace (autorizim OK por pa gjurmë → inputi fshihet)
+ ///        -5 = EmptyPayload (autorizim OK por pa të dhëna — fail-closed, #11)
++///        -6 = VaultUnavailable (autoriteti persistent nuk është inicializuar)
++///        -7 = VaultWriteFailed (backend-i refuzoi shkrimin)
++///
++/// # Safety
++/// Kur `data_len > 0`, `data_ptr` duhet të tregojë te të paktën `data_len` byte
++/// të lexueshëm dhe të mbetet valid gjatë gjithë thirrjes. Pointeri mund të
++/// lexohet edhe në rrugën `AlreadyConsumed` për gjurmën e sulmit të klonimit.
+ #[no_mangle]
+-pub extern "C" fn sovereign_validate_and_write(
++pub unsafe extern "C" fn sovereign_validate_and_write(
+     handle:   CapHandle,
+     data_ptr: *const u8,
+     data_len: usize,
+@@ -178,11 +185,15 @@
+         eprintln!("[SOVEREIGN] ANOMALY: gate lock poisoned te validate_and_burn() — recovering, gjendja sovrane duhet audituar");
+         p.into_inner()
+     }).validate_and_burn(handle) {
+-        Ok(token) => sovereign_commit(token, handle, data_ptr, data_len),
++        Ok(token) => {
++            // SAFETY: përcillet kontrata e pointerit nga kufiri publik unsafe.
++            unsafe { sovereign_commit(token, handle, data_ptr, data_len) }
++        }
+         Err(FfiErr::AlreadyConsumed) => {
+             // ANOMALI: handle i klonuar/ri-përdorur nga C — sulm i dokumentuar.
+             eprintln!("[SOVEREIGN] ANOMALY: gen={} AlreadyConsumed — clone attack?", handle.gen);
+-            record_clone_attack(handle, data_ptr, data_len);
++            // SAFETY: përcillet kontrata e pointerit nga kufiri publik unsafe.
++            unsafe { record_clone_attack(handle, data_ptr, data_len) };
+             -1
+         }
+         Err(FfiErr::HandleNotFound) => -2,
+@@ -192,7 +203,7 @@
+ 
+ /// LAW_3: VETËM ky bllok (Shadow-controlled, me token të gjallë) shkruan
+ /// persistent. `_token` konsumohet këtu dhe bie në fund — C s'mund ta riprodhojë.
+-fn sovereign_commit(_token: LgcToken, handle: CapHandle, data_ptr: *const u8, data_len: usize) -> i32 {
++unsafe fn sovereign_commit(_token: LgcToken, handle: CapHandle, data_ptr: *const u8, data_len: usize) -> i32 {
+     // FAIL-CLOSED (#11): payload bosh NUK është sukses — kthe error të veçantë.
+     // Para: kthente 0 (OK) → "s'ka payload" maskohej si "shkrim i suksesshëm".
+     // Tani: -5 EmptyPayload → thirrësi e di që asgjë s'u shkrua. Zero if — match.
+@@ -200,7 +211,7 @@
+         true  => return -5, // EmptyPayload — autorizim OK por pa të dhëna për t'u shkruar
+         false => {}
+     }
+-    // SAFETY: C garanton validitetin e pointerit dhe gjatësinë.
++    // SAFETY: kontrata e caller-it unsafe garanton pointer të lexueshëm për `data_len`.
+     let data = unsafe { std::slice::from_raw_parts(data_ptr, data_len) };
+ 
+     // input_id = hash i përmbajtjes; proof = lineage i kapacitetit (gen, nonce).
+@@ -217,28 +228,48 @@
+         true => {}
+     }
+ 
+-    // Gjurma regjistrohet + dija shkruhet (verified optimal knowledge).
+-    match get_global_vault() {
+-        Some(vault) => {
+-            // RUNTIME HARDENING (      ): rezultati i shkrimit persistent bëhet eksplicit.
+-            // Shkrim i dështuar s'kalon i heshtur. Zero if — match.
+-            match vault.write_verified(input_id, data.to_vec(), KnowledgeBand::Fact, 1.0, now_ns()) {
+-                Ok(())  => {}
+-                Err(_e) => {} // shkrim dështoi — fail-safe (s'rrëzon FFI, por s'fshihet)
++    // Gjurma regjistrohet VETËM pasi shkrimi persistent ka përfunduar.
++    // 0 nuk lejohet kur vault-i mungon ose backend-i refuzon shkrimin.
++    persist_verified(get_global_vault(), input_id, data.to_vec(), lineage)
++    // _token bie këtu: rishkrim me të njëjtin handle = AlreadyConsumed.
++}
++
++/// Njësia e persistimit ndahet nga pointer boundary që të testohet pa mutuar
++/// singleton-in global. Kthen 0 vetëm pasi fact-i dhe lineage janë regjistruar.
++fn persist_verified(
++    vault: Option<std::sync::Arc<KnowledgeVault>>,
++    input_id: u64,
++    data: Vec<u8>,
++    lineage: Lineage,
++) -> i32 {
++    match vault {
++        Some(vault) => match vault.write_verified(
++            input_id, data, KnowledgeBand::Fact, 1.0, now_ns(),
++        ) {
++            Ok(()) => {
++                ledger().record(lineage);
++                0
+             }
+-            ledger().record(lineage);
+-        }
+-        None => {}
+-    }
+-    0
+-    // _token bie këtu: rishkrim me të njëjtin handle = AlreadyConsumed.
++            Err(e) => {
++                eprintln!("[SOVEREIGN] ALARM: persistent write dështoi ({e:?})");
++                -7
++            }
++        },
++        None => {
++            eprintln!("[SOVEREIGN] ALARM: global vault mungon — shkrimi refuzohet");
++            -6
++        }
++    }
+ }
+ 
+ /// Sulm klonimi i detektuar → Shadow Judiciary e shënon si VERIFIED_NEGATIVE
+ /// (kufi aktiv: kjo rrugë FFI është provuar e pavlefshme).
+-fn record_clone_attack(handle: CapHandle, data_ptr: *const u8, data_len: usize) {
++unsafe fn record_clone_attack(handle: CapHandle, data_ptr: *const u8, data_len: usize) {
+     let input_id = match !data_ptr.is_null() && data_len > 0 {
+-        true => fnv(unsafe { std::slice::from_raw_parts(data_ptr, data_len) }),
++        true => {
++            // SAFETY: kontrata e caller-it unsafe garanton pointer të lexueshëm.
++            fnv(unsafe { std::slice::from_raw_parts(data_ptr, data_len) })
++        },
+         false => handle.gen,
+     };
+     match get_global_vault() {
+@@ -252,7 +283,7 @@
+         // RUNTIME HARDENING (      ): shkrimi i NK (clone attack) bëhet eksplicit.
+         match vault.write_negative(input_id, Vec::new(), ctx, now_ns()) {
+             Ok(())  => {}
+-            Err(_e) => {} // fail-safe — sulmi regjistrohet best-effort
++            Err(e) => eprintln!("[SOVEREIGN] ALARM: regjistrimi i clone attack dështoi ({e:?})"),
+         }
+     }
+         None => {}
+@@ -264,11 +295,12 @@
+     use super::*;
+ 
+     #[test]
+-    fn legitimate_issue_then_validate_ok() {
++    fn empty_payload_is_rejected_after_capability_validation() {
+         let h = sovereign_issue_capability(S_SHADOW_WRITE);
+         assert_ne!(h, CapHandle::INVALID);
+-        let r = sovereign_validate_and_write(h, std::ptr::null(), 0);
+-        assert_eq!(r, 0); // token: born → used → dropped ∈ Rust
++        // SAFETY: len=0 lejon pointer null sipas kontratës FFI.
++        let r = unsafe { sovereign_validate_and_write(h, std::ptr::null(), 0) };
++        assert_eq!(r, -5); // token konsumohet, por payload bosh nuk maskohet si sukses
+     }
+ 
+     #[test]
+@@ -277,10 +309,12 @@
+         let h_copy = h_orig; // memcpy perfekt — çdo bit identik
+         assert_eq!(h_orig, h_copy);
+ 
+-        let r1 = sovereign_validate_and_write(h_orig, std::ptr::null(), 0);
+-        assert_eq!(r1, 0); // AtomicBool: true → false (burned)
+-
+-        let r2 = sovereign_validate_and_write(h_copy, std::ptr::null(), 0);
++        // SAFETY: len=0 lejon pointer null; përdorimi i parë djeg token-in edhe pse kthen -5.
++        let r1 = unsafe { sovereign_validate_and_write(h_orig, std::ptr::null(), 0) };
++        assert_eq!(r1, -5); // AtomicBool: true → false; payload bosh refuzohet
++
++        // SAFETY: len=0 lejon pointer null; handle-i i kopjuar duhet të refuzohet.
++        let r2 = unsafe { sovereign_validate_and_write(h_copy, std::ptr::null(), 0) };
+         assert_eq!(r2, -1); // CAS(false→false) = refuzim hardware
+     }
+ 
+@@ -288,29 +322,46 @@
+     fn forged_nonce_is_rejected() {
+         let h_real = sovereign_issue_capability(S_SHADOW_WRITE);
+         let h_fake = CapHandle { gen: h_real.gen, nonce: h_real.nonce ^ 0xDEAD_BEEF };
+-        assert_eq!(sovereign_validate_and_write(h_fake, std::ptr::null(), 0), -3);
++        // SAFETY: len=0 lejon pointer null.
++        assert_eq!(unsafe { sovereign_validate_and_write(h_fake, std::ptr::null(), 0) }, -3);
+     }
+ 
+     #[test]
+     fn unknown_handle_is_not_found() {
+         let h = CapHandle { gen: 9_999_999, nonce: S_SHADOW_WRITE };
+-        assert_eq!(sovereign_validate_and_write(h, std::ptr::null(), 0), -2);
++        // SAFETY: len=0 lejon pointer null.
++        assert_eq!(unsafe { sovereign_validate_and_write(h, std::ptr::null(), 0) }, -2);
+     }
+ 
+     #[test]
+     fn replay_third_time_still_burned() {
+         let h = sovereign_issue_capability(S_SHADOW_WRITE);
+-        assert_eq!(sovereign_validate_and_write(h, std::ptr::null(), 0), 0);
+-        assert_eq!(sovereign_validate_and_write(h, std::ptr::null(), 0), -1);
+-        assert_eq!(sovereign_validate_and_write(h, std::ptr::null(), 0), -1);
+-    }
+-
+-    #[test]
+-    fn authorized_write_with_payload_is_traceable() {
+-        // Shkrim i autorizuar me payload → kthim 0; gjurma e kapacitetit vlen.
+-        let h = sovereign_issue_capability(S_LAB_TRL1);
+-        let data = b"verified-optimal-knowledge";
+-        let r = sovereign_validate_and_write(h, data.as_ptr(), data.len());
++        // SAFETY: len=0 lejon pointer null. Përdorimi i parë djeg token-in dhe kthen -5.
++        assert_eq!(unsafe { sovereign_validate_and_write(h, std::ptr::null(), 0) }, -5);
++        // SAFETY: i njëjti kusht pointeri; replay duhet të mbetet i djegur.
++        assert_eq!(unsafe { sovereign_validate_and_write(h, std::ptr::null(), 0) }, -1);
++        // SAFETY: i njëjti kusht pointeri; përdorimi i tretë nuk ringjall token-in.
++        assert_eq!(unsafe { sovereign_validate_and_write(h, std::ptr::null(), 0) }, -1);
++    }
++
++    #[test]
++    fn authorized_persist_records_fact_without_global_state() {
++        let vault = std::sync::Arc::new(KnowledgeVault::new());
++        let before = vault.fact_count();
++        let data = b"verified-optimal-knowledge-v151".to_vec();
++        let input_id = fnv(&data);
++        let lineage = Lineage::derive_capability(input_id, &[1, S_LAB_TRL1]);
++
++        let r = persist_verified(Some(vault.clone()), input_id, data, lineage);
+         assert_eq!(r, 0);
+-    }
+-}
++        assert_eq!(vault.fact_count(), before + 1, "0 duhet të nënkuptojë shkrim real");
++    }
++
++    #[test]
++    fn missing_vault_is_never_reported_as_success() {
++        let data = b"verified-optimal-knowledge-v151".to_vec();
++        let input_id = fnv(&data);
++        let lineage = Lineage::derive_capability(input_id, &[2, S_LAB_TRL2]);
++        assert_eq!(persist_verified(None, input_id, data, lineage), -6);
++    }
++}
+--- v1.5.0-patched/shadow/src/sovereign_log.rs
++++ v1.5.1/shadow/src/sovereign_log.rs
+@@ -147,6 +147,7 @@
+             .read(true)
+             .write(true)
+             .create(true)
++            .truncate(false) // ruaj log-un; set_len(good_len) riparon vetëm bishtin e dëmtuar
+             .open(path)?;
+ 
+         let mut buf = Vec::new();
+--- v1.5.0-patched/shadow/src/vault_disk.rs
++++ v1.5.1/shadow/src/vault_disk.rs
+@@ -171,6 +171,7 @@
+             .read(true)
+             .write(true)
+             .create(true)
++            .truncate(false) // ruaj log-un; set_len(good_len) riparon vetëm bishtin e dëmtuar
+             .open(path)?;
+ 
+         let mut buf = Vec::new();
