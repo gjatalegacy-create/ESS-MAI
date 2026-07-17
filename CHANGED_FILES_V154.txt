@@ -1,0 +1,47 @@
+ESS-MAI v1.5.4 — FILE SCOPE
+
+Workspace/version:
+- Cargo.toml
+- VERSION_ESSMAI.txt
+- CHANGELOG_v1.5.4.md
+- ESS_MAI_V1_5_4_AUDIT.md
+- VALIDATE_V154.ps1
+
+Light:
+- light/Cargo.toml
+- light/src/light_coordinator.rs
+- light/src/main.rs
+- light/src/pd_light.rs
+- light/src/nura_core.rs
+- light/src/lab_contracts/mod.rs
+- light/src/lab_contracts/verification_receipt.rs
+- light/src/sovereign/seal_registry.rs
+
+Quantum:
+- quantum/Cargo.toml
+- quantum/src/main.rs
+- quantum/src/bridge_shadow/mod.rs
+- quantum/src/progressive_debatic/core.rs
+- quantum/src/progressive_debatic/mod.rs
+- quantum/src/progressive_debatic/types.rs
+- quantum/src/progressive_debatic/seal.rs
+- quantum/src/progressive_debatic/runtime.rs
+- quantum/src/lab_contracts/mod.rs
+- quantum/src/lab_contracts/verification_receipt.rs
+- quantum/src/sovereign/seal_registry.rs
+
+Shadow:
+- shadow/Cargo.toml
+- shadow/src/lib.rs
+- shadow/src/shadow_gateway.rs
+- shadow/src/sovereign_ffi_gate.rs
+- shadow/src/bridge/shadow_out.rs
+- shadow/src/bridge/shadow_callable.rs
+- shadow/src/lab_contracts/mod.rs
+- shadow/src/lab_contracts/verification_receipt.rs
+- shadow/src/seal_registry.rs
+
+Validation/manifests:
+- STATIC_AUDIT_V154.txt
+- ESS_MAI_V1_5_4_FILELIST.sha256
+- SHA256SUMS.txt

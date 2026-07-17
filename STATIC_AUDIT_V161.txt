@@ -1,0 +1,93 @@
+ESS-MAI v1.6.1 — STATIC AUDIT
+Baseline: v1.6.0
+Generated: 2026-07-15 09:38:03 UTC
+
+RUST_FILES=273
+TOML_FILES=7
+RECEIPT_CALLS=25
+CHECKS=81
+PASS=81
+FAIL=0
+PASS | Rust files parsed | 273
+PASS | Rust syntax errors = 0 | []
+PASS | receipt_id calls exist | 25
+PASS | all receipt_id calls have 11 args | []
+PASS | TOML parse errors = 0 | []
+PASS | light/Cargo.toml version 1.6.1
+PASS | quantum/Cargo.toml version 1.6.1
+PASS | shadow/Cargo.toml version 1.6.1
+PASS | shadow-contracts/Cargo.toml version 1.6.1
+PASS | ui/Cargo.toml version 1.6.1
+PASS | light/ui/src-tauri/Cargo.toml version 1.6.1
+PASS | VERSION marker 1.6.1
+PASS | Living Trust byte-identical ×3 | 96c1273b85bfab8843e6416e67f6edab21ea0939e4b8b26d9e9ddde475579c44
+PASS | Verification Receipt byte-identical ×3 | 845712f1b645049a306175f8b556f9332608806c75853be18cf0ab7d6a13b46e
+PASS | PD Continuum byte-identical ×3 | 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+PASS | PD Spine byte-identical ×3 | 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+PASS | GCL Law byte-identical ×3 | 629631747fc684e21a0f72f43641eac3841ff7298b6180fe8ccd70837adf279b
+PASS | Shadow autolib false
+PASS | Shadow has no [lib]
+PASS | Shadow has no rlib/staticlib
+PASS | Quantum depends on shadow-contracts
+PASS | Quantum has no direct Shadow core dependency
+PASS | Quantum source has no shadow_lib/core call
+PASS | E0521 static source contract
+PASS | Shadow main includes core
+PASS | Shadow main dispatches process bridge
+PASS | ACTION_STATE exists
+PASS | ACTION_STATE reset per cycle
+PASS | Phase 1 no SHA256
+PASS | Phase 1 rotate/XOR/add
+PASS | Pro calls mark_action
+PASS | Npro calls mark_action
+PASS | Npim calls mark_action
+PASS | Pim calls mark_action
+PASS | Apro calls mark_action
+PASS | Mpro calls mark_action
+PASS | action_state enters final evidence
+PASS | one SHA256 call in Trust contract | 1
+PASS | Trust SHA includes action_state
+PASS | Trust SHA includes verdict pair/band/law
+PASS | Trust SHA includes system laws + L500 proof
+PASS | Trust SHA excludes intensity
+PASS | Trust binding digest includes intensity/kind/value
+PASS | Trust rejects non-finite legacy score
+PASS | Constructive and rigorous negative kinds
+PASS | Both judge exits pass through Trust seal | 2
+PASS | SGL_SEAL_XOR runtime-live | 5
+PASS | SGL_SEAL_MASK runtime-live | 5
+PASS | SGL_SEAL_PRIMITIVE runtime-live | 5
+PASS | L500 runtime equality to 500
+PASS | legacy_score weighted formula preserved
+PASS | Wire protocol v3
+PASS | Wire carries living_trust_action_state
+PASS | Wire carries living_trust_system_laws_seal
+PASS | Wire carries living_trust_sovereign_flags
+PASS | Wire carries living_trust_sovereign_value
+PASS | Wire carries living_trust_sha256
+PASS | Wire carries living_trust_intensity
+PASS | Wire carries living_trust_kind
+PASS | Wire carries living_trust_digest
+PASS | light/src/lab_contracts/verification_receipt.rs receipt binds Trust
+PASS | quantum/src/lab_contracts/verification_receipt.rs receipt binds Trust
+PASS | shadow/src/lab_contracts/verification_receipt.rs receipt binds Trust
+PASS | Shadow receipt constructs Trust digest
+PASS | Quantum checks receipt Trust digest
+PASS | PD types carry full Trust SHA
+PASS | PD runtime binds Trust digest
+PASS | iZ contract has Trust domain
+PASS | next_i0 carries Trust
+PASS | Light recomputes Trust
+PASS | Light recomputes receipt
+PASS | Handoff schema is 35+CRC
+PASS | Trust not persisted in KnowledgeVault
+PASS | ess-mai v1.6.1 evolution documented
+PASS | parallel ess_mai.md exists
+PASS | parallel ess_mai.md byte-identical
+PASS | CHANGELOG_v1.6.1.md exists
+PASS | AUDIT_V161_GCL_LIVING_TRUST.md exists
+PASS | V161_SIMULATION_MAP.md exists
+PASS | ESS_MAI_V1_6_1_IMPLEMENTATION_MAP.md exists
+PASS | VALIDATE_V161.ps1 exists
+
+CARGO_STATUS=PENDING (cargo/rustc/rustfmt unavailable in packaging environment)

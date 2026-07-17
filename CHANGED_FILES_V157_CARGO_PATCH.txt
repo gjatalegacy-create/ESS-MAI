@@ -1,0 +1,8 @@
+ESS-MAI v1.5.7 — evidence-backed Cargo patch
+
+quantum/src/main.rs
+ESS_MAI_V1_5_7_FILELIST.sha256
+AUDIT_V157_CARGO_PD_CONTINUITY.md
+CHANGED_FILES_V157_CARGO_PATCH.txt
+
+No theory, runtime formula, platform authority, or public data format was changed.

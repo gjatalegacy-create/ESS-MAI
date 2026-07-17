@@ -1,0 +1,14 @@
+ESS-MAI v1.5.7 — STATIC AUDIT
+
+- pd_spine_contract.rs: byte-identical Light/Quantum/Shadow
+- pd_continuum_contract.rs: byte-identical Light/Quantum/Shadow
+- PD modes carried by PdActivationContract
+- GeniusDetected mapped to Novel + GeniusAutonomousResearch
+- Genius contract requires all three layers and non-zero genius lineage
+- Layer receipts chained L1 -> L2 -> L3
+- GCL consumes PdSpineCompletion and returns PdAuthorizedCompletion
+- GCL token binds action_sha256 and law_trace_sha256
+- iZ formation binds iz_sha256 to activation, 1Q, verified output, Shadow receipt and GCL hashes
+- v1.5.6 E0505 borrow+move closure removed
+- no cargo fix used
+- Cargo/rustc unavailable in packaging environment; no Cargo-green declaration

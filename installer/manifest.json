@@ -1,0 +1,20 @@
+{
+  "app_name": "Nura Legacy (ESS-MAI)",
+  "app_id": "com.gjata.nura_legacy",
+  "version": "1.1.0",
+  "publisher": "Gjata Legacy",
+  "target_arch": "x86_64",
+  "rust_integration": {
+    "first_run": "fetch_from_web_via_pip",
+    "location": "shadow_integration/rust_runtime",
+    "permanent": true,
+    "note": "Rust x86_64 integrohet brenda Shadow-it; s'ka nevojë instalim i veçantë në device"
+  },
+  "platforms": {
+    "light":   { "path": "light_v04_work",                "role": "interpreton/transporton/trust" },
+    "quantum": { "path": "quantum_v07",                   "role": "presion/teston" },
+    "shadow":  { "path": "shadow_integration/shadow_work", "role": "vendos/trashëgon (host i Rust runtime)" }
+  },
+  "entry_point": "nura_legacy",
+  "pip_packages": ["setuptools-rust", "maturin"]
+}

@@ -1,0 +1,14 @@
+ADDED    CHANGELOG_v1.6.7.md
+ADDED    CODEX_TAURI2_PROMPT_V167.md
+ADDED    IMPLEMENTATION_PLAN_V167_TAURI2.md
+ADDED    STATIC_AUDIT_V167_TAURI2.txt
+ADDED    VALIDATE_V167_TAURI2.ps1
+MODIFIED VERSION_ESSMAI.txt
+MODIFIED ui/Cargo.toml
+ADDED    ui/dist/app.css
+ADDED    ui/dist/app.js
+ADDED    ui/dist/assets/nura-legacy-logo.png
+ADDED    ui/dist/assets/nura-legacy-shell.jpg
+MODIFIED ui/dist/index.html
+MODIFIED ui/src/main.rs
+MODIFIED ui/tauri.conf.json

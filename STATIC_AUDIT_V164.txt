@@ -1,0 +1,72 @@
+ESS-MAI v1.6.4 — STATIC AUDIT
+Environment: no cargo/rustc available; this is not Cargo proof.
+
+PASS  TOML Cargo.toml
+PASS  TOML ui/Cargo.toml
+PASS  TOML quantum/Cargo.toml
+PASS  TOML shadow/Cargo.toml
+PASS  TOML light/Cargo.toml
+PASS  TOML shadow-contracts/Cargo.toml
+PASS  TOML light/ui/src-tauri/Cargo.toml
+PASS  JSON ui/tauri.conf.json
+PASS  JSON light/ui/src-tauri/tauri.conf.json
+PASS  VERSION light/Cargo.toml
+PASS  VERSION quantum/Cargo.toml
+PASS  VERSION shadow/Cargo.toml
+PASS  VERSION shadow-contracts/Cargo.toml
+PASS  VERSION ui/Cargo.toml
+PASS  VERSION light/ui/src-tauri/Cargo.toml
+PASS  VERSION marker
+PASS  GCL project contract x3 :: d98616df506b9a5a2a9456c4dd084ccad83f1b481dab3219e63b6ea01f5ca60d
+PASS  Living Trust contract x3 :: 7107a2db3b8fd8e05fa2ad12093cd4fa55cf5fb35e76154189a88edecab4bcc2
+PASS  PD Continuum x3 :: 286aa085d1b72be2e379303bc17e4d9c893e93624a8a3934ffc017c174f5407e
+PASS  PD Spine x3 :: 8b19f4d8ac2669c716acdb00aac1beb26118bf6980e0e3260f6accf624954a84
+PASS  Lab contract index x3 :: 3e312f966fb3955e5b1258252168464604fc55fc8b39331f71368cf8aa4518fb
+PASS  ess-mai.md parallel identity :: a8cdaad94d8cb931b7e09e2b3be221a46520b8fd4c82cfe4509c160f9ab70f43
+PASS  Old UI upload command
+PASS  Old UI emotion command
+PASS  Old UI calls Light route
+PASS  Old UI no direct Shadow/Quantum
+PASS  Old UI old placeholders removed
+PASS  Old UI global Tauri bridge
+PASS  Protocol v9
+PASS  Quantum max TRL 3
+PASS  Shadow factual TRL 4
+PASS  Wire rejects inbound TRL4
+PASS  Intake has no authority fields
+PASS  Light creates project identity
+PASS  Light creates intake timestamp
+PASS  Light creates GCL project contract
+PASS  Light derives seal from witness
+PASS  Light verifies witness content SHA
+PASS  Shadow GCL stage
+PASS  Shadow same GCL digest
+PASS  Shadow Spine completion
+PASS  Shadow inbound TRL bound
+PASS  Shadow evidence magic gate
+PASS  Shadow TRL4 factualization
+PASS  Shadow sovereign pair
+PASS  TRL4 single source
+PASS  shadow/src/bridge/mod.rs project fixture
+PASS  shadow/src/bridge/shadow_callable.rs project fixture
+PASS  quantum/src/main.rs formatter alignment
+PASS  light/src/pd_light.rs formatter alignment
+PASS  quantum/src/main.rs 45 placeholders :: 45
+PASS  light/src/pd_light.rs 45 placeholders :: 45
+PASS  light/src/gcl_project_contract.rs V164 domains
+PASS  quantum/src/gcl_project_contract.rs V164 domains
+PASS  shadow/src/gcl_project_contract.rs V164 domains
+PASS  light/src/living_trust_contract.rs V164 trust domains
+PASS  quantum/src/living_trust_contract.rs V164 trust domains
+PASS  shadow/src/living_trust_contract.rs V164 trust domains
+PASS  Rust delimiter scan :: 277 files
+PASS  v1.6.4 progress in ess-mai.md
+
+
+PASS  Old UI JavaScript syntax (Node v22)
+PASS  C compilation GCC -Wall -Wextra -Werror :: 11/11 objects
+PASS  C compilation Clang -Wall -Wextra -Werror :: 11/11 objects
+
+PASS_COUNT=63
+FAIL_COUNT=0
+CARGO_GREEN=PENDING_EXTERNAL_WINDOWS_GNU

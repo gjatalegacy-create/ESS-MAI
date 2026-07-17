@@ -1,0 +1,2600 @@
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/AUDIT_V159_SHADOW_MAIN_MEDIATION.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/AUDIT_V159_SHADOW_MAIN_MEDIATION.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/AUDIT_V159_SHADOW_MAIN_MEDIATION.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/AUDIT_V159_SHADOW_MAIN_MEDIATION.md	2026-07-14 22:58:20.857982199 +0000
+@@ -0,0 +1,96 @@
++# ESS-MAI v1.5.9 — Shadow Main Necessary Precondition Audit
++
++## Authority and scope
++
++Baseline: `v1.5.8_ess_mai`.
++
++Authorized correction: make `shadow/src/main.rs` a necessary runtime and build
++precondition for access to the Shadow authority, while preserving the existing
++PD Continuum, Spine 9, GCL Y→X verification order, receipt binding, Light/Quantum
++origin separation, and fail-closed behavior.
++
++No license was added or changed.
++
++## Evidence before the correction
++
++In v1.5.8, Quantum depended directly on the Shadow package as an `rlib` and
++constructed the authority in-process. Therefore `shadow/src/main.rs` was not a
++necessary condition for `Shadow::new`, `ingest_bridged`, `on_negative`, or the
++production of `VerificationReceipt`.
++
++The separate `E0521` compiler error was local to the Quantum ledger call. Its
++correct fix remains `source: &'static str`; it did not establish process
++mediation by itself.
++
++## Implemented architecture
++
++```text
++Light + Quantum state
++        ↓
++ShadowCycleRequest
++        ↓ version/kind/length/FNV corruption check
++Quantum process bridge
++        ↓ starts child executable
++shadow_platform main.rs
++        ↓ Phase9 no-bypass check
++        ↓ persistent vault open
++        ↓ Light PA feed
++        ↓ public wire → private internal types
++        ↓ Shadow::ingest_bridged
++        ↓ GCL Verification Collapse Y→X
++        ↓ sovereign token consumption
++        ↓ VerificationReceipt
++        ↓ NPIM negative persistence in same Shadow instance
++ShadowCycleResponse
++        ↓ version/kind/length/FNV corruption check
++Quantum receipt recomputation
++        ↓
++PD finalize_after_verification
++        ↓
++output + iZ → next i₀
++```
++
++## Build closure
++
++- `shadow/Cargo.toml` is binary-only with `autolib = false` and no `[lib]`.
++- `shadow/src/main.rs` includes `lib.rs`; the core is compiled only inside the
++  `shadow_platform` executable.
++- Quantum has no dependency on `../shadow` and no `shadow_lib::` or
++  `shadow_platform::` core call.
++- `shadow_contracts` contains transport forms and codecs only; it has no Shadow
++  constructor, vault, token, sovereign seal API, or persistent writer.
++- Missing Shadow executable, invalid frame, non-zero child status, missing
++  response, or mismatched session stops the Quantum flow fail-closed.
++
++## Test continuity
++
++The historical `shadow/tests/integration.rs` was not discarded. It is included
++from `shadow/src/main.rs` under `#[cfg(test)]`, so the same sovereign invariants
++are tested inside the binary target without recreating a linkable library.
++
++The former direct-core example was rewritten to document the mediated runtime
++path and no longer imports Shadow core.
++
++## Static verification completed
++
++- All modified Cargo manifests parse as TOML.
++- All platform/UI package versions are `1.5.9`.
++- Modified Rust files passed delimiter/bracket structural scanning.
++- `QuantumInboundWire` and internal `QuantumInbound` match in all 29 fields.
++- `LightInboundWire` and internal `LightInbound` match in all 6 fields.
++- PD Continuum contract is byte-identical across Light/Quantum/Shadow:
++  `3b321a035d8ef6358c8d09ade0c00a32d05e5e6ff2068b670935b361991cad56`.
++- PD Spine 9 contract is byte-identical across Light/Quantum/Shadow:
++  `ae4843ac3395a66b3ccbc0b6a578c56408da85c05f33eb5fcda157e652258c3b`.
++- VerificationReceipt contract is byte-identical across Light/Quantum/Shadow:
++  `cfb106bf6752b017128ad367592f36718b05738c0ed6114a07f4ea159927b15e`.
++- The v1.5.8 `E0521` correction remains present.
++- `ess-mai.md` records the theory, implementation, verification, evidence, and
++  release status of both v1.5.8 and v1.5.9.
++
++## Verification boundary
++
++The packaging environment does not contain `cargo`, `rustc`, `rustfmt`, or
++PowerShell. Therefore the release is statically closed but is not claimed as
++Cargo-green. `VALIDATE_V159.ps1` is the authoritative executable proof on the
++user's Windows GNU Rust 1.96.0 environment.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGED_FILES_V159.txt /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGED_FILES_V159.txt
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGED_FILES_V159.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGED_FILES_V159.txt	2026-07-14 22:58:36.535209034 +0000
+@@ -0,0 +1,31 @@
++ESS-MAI v1.5.9 — FILE SCOPE OVER v1.5.8
++
++AUDIT_V159_SHADOW_MAIN_MEDIATION.md
++CHANGED_FILES_V159.txt
++CHANGELOG_v1.5.8.md
++CHANGELOG_v1.5.9.md
++Cargo.toml
++ESS_MAI_V1_5_9_FILELIST.sha256
++README.md
++README_INSTALIMI.md
++STATIC_AUDIT_V159.txt
++V1_5_9_FROM_V1_5_8.diff
++VALIDATE_V159.ps1
++VERSION_ESSMAI.txt
++ess-mai.md
++light/Cargo.toml
++light/ui/src-tauri/Cargo.toml
++quantum/Cargo.toml
++quantum/src/main.rs
++quantum/src/shadow_process_bridge.rs
++setup_essmai.ps1
++shadow-contracts/Cargo.toml
++shadow-contracts/src/lib.rs
++shadow/Cargo.toml
++shadow/README.md
++shadow/examples/full_flow.rs
++shadow/src/lib.rs
++shadow/src/main.rs
++shadow/src/process_bridge.rs
++shadow/tests/integration.rs
++ui/Cargo.toml
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.8.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.8.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.8.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.8.md	2026-07-14 22:49:29.471499880 +0000
+@@ -0,0 +1,16 @@
++# ESS-MAI v1.5.8
++
++## Scope
++
++Evidence-only correction over v1.5.7.
++
++## Implemented
++
++- Corrected `E0521` in `quantum/src/main.rs` by narrowing the source-site contract from `&str` to `&'static str`.
++- Verified both callers pass static literals.
++- Preserved `VerificationReceipt`, PD Continuum, `output + iZ → next i₀`, GCL authority, and the Shadow verification seal.
++- Normalized the project SHA-256 manifest to relative paths so the Windows validator can resolve files from the project root.
++
++## Verification status
++
++The original Windows Cargo logs identify E0521 as the single blocking compiler error. A fresh Cargo run remained required after packaging.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.9.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.9.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.9.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/CHANGELOG_v1.5.9.md	2026-07-14 22:57:07.465557966 +0000
+@@ -0,0 +1,37 @@
++# ESS-MAI v1.5.9 — Shadow Main Necessary Precondition
++
++## Objective
++
++Make `shadow/src/main.rs` a real, non-bypassable process boundary for communication with the Shadow authority.
++
++## Architectural correction
++
++Before v1.5.9, Quantum linked `shadow_platform` as an `rlib` and directly called `Shadow::new`, `ingest_bridged`, and `on_negative`. Shadow main.rs was therefore not a necessary precondition.
++
++v1.5.9 changes the build and runtime model:
++
++- `shadow/Cargo.toml`: `autolib=false`; no `[lib]`; only `shadow_platform` binary target.
++- `shadow/src/main.rs`: includes `lib.rs`, so the core compiles only inside the executable.
++- `quantum/Cargo.toml`: removes the Shadow core dependency.
++- New `shadow_contracts` crate: public wire shapes and deterministic checksummed codec only.
++- Quantum spawns the Shadow executable for each mediated cycle.
++- Shadow main opens the persistent vault, feeds the PA gate, calls the internal core, seals the receipt, persists NPIM negative knowledge, and returns a checksummed response.
++- Missing Shadow binary, non-zero process exit, corrupted response, or session mismatch is fail-closed.
++
++## Preserved contracts
++
++- Light and Quantum origins remain separate until Shadow.
++- GCL order Y → X is unchanged.
++- `VerificationReceipt` binding fields remain unchanged.
++- PD finalization still re-computes and verifies the receipt before releasing `output + iZ → next i₀`.
++- The v1.5.8 E0521 correction remains in place.
++
++## Verification status
++
++Static architecture checks passed in the packaging environment. Cargo/rustc were unavailable there, so Windows GNU Cargo verification is mandatory through `VALIDATE_V159.ps1`.
++
++## Test and documentation continuity
++
++- The former external `shadow/tests/integration.rs` is retained and included by `shadow/src/main.rs` under `#[cfg(test)]`; it now verifies the same sovereign invariants inside the binary target rather than through a linkable library.
++- `shadow/examples/full_flow.rs` no longer imports Shadow core; it documents the mediated runtime command path.
++- `shadow/README.md`, `README_INSTALIMI.md`, and the generated launcher comment now describe main.rs as the necessary runtime condition.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/Cargo.toml	2026-07-14 22:41:35.200532327 +0000
+@@ -22,12 +22,14 @@
+     "light",
+     "quantum",
+     "shadow",
++    "shadow-contracts",
+ ]
+ 
+ # Build:
+ #   cargo build --release            (të tria)
+ #   cargo test                       (1047 teste — verifiko: installer/ci_gate.sh)
+-#   cargo run -p quantum-platform    (pipeline i plotë me Shadow real)
++#   cargo build --workspace          (ndërton edhe procesin e detyrueshëm Shadow)
++#   cargo run -p quantum-platform    (Quantum thërret vetëm shadow_platform main.rs)
+ 
+ # Profili është pronë e workspace-it, jo e crate-eve anëtare.
+ # panic=unwind ruan crash evidence; panic=abort NUK aktivizohet pa provë
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/README.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/README.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/README.md	2026-07-13 09:44:16.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/README.md	2026-07-14 22:48:24.839720879 +0000
+@@ -34,14 +34,27 @@
+ ## Ndarja Prod vs Dev (#8)
+ 
+ ```bash
+-# Testim lokal (no-op fallback i lejuar):
+-cargo test
+-cargo run -p quantum-platform
++# Testim/ndërtim i plotë — v1.5.9 kërkon binarin Shadow main.rs:
++cargo build --workspace
++cargo test --workspace --all-targets
++
++# Runtime (PowerShell shembull):
++# $env:ESSMAI_HANDOFF_DIR='C:\essmai\handoff'
++# cargo run -p quantum-platform
++# Quantum gjen shadow_platform.exe si sibling ose nga ESSMAI_SHADOW_BIN.
+ 
+ # PRODHIM (fail-closed — kërkon kernel/bus real):
+ cargo build --release -p light-platform --no-default-features --features c_kernel
+ ```
+ 
++
++## Complete mediation v1.5.9
++
++Shadow është target **vetëm binar** (`autolib=false`). `lib.rs` përfshihet brenda
++`shadow/src/main.rs`; Quantum varet vetëm nga `shadow_contracts` dhe komunikon
++me procesin `shadow_platform`. Pa Shadow main aktiv nuk ka ingest, vault, token
++ose `VerificationReceipt`; rrjedha ndalon fail-closed.
++
+ ## Ligjet e Sistemit (të pandryshueshme)
+ 
+ 1. **Zero if/else klasik** — match/boolean/formula (match-guards të lejuar).
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/README_INSTALIMI.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/README_INSTALIMI.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/README_INSTALIMI.md	2026-07-04 10:13:45.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/README_INSTALIMI.md	2026-07-14 22:56:04.974617460 +0000
+@@ -63,7 +63,7 @@
+ | `essmai_start.bat` | **SUPERVISOR** — ngre Shadow wisdom + Nura UI bashkë | Nisja me një klik e sistemit të gjallë |
+ | `nura_ui.bat` | **Dritarja e Nurës** (Tauri 2) | UI thërret binarin REAL `light-platform` — zero simulim |
+ | `essmai_cli.bat` | Pipeline CLI: `light-platform \| quantum-platform` | Shkruaj një rresht → kolapsi 3-fazor ekzekutohet |
+-| `shadow_wisdom.bat` | **Shadow Wisdom** — autoriteti i gjallë | main.rs = ekzekutuesi; lib.rs = autoriteti. Vault persistent (`shadow_wisdom.svlt`). Komandat: `wisdom`, `feed <session_id>`, `neg`, `law`, `exit` |
++| `shadow_wisdom.bat` | **Shadow Wisdom** — autoriteti i gjallë | main.rs = kushti i domosdoshëm; lib.rs kompilohet vetëm brenda tij si autoritet. Vault persistent (`shadow_wisdom.svlt`). Komandat: `wisdom`, `feed <session_id>`, `neg`, `law`, `exit` |
+ 
+ Boot-i i secilit binar **LEXON dhe SHPALL** `gjata_collapse_law` (manifesti + vula FNV) — ligji është i gjallë në çdo nisje.
+ 
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/STATIC_AUDIT_V159.txt /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/STATIC_AUDIT_V159.txt
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/STATIC_AUDIT_V159.txt	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/STATIC_AUDIT_V159.txt	2026-07-14 22:57:07.473916334 +0000
+@@ -0,0 +1,33 @@
++ESS-MAI v1.5.9 STATIC ARCHITECTURE AUDIT
++Date: 2026-07-15
++Baseline: v1.5.8
++
++PASS — workspace contains shadow-contracts.
++PASS — Light, Quantum, Shadow, shadow-contracts, and both UI package versions are 1.5.9.
++PASS — all modified Cargo.toml files parse as TOML.
++PASS — quantum/Cargo.toml has no dependency on ../shadow or package shadow_platform.
++PASS — Quantum source has no shadow_lib:: or shadow_platform:: core invocation.
++PASS — shadow/Cargo.toml has autolib=false and no [lib] target.
++PASS — Shadow produces no rlib/staticlib target; its core is included only by the binary main.rs.
++PASS — shadow/src/main.rs includes lib.rs and owns process dispatch.
++PASS — shadow/src/process_bridge.rs opens the vault, feeds PA, invokes ingest_bridged, persists negative knowledge, and emits the response.
++PASS — quantum/src/shadow_process_bridge.rs invokes the shadow_platform executable and fails closed on missing binary/non-zero exit/missing response/session mismatch.
++PASS — request/response frames include protocol version, kind, length, and FNV-1a corruption checksum.
++PASS — Shadow main validates session, territory, and primitive flags across Quantum and Light origins before core ingress.
++PASS — QuantumInboundWire and internal QuantumInbound have the same 29 fields.
++PASS — LightInboundWire and internal LightInbound have the same 6 fields.
++PASS — NPIM negative knowledge is persisted in the same Shadow instance that seals the cycle receipt.
++PASS — E0521 correction remains: export_pd_verified_line source is &'static str.
++PASS — historical Shadow integration invariants remain active as binary-unit tests through main.rs.
++PASS — full_flow example no longer links or imports Shadow core.
++PASS — ess-mai.md contains explicit v1.5.8 and v1.5.9 theory/implementation/verification/release records.
++PASS — PD continuum contract remains byte-identical across Light/Quantum/Shadow:
++       3b321a035d8ef6358c8d09ade0c00a32d05e5e6ff2068b670935b361991cad56
++PASS — PD Spine 9 contract remains byte-identical across Light/Quantum/Shadow:
++       ae4843ac3395a66b3ccbc0b6a578c56408da85c05f33eb5fcda157e652258c3b
++PASS — VerificationReceipt contract remains byte-identical across Light/Quantum/Shadow:
++       cfb106bf6752b017128ad367592f36718b05738c0ed6114a07f4ea159927b15e
++PASS — delimiter/bracket static scan passed for every modified Rust source.
++
++CARGO STATUS — NOT EXECUTED IN PACKAGING ENVIRONMENT (cargo/rustc unavailable).
++AUTHORITATIVE NEXT PROOF — VALIDATE_V159.ps1 on Windows GNU Rust 1.96.0 or later compatible toolchain.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/VALIDATE_V159.ps1 /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/VALIDATE_V159.ps1
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/VALIDATE_V159.ps1	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/VALIDATE_V159.ps1	2026-07-14 22:57:26.821467353 +0000
+@@ -0,0 +1,97 @@
++param(
++    [string]$LogRoot = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'ESS_MAI_V159_LOGS')
++)
++
++$ErrorActionPreference = 'Stop'
++[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
++$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
++New-Item -ItemType Directory -Force -Path $LogRoot | Out-Null
++
++function Run-Logged {
++    param([string]$Name, [scriptblock]$Command)
++    $Path = Join-Path $LogRoot ($Name + '.log')
++    & $Command 2>&1 | Tee-Object -FilePath $Path
++    if ($LASTEXITCODE -ne 0) {
++        throw "$Name failed with exit code $LASTEXITCODE. See $Path"
++    }
++}
++
++function Require-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -notmatch $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++
++function Reject-Text {
++    param([string]$Path, [string]$Pattern, [string]$Label)
++    $Text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
++    if ($Text -match $Pattern) { throw "STATIC GUARD FAILED: $Label" }
++}
++
++Push-Location $Root
++try {
++    Run-Logged '00_toolchain' { cargo --version; rustc --version }
++
++    # Architecture guards: these fail before compilation if complete mediation regresses.
++    Require-Text (Join-Path $Root 'shadow\Cargo.toml') 'autolib\s*=\s*false' 'Shadow must remain binary-only'
++    Reject-Text  (Join-Path $Root 'shadow\Cargo.toml') '(?m)^\[lib\]' 'Shadow [lib] target must not return'
++    Reject-Text  (Join-Path $Root 'shadow\Cargo.toml') 'rlib|staticlib' 'Shadow linkable crate-types must not return'
++    Require-Text (Join-Path $Root 'shadow\src\main.rs') 'include!\("lib\.rs"\)' 'main.rs must include the Shadow constitution'
++    Require-Text (Join-Path $Root 'shadow\src\main.rs') 'process_bridge::dispatch_from_args' 'main.rs must own process mediation'
++    Require-Text (Join-Path $Root 'shadow\src\main.rs') '\#\[path\s*=\s*"\.\./tests/integration\.rs"\]' 'Shadow integration invariants must remain inside the binary test target'
++    Reject-Text  (Join-Path $Root 'shadow\examples\full_flow.rs') 'use\s+shadow_platform|shadow_platform::' 'Examples must not restore direct-core access'
++    Require-Text (Join-Path $Root 'quantum\Cargo.toml') 'shadow_contracts\s*=\s*\{\s*path\s*=\s*"\.\./shadow-contracts"' 'Quantum must depend only on public Shadow contracts'
++    Reject-Text  (Join-Path $Root 'quantum\Cargo.toml') 'path\s*=\s*"\.\./shadow"|package\s*=\s*"shadow_platform"' 'Quantum must not link Shadow core'
++    Reject-Text  (Join-Path $Root 'quantum\src\main.rs') 'shadow_lib::|shadow_platform::' 'Quantum main must not call Shadow core'
++    Reject-Text  (Join-Path $Root 'quantum\src\shadow_process_bridge.rs') 'shadow_lib::|shadow_platform::' 'Quantum process bridge must not call Shadow core'
++    Require-Text (Join-Path $Root 'quantum\src\main.rs') "source:\s*&'static\s+str" 'E0521 fix must remain'
++    Require-Text (Join-Path $Root 'quantum\src\shadow_process_bridge.rs') 'Command::new\(&shadow_bin\)' 'Quantum must execute Shadow main.rs'
++    Require-Text (Join-Path $Root 'shadow\src\process_bridge.rs') 'ingest_bridged' 'Shadow main mediation must call internal verification core'
++    Require-Text (Join-Path $Root 'shadow-contracts\src\lib.rs') 'InvalidChecksum' 'Wire checksum guard must exist'
++
++    'STATIC_GUARDS_OK' | Set-Content -LiteralPath (Join-Path $LogRoot '01_static_guards.log') -Encoding UTF8
++
++    Run-Logged '02_build_workspace_all_targets' { cargo build --workspace --all-targets }
++    Run-Logged '03_check_workspace_all_targets' { cargo check --workspace --all-targets }
++    Run-Logged '04_test_compile_only' { cargo test --workspace --all-targets --no-run }
++    Run-Logged '05_test_workspace' { cargo test --workspace }
++    Run-Logged '06_clippy_workspace' { cargo clippy --workspace --all-targets -- -W clippy::all }
++
++    Push-Location (Join-Path $Root 'ui')
++    try { Run-Logged '07_check_new_ui' { cargo check --all-targets } }
++    finally { Pop-Location }
++
++    Push-Location (Join-Path $Root 'light\ui\src-tauri')
++    try { Run-Logged '08_check_old_ui_emotional_engine' { cargo check --all-targets } }
++    finally { Pop-Location }
++
++    $ShadowExe = Join-Path $Root 'target\debug\shadow_platform.exe'
++    if (-not (Test-Path -LiteralPath $ShadowExe)) {
++        throw "Shadow main executable missing after workspace build: $ShadowExe"
++    }
++    "SHADOW_MAIN_PRESENT $ShadowExe" | Set-Content -LiteralPath (Join-Path $LogRoot '09_shadow_main_present.log') -Encoding UTF8
++
++    $Manifest = Join-Path $Root 'ESS_MAI_V1_5_9_FILELIST.sha256'
++    $Failures = @()
++    foreach ($Line in Get-Content -LiteralPath $Manifest -Encoding UTF8) {
++        if ($Line -match '^([0-9a-f]{64})  (.+)$') {
++            $Expected = $Matches[1]
++            $Relative = $Matches[2].Replace('/', [IO.Path]::DirectorySeparatorChar)
++            $Target = Join-Path $Root $Relative
++            if (-not (Test-Path -LiteralPath $Target)) {
++                $Failures += "MISSING $Relative"
++                continue
++            }
++            $Actual = (Get-FileHash -LiteralPath $Target -Algorithm SHA256).Hash.ToLowerInvariant()
++            if ($Actual -ne $Expected) { $Failures += "HASH $Relative" }
++        }
++    }
++    $Failures | Set-Content -LiteralPath (Join-Path $LogRoot '10_hash_failures.log') -Encoding UTF8
++    if ($Failures.Count -ne 0) { throw "File-list verification failed: $($Failures.Count)" }
++    'HASH_OK' | Set-Content -LiteralPath (Join-Path $LogRoot '10_hash_ok.log') -Encoding UTF8
++
++    Write-Host "ESS-MAI v1.5.9 validation completed. Logs: $LogRoot"
++}
++finally {
++    Pop-Location
++}
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/VERSION_ESSMAI.txt /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/VERSION_ESSMAI.txt
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-14 17:04:04.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/VERSION_ESSMAI.txt	2026-07-14 22:41:35.201800358 +0000
+@@ -1,2 +1,2 @@
+-ESS-MAI v1.5.7
+-Baseline: v1.5.6
++ESS-MAI v1.5.9
++Baseline: v1.5.8
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/ess-mai.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/ess-mai.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/ess-mai.md	2026-07-14 17:06:20.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/ess-mai.md	2026-07-14 22:56:04.973794094 +0000
+@@ -387,3 +387,411 @@
+ ---
+ 
+ Ky dokument nuk riemërtohet. Çdo version pasues duhet të shtojë versionin, filozofinë, teorinë, formulën, implementimin real, vendndodhjen në kod, map-in, provat Cargo, rreziqet dhe çështjet e hapura.
++
++---
++
++# Evolucioni i v1.5.8
++
++## Theory name
++
++**PD Receipt Lifetime Closure** — mbyllja e kontratës së jetëgjatësisë për shënimin e burimit të handoff-it PD.
++
++## Philosophy
++
++Një dëshmi sovrane nuk ndryshon kuptim për shkak të një gabimi borrow/lifetime. Gabimi duhet të korrigjohet në kufirin më të ngushtë të provuar, pa prekur receipt-in, formulën e PD-së ose autoritetin Shadow.
++
++## Purpose
++
++Të eliminohej `E0521` në `quantum/src/main.rs` pa përdorur klonim, leak, alokim artificial ose ndryshim të rrjedhës:
++
++```text
++Shadow VerificationReceipt
++→ Quantum rillogarit receipt_id
++→ rrjedha::note(site)
++→ PD Light handoff
++```
++
++## Mathematical model
++
++```text
++source ∈ S_static
++S_static ⊂ S_str
++rrjedha::note : S_static → Evidence
++```
++
++Call-site-et e provuara ishin literale konstante:
++
++```text
++"main::export_pd_probe"
++"main::export_pd_handoff"
++```
++
++Prandaj kontrata e saktë është:
++
++```rust
++source: &'static str
++```
++
++jo `source: &str`.
++
++## Runtime flow
++
++```text
++PD closure
++→ VerificationReceipt nga Shadow
++→ receipt_id rillogaritet në Quantum
++→ source literal statik shënon ledger-in vetëm në refuzim wire
++→ output + iZ → next i₀
++```
++
++## Contracts
++
++- `VerificationReceipt` mbeti i pandryshuar.
++- `receipt_id(...)` mbeti i pandryshuar.
++- `PdContinuumClosure` mbeti i pandryshuar.
++- `rrjedha::note` vazhdon të kërkojë `&'static str` për identitet moduli të qëndrueshëm.
++- Manifesti SHA-256 u normalizua nga rrugë absolute paketimi në rrugë relative të projektit.
++
++## Code location
++
++```text
++quantum/src/main.rs
++  export_pd_probe
++  export_pd_handoff
++  export_pd_verified_line
++
++ESS_MAI_V1_5_7_FILELIST.sha256
++VALIDATE_V157.ps1
++AUDIT_V157_CARGO_PD_CONTINUITY.md
++```
++
++## Version introduced
++
++```text
++Theory:        e trashëguar nga rrjedha PD v1.5.6/v1.5.7
++Implementation: v1.5.8
++Verification:   audit statik + prova Cargo e gabimit E0521 nga Windows
++Release status: paketuar si v1.5.8_ess_mai
++```
++
++## Verification evidence
++
++Logjet e Windows provuan një gabim të vetëm bllokues:
++
++```text
++error[E0521]: borrowed data escapes outside of function
++quantum/src/main.rs
++```
++
++Call-site-et u ndoqën dhe u provuan si literale `&'static str`. Manifesti origjinal kishte hash-e të sakta, por rrugë absolute Linux; manifesti i normalizuar përdor rrugë relative.
++
++## Current status
++
++```text
++Theory:        VERIFIED
++Implementation: IMPLEMENTED
++Verification:  CARGO_RECHECK_REQUIRED
++Release:       RELEASED_AS_BASELINE_FOR_V1.5.9
++```
++
++---
++
++# Versioni i implementuar: v1.5.9
++
++## Theory name
++
++**Shadow Main Necessary Precondition / Complete Mediation Contract**
++
++## Philosophy
++
++`Shadow lib.rs` zotëron kushtetutën e verifikimit, por nuk ka zë të linkueshëm jashtë procesit Shadow. `main.rs` nuk është thjesht një portë e rekomanduar; është kushti strukturor pa të cilin kodi sovran nuk kompilohet si target i aksesueshëm nga crate të tjera.
++
++```text
++main.rs aktiv
++⇒ Shadow core ekziston në runtime
++
++¬main.rs aktiv
++⇒ asnjë Shadow core i linkueshëm
++⇒ asnjë ingest
++⇒ asnjë vault
++⇒ asnjë LgcToken
++⇒ asnjë VerificationReceipt
++```
++
++Quantum njeh vetëm formën e dëshmisë. Ai nuk njeh prodhuesin sovran të saj.
++
++## Purpose
++
++Të mbyllet bypass-i real i v1.5.8 ku Quantum mund të bënte:
++
++```text
++shadow_lib::Shadow::new()
++shadow.ingest_bridged(...)
++shadow.on_negative(...)
++```
++
++duke linkuar direkt `shadow_platform` si `rlib` dhe pa ekzekutuar `shadow/src/main.rs`.
++
++## Mathematical model
++
++Le të jenë:
++
++```text
++Q = procesi Quantum
++M = procesi Shadow main.rs
++L = Shadow core/lib.rs
++C = shadow_contracts
++R = VerificationReceipt
++```
++
++Kontrata v1.5.9:
++
++```text
++Q ↛ L
++Q → C → M → L
++L → M → C → Q
++
++R exists ⇒ M executed ∧ L verified ∧ token consumed
++¬M ⇒ ¬communication(L) ∧ ¬R
++```
++
++Complete mediation:
++
++```text
++∀ access a to Shadow authority:
++allowed(a) ⇔ mediated_by(M, a)
++```
++
++## Runtime flow
++
++```text
++Light
++  ↓ Primitive Anchor + Xi/Yi
++Quantum
++  ↓ PD + Spine 9 + Layer 1/2/3
++  ↓ Quantum Collapse
++ShadowCycleRequest (checksummed binary contract)
++  ↓ process spawn
++shadow_platform main.rs
++  ↓ Phase9 no-bypass condition
++  ↓ open persistent wisdom vault
++  ↓ feed Light PA gate
++  ↓ convert public wire → internal types
++  ↓ Shadow::ingest_bridged
++  ↓ Verification Collapse Y→X
++  ↓ consume sovereign verification token
++  ↓ produce VerificationReceipt
++  ↓ persist NPIM Negative Knowledge in same Shadow instance
++ShadowCycleResponse (checksummed binary contract)
++  ↓
++Quantum rillogarit receipt_id
++  ↓
++PD finalize_after_verification
++  ↓
++output + iZ → next i₀
++  ↓
++PD Light → Nura
++```
++
++## Contracts
++
++### Build contract
++
++```toml
++shadow/Cargo.toml
++
++autolib = false
++autotests = false
++autoexamples = true
++
++[[bin]]
++name = "shadow_platform"
++path = "src/main.rs"
++```
++
++Shadow nuk prodhon më:
++
++```text
++rlib
++staticlib
++```
++
++`shadow/src/main.rs` përfshin:
++
++```rust
++include!("lib.rs");
++```
++
++Kështu modulet e `lib.rs` bëhen pjesë e crate-it binar dhe nuk janë target library i linkueshëm.
++
++### Public form contract
++
++Crate i ri:
++
++```text
++shadow-contracts/
++```
++
++Ai përmban vetëm:
++
++- formatet wire të origjinës Quantum;
++- formatet wire të origjinës Light;
++- formatin wire të Negative Knowledge;
++- formën publike të `VerificationReceipt`;
++- verdiktin minimal publik;
++- codec determinist me version, lloj frame, gjatësi dhe checksum FNV-1a;
++- kufij maksimalë të frame/field/vector.
++
++Ai nuk përmban:
++
++- `Shadow`;
++- vault;
++- pipeline;
++- GCL authority;
++- `LgcToken`;
++- `seal_verified_output`;
++- API shkrimi persistent.
++
++### Process contract
++
++Quantum zgjidh vetëm binarin:
++
++```text
++ESSMAI_SHADOW_BIN=<absolute path>
++```
++
++ose binarin sibling:
++
++```text
++target/debug/shadow_platform(.exe)
++target/release/shadow_platform(.exe)
++```
++
++Mungesa e binarit, status jo-zero, response i munguar, checksum i gabuar ose session mismatch japin fail-closed.
++
++### Identity contract
++
++Kërkesa e ciklit mban të dy origjinat të ndara:
++
++```text
++QuantumInboundWire
++LightInboundWire
++```
++
++Shadow main verifikon para core-it:
++
++```text
++Quantum.session == Light.session
++Quantum.territory == Light.territory
++Quantum.primitive_flags == Light.primitive_flags
++session != empty
++```
++
++Receipt-i vazhdon të lidhet me:
++
++```text
++session_id
++parent_i0
++primitive_anchor
++xy_digest
++pd_binding_digest
++pd_continuum_activation_digest
++Y
++X
++generation
++seal
++receipt_id
++```
++
++## Code location
++
++```text
++Cargo.toml
++shadow/Cargo.toml
++quantum/Cargo.toml
++shadow-contracts/Cargo.toml
++shadow-contracts/src/lib.rs
++shadow/src/main.rs
++shadow/src/lib.rs
++shadow/src/process_bridge.rs
++quantum/src/main.rs
++quantum/src/shadow_process_bridge.rs
++```
++
++## Version introduced
++
++```text
++Theory:         v1.5.9 authoritative clarification
++Implementation: v1.5.9
++Verification:   static architecture audit in packaging environment
++Release status: packaged; Cargo verification pending on Windows GNU
++```
++
++## Verification evidence
++
++Static evidence:
++
++```text
++quantum/Cargo.toml has no dependency on ../shadow
++quantum source has no shadow_lib:: or shadow_platform:: core call
++shadow/Cargo.toml has autolib=false
++shadow/Cargo.toml has no [lib] target
++shadow/src/main.rs includes lib.rs
++Shadow core is invoked only from shadow/src/process_bridge.rs or interactive main
++Quantum invokes shadow_platform as a child process
++wire response is checksummed and session-bound
++E0521 fix source: &'static str remains present
++```
++
++The shared contracts crate includes roundtrip and checksum-corruption tests. Unit tests inside Shadow modules remain compiled as binary-unit tests. Testi historik `shadow/tests/integration.rs` përfshihet nga `shadow/src/main.rs` dhe ekzekutohet brenda target-it binar, pa krijuar library të linkueshme. Shembulli `shadow/examples/full_flow.rs` nuk prek më core-in; ai dokumenton vetëm nisjen e rrjedhës së ndërmjetësuar.
++
++## Current status
++
++```text
++Theory:         CONTRACT_DEFINED
++Implementation: IMPLEMENTED
++Runtime:        PROCESS_MEDIATED
++Static audit:   PASSED
++Cargo check:    PENDING_EXTERNAL_ENVIRONMENT
++Cargo test:     PENDING_EXTERNAL_ENVIRONMENT
++Release:        READY_FOR_WINDOWS_GNU_VERIFICATION
++```
++
++## Map i v1.5.9
++
++```text
++RIS governance
++  ↓
++NurAtomic architecture
++  ↓
++ESS-MAI
++  ↓
++Light Coordination Collapse
++  ↓
++Quantum Elimination Collapse
++  ↓ public shadow_contracts only
++Shadow main.rs necessary condition
++  ↓ includes non-linkable lib.rs core
++Shadow Verification Collapse
++  ↓ checksummed VerificationReceipt
++Quantum receipt re-verification
++  ↓
++PD output + iZ
++  ↓
++next i₀
++  ↓
++PD Light → Nura
++```
++
++## Kufiri i provës
++
++Mjedisi i paketimit të v1.5.9 nuk kishte `cargo`, `rustc` ose `rustfmt`. Për këtë arsye statusi nuk quhet Cargo-green. Prova përfundimtare duhet të prodhohet në Windows GNU me:
++
++```text
++cargo check --workspace --all-targets
++cargo test --workspace --all-targets --no-run
++cargo clippy --workspace --all-targets -- -W clippy::all
++VALIDATE_V159.ps1
++```
++
++Çdo dështim i Cargo-s duhet trajtuar si provë konkrete për ciklin pasues; nuk autorizohet ndryshim spekulativ.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/light/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/light/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/light/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/light/Cargo.toml	2026-07-14 22:41:35.200859500 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "light-platform"
+-version     = "1.5.7"
++version     = "1.5.9"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Light Platform — Koordinues Sovran + APUPK/SNB/MiniEvolver + 0-copy + Layer 2 (zero if/else)"
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/light/ui/src-tauri/Cargo.toml	2026-07-14 22:44:33.552823700 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name = "nura-legacy-ui"
+-version = "1.5.7"
++version = "1.5.9"
+ description = "Nura Legacy (ESS-MAI) UI Shell — lidhet me Light"
+ authors = ["Gjata Legacy"]
+ edition = "2021"
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/Cargo.toml	2026-07-14 22:41:35.201171680 +0000
+@@ -1,6 +1,6 @@
+ [package]
+ name        = "quantum-platform"
+-version     = "1.5.7"
++version     = "1.5.9"
+ edition     = "2021"
+ authors     = ["Bledar Gjata <gjata@legacy.al>"]
+ description = "ESS-MAI Quantum — zero if/else + orkestratori + SHA-256 + Digital Lab + NPRO/NPIM + Layer 2"
+@@ -22,8 +22,8 @@
+ [dependencies]
+ unicode-segmentation = { version = "1.10", optional = true }
+ rust-stemmers        = { version = "1.2",  optional = true }
+-# P1: Lidhja reale Quantum→Shadow (njëkahëshe, pa varësi qarkulluese).
+-shadow_lib = { path = "../shadow", package = "shadow_platform" }
++# v1.5.9: Quantum njeh vetëm FORMËN wire. Autoriteti Shadow nuk linkohet.
++shadow_contracts = { path = "../shadow-contracts" }
+ 
+ [build-dependencies]
+ cc = "1"
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/src/main.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/src/main.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/src/main.rs	2026-07-14 21:35:05.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/src/main.rs	2026-07-14 22:44:16.026369596 +0000
+@@ -4,6 +4,8 @@
+ // ║  GJATA LEGACY™                                                        ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
++mod shadow_process_bridge;
++
+ use quantum_lim::lab_contracts::{PrimitiveSplit, NegativePath, CollapseOutcome, CollapsePhase, UncertaintyLedger, pair_space, GjataCollapseLaw};
+ use quantum_lim::ultimatum_collapse_law::{UltimatumCollapseLaw, UclEvent};
+ use quantum_lim::{
+@@ -498,7 +500,7 @@
+         demand_bytes:   hw.allocated_bytes,
+         under_pressure: hcp_pressure,
+         depth_hint:     hcp_depth,
+-        ts_ns:          shadow_lib::shadow_pipeline::now_ns(),
++        ts_ns:          shadow_process_bridge::now_ns(),
+     };
+     // Sinjalet REALE të operatorëve nga potencialiteti i matur (PIM) — jo literale.
+     let hcp_signals = [
+@@ -679,9 +681,10 @@
+             None => (None, None, None, None),
+         };
+ 
+-    // ════════ SHADOW — THIRRJA REALE (jo simulim) ════════
+-    // Ndërto shadow_lib::QuantumInbound nga vlerat e Quantum-it (njëkahëshe).
+-    // Quantum→Shadow: zero varësi qarkulluese (Shadow s'njeh Quantum-in).
++    // ════════ SHADOW — COMPLETE MEDIATION PËRMES main.rs (v1.5.9) ════════
++    // Quantum nuk linkon më shadow_platform. Ai njeh vetëm format wire të
++    // shadow_contracts; autoriteti, vault-i, ingest-i dhe receipt-i ekzistojnë
++    // vetëm brenda procesit shadow_platform/main.rs.
+     ucl_step(&mut ucl, UclEvent::IssueUltimatum, &mut ucl_breach); // XY | Refuzim
+ 
+     // ── PORTA E LIGJIT: "Asgjë nuk del pa kaluar Quantum_Collapse." ────────
+@@ -695,105 +698,79 @@
+         }
+     }
+ 
+-    let shadow_inbound = shadow_lib::bridge::QuantumInbound {
+-        package_id:           input.trace_id.clone(),
+-        session_id:           input.trace_id.clone(),
+-        territory:            territory.to_string(),
+-        epistemic_mass:       lim_metric.epistemic_mass,
+-        evidence_density:     pass.potentiality.evidence_density,
+-        logical_coherence:    pass.potentiality.logical_coherence,
+-        causal_integrity:     pass.potentiality.causal_integrity,
+-        convergence_strength: pass.potentiality.convergence_strength,
+-        reproducibility:      pass.potentiality.reproducibility,
+-        potentiality_score:   pass.potentiality.potentiality_score,
+-        ibe_score:            pass.potentiality.evidence_density,
+-        chain_coherence:      pass.potentiality.logical_coherence,
+-        conservation_ok:      pass.potentiality.causal_integrity > 0.5,
+-        candidate_scores:     pro.candidates.iter().map(|c| c.score).collect(),
+-        suggested_verdict:    match pass.shadow_suggestion.suggested_verdict {
+-            // GJETJE (default-mode): te bin-i 'crate::pim' s'rezolvon (pim është te lib);
+-            // rruga e saktë është quantum_lim::pim — bin-i tani kompilon në DEFAULT build.
+-            quantum_lim::pim::SuggestedVerdict::ConsiderOptimal => 1u8,
+-            quantum_lim::pim::SuggestedVerdict::HoldForTesting  => 2u8,
+-            quantum_lim::pim::SuggestedVerdict::ExploreFurther  => 0u8,
+-        },
+-        primitive_flags:      inbound.primitive_flags,
+-        raw_bytes:            light_in.payload.clone(),
+-        // ── HCP heart_byte: vlera REALE nga HcpPro::orchestrate (mbyllja e gapit) ──
+-        // Vendimi i harduerit i vulosur me token mbartet te Shadow; ingest_quantum →
+-        // split() → beat_from_inbound regjistron heart_byte-in te ledger-i sovran.
+-        // ══ KOLAPSI mbartet nëpër wire: XY | Refuzim + rrugët negative (ASET).
+-        xy_x: match &collapse {
+-            CollapseOutcome::Proposed { x, .. } => Some(x.clone()),
+-            CollapseOutcome::Refused  { .. }    => None,
+-        },
+-        xy_y: match &collapse {
+-            CollapseOutcome::Proposed { y, .. } => Some(y.clone()),
+-            CollapseOutcome::Refused  { .. }    => None,
++    let (neg_reason, neg_process, neg_mass, neg_freq, neg_blob) =
++        neg_inbound.as_on_negative_args();
++    let shadow_request = shadow_contracts::ShadowCycleRequest {
++        quantum: shadow_contracts::QuantumInboundWire {
++            package_id:           input.trace_id.clone(),
++            session_id:           input.trace_id.clone(),
++            territory:            territory.to_string(),
++            epistemic_mass:       lim_metric.epistemic_mass,
++            evidence_density:     pass.potentiality.evidence_density,
++            logical_coherence:    pass.potentiality.logical_coherence,
++            causal_integrity:     pass.potentiality.causal_integrity,
++            convergence_strength: pass.potentiality.convergence_strength,
++            reproducibility:      pass.potentiality.reproducibility,
++            potentiality_score:   pass.potentiality.potentiality_score,
++            ibe_score:            pass.potentiality.evidence_density,
++            chain_coherence:      pass.potentiality.logical_coherence,
++            conservation_ok:      pass.potentiality.causal_integrity > 0.5,
++            candidate_scores:     pro.candidates.iter().map(|c| c.score).collect(),
++            suggested_verdict:    match pass.shadow_suggestion.suggested_verdict {
++                quantum_lim::pim::SuggestedVerdict::ConsiderOptimal => 1u8,
++                quantum_lim::pim::SuggestedVerdict::HoldForTesting  => 2u8,
++                quantum_lim::pim::SuggestedVerdict::ExploreFurther  => 0u8,
++            },
++            primitive_flags:      inbound.primitive_flags,
++            raw_bytes:            light_in.payload.clone(),
++            xy_x: match &collapse {
++                CollapseOutcome::Proposed { x, .. } => Some(x.clone()),
++                CollapseOutcome::Refused  { .. }    => None,
++            },
++            xy_y: match &collapse {
++                CollapseOutcome::Proposed { y, .. } => Some(y.clone()),
++                CollapseOutcome::Refused  { .. }    => None,
++            },
++            xy_mass: match &collapse {
++                CollapseOutcome::Proposed { .. } => Some(mpro_factic.raw()),
++                CollapseOutcome::Refused  { .. } => None,
++            },
++            pd_binding_digest,
++            pd_continuum_activation_digest,
++            pd_parent_i0,
++            collapse_refused: match &collapse {
++                CollapseOutcome::Proposed { .. }     => None,
++                CollapseOutcome::Refused  { reason } => Some(reason.clone()),
++            },
++            negative_paths: neg_paths.iter().map(|n| n.to_wire()).collect(),
++            hcp_input_id:         Some(hcp_f_id),
++            hcp_token_gen:        Some(hcp_f_gen),
++            hcp_token_nonce:      Some(hcp_f_nonce),
++            hcp_directive_bit:    Some(hcp_f_bit),
+         },
+-        // MPRO është MATËSI zyrtar i XY: masa = probabiliteti FAKTIK
+-        // (vektori 16-matjesh × evidenca LIM), jo bashkëprezenca e thjeshtë.
+-        xy_mass: match &collapse {
+-            CollapseOutcome::Proposed { .. } => Some(mpro_factic.raw()),
+-            CollapseOutcome::Refused  { .. } => None,
++        light: shadow_contracts::LightInboundWire {
++            session_id:      light_in.session_id,
++            territory:       light_in.territory,
++            primitive_flags: light_in.primitive_flags,
++            epistemic_mass:  light_in.epistemic_mass,
++            proof_chain:     light_in.proof_chain,
++            payload:         light_in.payload,
+         },
+-        pd_binding_digest,
+-        pd_continuum_activation_digest,
+-        pd_parent_i0,
+-        collapse_refused: match &collapse {
+-            CollapseOutcome::Proposed { .. }     => None,
+-            CollapseOutcome::Refused  { reason } => Some(reason.clone()),
++        negative: shadow_contracts::NegativeKnowledgeWire {
++            input_id: hcp_id,
++            reason: neg_reason,
++            process: neg_process.to_string(),
++            mass: neg_mass,
++            frequency: neg_freq,
++            bytes: neg_blob.to_vec(),
++            ts_ns: shadow_process_bridge::now_ns(),
+         },
+-        negative_paths: neg_paths.iter().map(|n| n.to_wire()).collect(),
+-
+-        hcp_input_id:         Some(hcp_f_id),
+-        hcp_token_gen:        Some(hcp_f_gen),
+-        hcp_token_nonce:      Some(hcp_f_nonce),
+-        hcp_directive_bit:    Some(hcp_f_bit),
+     };
+ 
+-    // Thirr Shadow realisht — një hyrje, zero klon i panevojshëm (LIGJI 0).
+-    // RUNTIME HARDENING (      ): fail-closed — Shadow init/ingest dështon → error i
+-    // qartë + kthim, JO panic. Procesi sovran s'rrëzohet. Zero if — match.
+-    let shadow = match shadow_lib::shadow_gateway::Shadow::new() {
+-        Ok(s)  => s,
++    let shadow_response = match shadow_process_bridge::execute_cycle(shadow_request) {
++        Ok(r) => r,
+         Err(e) => {
+-            eprintln!("  [Q→SHADOW] FAIL-CLOSED: Shadow init dështoi: {e}");
+-            return;
+-        }
+-    };
+-    // URA 2 (Light→Shadow) E MBYLLUR: ushqe PA-gate nga light_pa_export.txt
+-    // PARA ingest — ankora e FUNDIT e session-it (formati: session|pa_hex|ts).
+-    // KONTRATË TRANSPORTI (HARDENING): skedar që mungon → Ok(0) (nisje e parë);
+-    // KORRUPSION i transportit PA → Err → REFUZIM fail-closed PARA ingest.
+-    let pa_fed = match shadow.feed_primitive_anchors(&handoff_path("light_pa_export.txt"), &input.trace_id) {
+-        Ok(k)  => k,
+-        Err(e) => {
+-            eprintln!("  [PA_FEED]  REFUZIM (fail-closed): {e} — sesioni ndalon para ingest");
+-            return;
+-        }
+-    };
+-    println!("  [PA_FEED]  {} ankorë(a) PA nga Light për session {}",
+-        pa_fed, input.trace_id);
+-    // HYRJA E VETME SOVRANE: ingest_bridged pranon TË DY origjinat ndaras
+-    // (QuantumInbound + LightInbound) dhe i bashkon brenda — këtu ekzekutohet
+-    // PA-gate (q.session_id ↔ PA i regjistruar nga Light). Fail-closed real:
+-    // transport Light i gjymtuar (l.is_valid()) REFUZOHET. Zero if — match.
+-    // ADAPTIM TIPI (kontratë ndër-crate): quantum_lim::LightInbound → shadow_platform::LightInbound.
+-    // Fushat janë IDENTIKE; Rust i sheh si tipe të ndryshme vetëm sepse jetojnë në crate-e të ndara.
+-    // Zero ndryshim logjike — vetëm kalim fushë-për-fushë.
+-    let shadow_light_in = shadow_lib::bridge::LightInbound {
+-        session_id:      light_in.session_id,
+-        territory:       light_in.territory,
+-        primitive_flags: light_in.primitive_flags,
+-        epistemic_mass:  light_in.epistemic_mass,
+-        proof_chain:     light_in.proof_chain,
+-        payload:         light_in.payload,
+-    };
+-    let shadow_response = match shadow.ingest_bridged(shadow_inbound, shadow_light_in) {
+-        Ok(r)  => r,
+-        Err(e) => {
+-            eprintln!("  [Q→SHADOW] FAIL-CLOSED: Shadow ingest_bridged dështoi: {e}");
++            eprintln!("  [Q→SHADOW MAIN] FAIL-CLOSED: {e}");
+             return;
+         }
+     };
+@@ -873,28 +850,21 @@
+     };
+     println!("  [SHADOW]   verdict={} (bit={}) | verified={} primitive={} band={}",
+         outcome.label(), outcome.bit(),
+-        sv.verified, sv.primitive, sv.knowledge_band.label());
++        sv.verified, sv.primitive, sv.knowledge_band_label());
+ 
+-    // ════════ NPIM → SHADOW (njohuri negative REALE — komunikim i mbyllur) ════════
+-    // Më parë neg_inbound ndërtohej por s'dërgohej te Shadow në rrjedhën reale (vetëm
+-    // 'gati'). Tani dorëzohet PËR REAL përmes të njëjtës instancë Shadow: njohuria
+-    // negative (çfarë u eliminua) persistohet nga Shadow (autoriteti i vetëm). Fail-
+-    // closed: match mbi Result (jo silent .ok()). input_id = i njëjti id i ciklit.
+-    let (neg_reason, neg_process, neg_mass, neg_freq, neg_blob) = neg_inbound.as_on_negative_args();
+-    let npim_persisted = match shadow.on_negative(
+-        hcp_id, neg_reason, neg_process, neg_mass, neg_freq, neg_blob,
+-        shadow_lib::shadow_pipeline::now_ns(),
+-    ) {
+-        Ok(())  => {
+-            println!("  [NPIM→SHADOW] dërguar REAL: code={} → VERIFIED_NEGATIVE (mass={:.3} freq={})",
+-                     neg_reason, neg_mass, neg_freq);
+-            true
+-        }
+-        Err(e)  => {
+-            eprintln!("  [NPIM→SHADOW] FAIL-CLOSED: on_negative dështoi: {e}");
+-            false
+-        }
+-    };
++    // ════════ NPIM → SHADOW MAIN ════════
++    // Negative Knowledge u dërgua në të NJËJTËN kërkesë të ndërmjetësuar dhe
++    // u persistua nga e njëjta instancë Shadow që prodhoi receipt-in.
++    let npim_persisted = shadow_response.negative_persisted;
++    match npim_persisted {
++        true => println!(
++            "  [NPIM→SHADOW MAIN] dërguar REAL: code={} → VERIFIED_NEGATIVE (mass={:.3} freq={})",
++            neg_reason, neg_mass, neg_freq,
++        ),
++        false => eprintln!(
++            "  [NPIM→SHADOW MAIN] FAIL-CLOSED: Negative Knowledge s'u persistua"
++        ),
++    }
+ 
+     // Quantum PD → PD Light → Nura. Për rrugën negative kërkohet që NPIM të
+     // jetë ruajtur; për rrugën pozitive receipt-i 1/1 mjafton.
+@@ -1187,120 +1157,51 @@
+     };
+     println!("  [VNK]      {} → për Shadow (byte-for-byte NegativeContext)", vnk_status);
+ 
+-    // P3.1: VNK DELIVERY → Shadow (zinxhiri i plotë). Zero if — match.
++    // P3.1: VNK DELIVERY → Shadow main.rs (zinxhiri i plotë, pa linkim core).
+     let _vnk_delivered = match &weak.negative_knowledge {
+         Some(vnk) => {
+-            // RUNTIME HARDENING (      ): Shadow init dështon → error i qartë + false,
+-            // JO panic. Demo vazhdon. Zero if — match.
+-            match shadow_lib::shadow_gateway::Shadow::new() {
+-                Ok(shadow) => {
+-                    // PA-GATE READ (      ): lexo handoff-in nga Light (file,
+-                    // jo mekanizëm i ri — shih export_primitive_anchor te Light
+-                    // main.rs) dhe regjistro çdo anchor në pritje TE Shadow,
+-                    // PARA se vendimi i Shadow-it të vazhdojë. Fail-open: file
+-                    // mungues s'ndalon rrjedhën (PA-gate ende jo i detyrueshëm).
+-                    match std::fs::read_to_string(handoff_path("light_pa_export.txt")) {
+-                        Ok(content) => {
+-                            for line in content.lines() {
+-                                // ══ PACP GATE EDHE KËTU (v1.4.0) ═════════════
+-                                // Gjetja e auditit: (a) thirrje e vjetruar
+-                                // 2-argumentëshe (firma reale = 3) → s'kompilonte;
+-                                // (b) verbëri 6-fushëshe: çdo rresht i VULOSUR
+-                                // binte te '_ => {}' — blloku i vdekur që nga
+-                                // v1.3.1. Tani: verify-before-interpret; korrupsioni
+-                                // merr PSE+shënim; fail-open (rreshti kapërcehet).
+-                                match quantum_lim::lab_contracts::pa_wire::verify_line(line) {
+-                                    quantum_lim::lab_contracts::pa_wire::PaWireVerdict::Corrupt(why) => {
+-                                        let klasa = match why.contains("përputhet") {
+-                                            true  => quantum_lim::lab_contracts::rrjedha::RrjedhaClass::TransportBitflip,
+-                                            false => quantum_lim::lab_contracts::rrjedha::RrjedhaClass::TransportTruncated,
+-                                        };
+-                                        let _ = quantum_lim::lab_contracts::rrjedha::note(
+-                                            &rrjedha_dir(), "QUANTUM", "main::vnk_pa_gate", klasa, why);
+-                                        eprintln!("  [PA-GATE] ALARM: rresht i korruptuar u kapërcye ({why})");
+-                                        continue;
+-                                    }
+-                                    quantum_lim::lab_contracts::pa_wire::PaWireVerdict::SealedOk => {}
+-                                    quantum_lim::lab_contracts::pa_wire::PaWireVerdict::LegacyOk => {
+-                                        // v1.4.4: legacy me gjurmë edhe në portën VNK.
+-                                        let _ = quantum_lim::lab_contracts::rrjedha::note(
+-                                            &rrjedha_dir(), "QUANTUM", "main::vnk_pa_gate",
+-                                            quantum_lim::lab_contracts::rrjedha::RrjedhaClass::Other,
+-                                            "LEGACY_PRANUAR kind=PA bridge=vnk_gate session=- sealed_para=false");
+-                                    }
+-                                }
+-                                let body: &str = match line.rsplit_once("|c:") {
+-                                    Some((b, _)) => b,
+-                                    None         => line,
+-                                };
+-                                let parts: Vec<&str> = body.split('|').collect();
+-                                let (sess, pa_hex, split) = match parts.as_slice() {
+-                                    [sess, pa_hex, _ts] => (*sess, *pa_hex,
+-                                        PrimitiveSplit { xi: Vec::new(), yi: Vec::new() }),
+-                                    [sess, pa_hex, _ts, xi_seg, yi_seg] => {
+-                                        match PrimitiveSplit::from_wire(xi_seg, yi_seg) {
+-                                            Some(p) => (*sess, *pa_hex, p),
+-                                            None    => {
+-                                                let _ = quantum_lim::lab_contracts::rrjedha::note(
+-                                                    &rrjedha_dir(), "QUANTUM", "main::vnk_pa_gate",
+-                                                    quantum_lim::lab_contracts::rrjedha::RrjedhaClass::TransportTruncated,
+-                                                    "Xi/Yi wire i keqformuar — rreshti u kapërcye");
+-                                                continue;
+-                                            }
+-                                        }
+-                                    }
+-                                    _ => { continue; } // format i huaj — i deklaruar më lart si Corrupt
+-                                };
+-                                match u64::from_str_radix(pa_hex.trim(), 16) {
+-                                    Ok(pa_id) => {
+-                                        // ADAPTIM TIPI: quantum_lim::PrimitiveSplit → shadow_platform::PrimitiveSplit.
+-                                        // Fusha identike (xi, yi); kalim i drejtpërdrejtë, zero ndryshim logjike.
+-                                        let shadow_split = shadow_lib::lab_contracts::collapse::PrimitiveSplit {
+-                                            xi: split.xi,
+-                                            yi: split.yi,
+-                                        };
+-                                        shadow.register_primitive_anchor(sess, pa_id, shadow_split)
+-                                    },
+-                                    Err(_)    => {
+-                                        let _ = quantum_lim::lab_contracts::rrjedha::note(
+-                                            &rrjedha_dir(), "QUANTUM", "main::vnk_pa_gate",
+-                                            quantum_lim::lab_contracts::rrjedha::RrjedhaClass::TransportTruncated,
+-                                            "pa_id hex i keqformuar — rreshti u kapërcye");
+-                                    }
+-                                }
+-                            }
++            let request = shadow_contracts::ShadowNegativeRequest {
++                negative: shadow_contracts::NegativeKnowledgeWire {
++                    input_id: 0xAB_C0DE,
++                    reason: vnk.failure_reason_code,
++                    process: vnk.process.clone(),
++                    mass: vnk.mass_at_fail,
++                    frequency: vnk.frequency,
++                    bytes: vnk.hypothesis_hash.as_bytes().to_vec(),
++                    ts_ns: shadow_process_bridge::now_ns(),
++                },
++                export_negative_knowledge: true,
++            };
++            match shadow_process_bridge::persist_negative(request) {
++                Ok(response) => {
++                    let nk_bytes = quantum_lim::pro_nk_gate::KnowledgeVault::seal_negative_export(
++                        &response.negative_export,
++                    );
++                    match (response.persisted, std::fs::write(
++                        handoff_path("shadow_nk_export.bin"), &nk_bytes,
++                    )) {
++                        (true, Ok(())) => {
++                            let _ = std::fs::write(
++                                handoff_path("shadow_nk_export.sealed"), b"NKL1\n",
++                            );
++                            println!(
++                                "  [VNK→SHADOW MAIN] dërguar: code={} → VERIFIED_NEGATIVE | NK eksportuar {}B",
++                                vnk.failure_reason_code, nk_bytes.len(),
++                            );
++                            true
+                         }
+-                        Err(_) => {} // s'ka handoff ende nga Light — pa-gate pasiv
+-                    }
+-                    shadow.on_negative(
+-                        0xAB_C0DE,                      // input_id demo (numër heks i vlefshëm)
+-                        vnk.failure_reason_code,
+-                        &vnk.process,
+-                        vnk.mass_at_fail,
+-                        vnk.frequency,
+-                        vnk.hypothesis_hash.as_bytes(),
+-                        shadow_lib::shadow_pipeline::now_ns(),
+-                    ).ok();
+-                    // Eksporto NK të përditësuar për PRO Vault (cikli i plotë).
+-                    let nk_body = shadow.export_negative_knowledge();
+-                    // v1.4.2 (rek.2): NK vuloset me kokën NKB1+CRC para shkrimit —
+-                    // lexuesi (from_negative_export) e verifikon vetiu; bitflip në
+-                    // disk kapet, nuk kalon si dije e prishur.
+-                    let nk_bytes = quantum_lim::pro_nk_gate::KnowledgeVault::seal_negative_export(&nk_body);
+-                    // FAIL-LOUD (ULTIMATUM): humbja e dijes negative = ALARM, jo .ok() e heshtur.
+-                    match std::fs::write(handoff_path("shadow_nk_export.bin"), &nk_bytes) {
+-                        Ok(())  => {
+-                            // Çelësi njëdrejtimësh: markeri dëshmon "u vulos njëherë".
+-                            let _ = std::fs::write(handoff_path("shadow_nk_export.sealed"), b"NKL1\n");
++                        (false, _) => {
++                            eprintln!("  [VNK→SHADOW MAIN] FAIL-CLOSED: persistimi u refuzua");
++                            false
++                        }
++                        (_, Err(e)) => {
++                            eprintln!("  [VNK→SHADOW MAIN] ALARM: NK s'u shkrua në disk ({e})");
++                            false
+                         }
+-                        Err(e)  => eprintln!("  [VNK→SHADOW] ALARM: NK s'u shkrua në disk ({e}) — dija negative mund të mos persistojë"),
+                     }
+-                    println!("  [VNK→SHADOW] dërguar: code={} → VERIFIED_NEGATIVE | NK eksportuar {}B",
+-                        vnk.failure_reason_code, nk_bytes.len());
+-                    true
+                 }
+                 Err(e) => {
+-                    eprintln!("  [VNK→SHADOW] FAIL-CLOSED: Shadow init dështoi: {e}");
++                    eprintln!("  [VNK→SHADOW MAIN] FAIL-CLOSED: {e}");
+                     false
+                 }
+             }
+@@ -1661,7 +1562,7 @@
+ fn export_pd_probe(
+     session_id: &str,
+     closure: &quantum_lim::progressive_debatic::PdContinuumClosure,
+-    receipt: &shadow_lib::VerificationReceipt,
++    receipt: &shadow_contracts::VerificationReceiptWire,
+ ) {
+     export_pd_verified_line(
+         session_id,
+@@ -1680,7 +1581,7 @@
+     session_id: &str,
+     pkg: &quantum_lim::progressive_debatic::PdCognitivePackage,
+     closure: Option<&quantum_lim::progressive_debatic::PdContinuumClosure>,
+-    receipt: &shadow_lib::VerificationReceipt,
++    receipt: &shadow_contracts::VerificationReceiptWire,
+ ) {
+     export_pd_verified_line(
+         session_id,
+@@ -1717,7 +1618,7 @@
+     genius: u32,
+     trl: u8,
+     closure: Option<&quantum_lim::progressive_debatic::PdContinuumClosure>,
+-    receipt: &shadow_lib::VerificationReceipt,
++    receipt: &shadow_contracts::VerificationReceiptWire,
+     source: &'static str,
+ ) {
+     // v1.5.6: receipt-i dhe formula `PD output + iZ → next i₀` udhëtojnë bashkë.
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/quantum/src/shadow_process_bridge.rs	2026-07-14 22:43:23.310474999 +0000
+@@ -0,0 +1,144 @@
++//! v1.5.9 — Quantum client for the mandatory Shadow executable boundary.
++//!
++//! Quantum links only `shadow_contracts`. It cannot construct `Shadow`, call
++//! `ingest_bridged`, open the vault, issue tokens, or seal receipts. Every real
++//! verification and negative-knowledge write is mediated by `shadow_platform`
++//! main.rs through a checksummed file contract.
++
++use shadow_contracts::{
++    ShadowCycleRequest, ShadowCycleResponse, ShadowNegativeRequest,
++    ShadowNegativeResponse,
++};
++use std::path::{Path, PathBuf};
++use std::process::{Command, Stdio};
++
++pub fn execute_cycle(
++    request: ShadowCycleRequest,
++) -> Result<ShadowCycleResponse, String> {
++    let session = request.quantum.session_id.clone();
++    let bytes = shadow_contracts::encode_cycle_request(&request);
++    let response = invoke("--bridge-once", &session, &bytes)?;
++    let decoded = shadow_contracts::decode_cycle_response(&response)
++        .map_err(|e| format!("Shadow response u refuzua: {e}"))?;
++    match decoded.session_id == session {
++        true => Ok(decoded),
++        false => Err(format!(
++            "Shadow response session mismatch: expected={session} actual={}",
++            decoded.session_id
++        )),
++    }
++}
++
++#[cfg(feature = "dev_harness")]
++pub fn persist_negative(
++    request: ShadowNegativeRequest,
++) -> Result<ShadowNegativeResponse, String> {
++    let identity = format!("negative-{:016x}", request.negative.input_id);
++    let bytes = shadow_contracts::encode_negative_request(&request);
++    let response = invoke("--negative-once", &identity, &bytes)?;
++    shadow_contracts::decode_negative_response(&response)
++        .map_err(|e| format!("Shadow negative response u refuzua: {e}"))
++}
++
++pub fn now_ns() -> u64 {
++    use std::time::{SystemTime, UNIX_EPOCH};
++    SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .map(|d| d.as_nanos() as u64)
++        .unwrap_or(0)
++}
++
++fn invoke(mode: &str, identity: &str, request_bytes: &[u8]) -> Result<Vec<u8>, String> {
++    let shadow_bin = resolve_shadow_binary()?;
++    let handoff_dir = handoff_dir()?;
++    let nonce = shadow_contracts::fnv1a64(
++        format!("{}:{}:{}:{}", identity, std::process::id(), now_ns(), mode).as_bytes(),
++    );
++    let request_path = handoff_dir.join(format!("shadow_request_{nonce:016x}.bin"));
++    let response_path = handoff_dir.join(format!("shadow_response_{nonce:016x}.bin"));
++
++    match std::fs::write(&request_path, request_bytes) {
++        Ok(()) => {}
++        Err(e) => return Err(format!("kërkesa për Shadow main.rs s'u shkrua: {e}")),
++    }
++    let _ = std::fs::remove_file(&response_path);
++
++    let status = Command::new(&shadow_bin)
++        .arg(mode)
++        .arg(&request_path)
++        .arg(&response_path)
++        .stdin(Stdio::null())
++        .stdout(Stdio::inherit())
++        .stderr(Stdio::inherit())
++        .status();
++
++    let _ = std::fs::remove_file(&request_path);
++    let status = match status {
++        Ok(s) => s,
++        Err(e) => return Err(format!(
++            "Shadow main.rs nuk u nis nga '{}': {e}", shadow_bin.display()
++        )),
++    };
++    match status.success() {
++        true => {}
++        false => {
++            let _ = std::fs::remove_file(&response_path);
++            return Err(format!("Shadow main.rs doli me status {status}"));
++        }
++    }
++
++    let response = std::fs::read(&response_path)
++        .map_err(|e| format!("Shadow main.rs nuk prodhoi response të lexueshëm: {e}"));
++    let _ = std::fs::remove_file(&response_path);
++    response
++}
++
++fn handoff_dir() -> Result<PathBuf, String> {
++    let raw = std::env::var("ESSMAI_HANDOFF_DIR")
++        .map_err(|_| "ESSMAI_HANDOFF_DIR mungon".to_string())?;
++    std::fs::create_dir_all(&raw)
++        .map_err(|e| format!("ESSMAI_HANDOFF_DIR s'u krijua: {e}"))?;
++    std::fs::canonicalize(&raw)
++        .map_err(|e| format!("ESSMAI_HANDOFF_DIR s'u kanonikalizua: {e}"))
++}
++
++fn resolve_shadow_binary() -> Result<PathBuf, String> {
++    match std::env::var("ESSMAI_SHADOW_BIN") {
++        Ok(raw) => validate_binary(PathBuf::from(raw), "ESSMAI_SHADOW_BIN"),
++        Err(_) => {
++            let current = std::env::current_exe()
++                .map_err(|e| format!("current_exe dështoi: {e}"))?;
++            let parent = current.parent()
++                .ok_or_else(|| "quantum executable pa parent".to_string())?;
++            validate_binary(parent.join(shadow_executable_name()), "sibling target")
++        }
++    }
++}
++
++fn validate_binary(path: PathBuf, source: &str) -> Result<PathBuf, String> {
++    match (path.is_absolute(), path.is_file()) {
++        (true, true) => Ok(path),
++        (false, _) => Err(format!("{source} duhet të japë rrugë absolute për Shadow main.rs")),
++        (_, false) => Err(format!(
++            "Shadow main.rs mungon te '{}'. Ekzekuto fillimisht: cargo build --workspace",
++            path.display()
++        )),
++    }
++}
++
++fn shadow_executable_name() -> &'static Path {
++    #[cfg(windows)]
++    { Path::new("shadow_platform.exe") }
++    #[cfg(not(windows))]
++    { Path::new("shadow_platform") }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn sibling_name_is_platform_specific_and_nonempty() {
++        assert!(!shadow_executable_name().as_os_str().is_empty());
++    }
++}
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/setup_essmai.ps1 /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/setup_essmai.ps1
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/setup_essmai.ps1	2026-07-07 03:17:35.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/setup_essmai.ps1	2026-07-14 22:56:04.974957197 +0000
+@@ -466,7 +466,7 @@
+ 
+     $wis = @(
+         '@echo off',
+-        'REM SHADOW WISDOM — autoriteti i gjalle (vault persistent, main=ekzekutues i lib)',
++        'REM SHADOW WISDOM — autoriteti i gjalle (vault persistent, main=kusht i domosdoshem)',
+         'cd /d "%~dp0"',
+         'set ESSMAI_HANDOFF_DIR=%~dp0',
+         '"%~dp0target\release\shadow_platform.exe"'
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/Cargo.toml	2026-07-14 22:53:56.337860667 +0000
+@@ -1,7 +1,10 @@
+ [package]
+ name    = "shadow_platform"
+-version = "1.5.7"
++version = "1.5.9"
+ edition = "2021"
++autolib = false
++autotests = false   # testi historik përfshihet nga main.rs si modul binar
++autoexamples = true  # shembulli v1.5.9 nuk prek core; dokumenton rrjedhën e ndërmjetësuar
+ 
+ # ╔══════════════════════════════════════════════════════════════════════════╗
+ # ║  SHADOW PLATFORM — ESS-MAI                                        ║
+@@ -12,9 +15,9 @@
+ # ║  Gjykata supreme e dijes — shadow_gj_legacy.lgc                       ║
+ # ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-[lib]
++[[bin]]
+ name = "shadow_platform"
+-crate-type = ["staticlib", "rlib"]
++path = "src/main.rs"
+ 
+ [features]
+ # runtime_mode: ekzekutim real i deklaruar qartë (default i prodhimit).
+@@ -28,7 +31,10 @@
+ pure_rust = []
+ 
+ [dependencies]
+-# Zero external deps — pure Rust + C FFI
++# Vetëm kontrata publike wire; zero autoritet dhe zero akses te Shadow core.
++shadow_contracts = { path = "../shadow-contracts" }
++
++# Shadow core mbetet pure Rust + C FFI brenda binarit main.rs
+ 
+ [build-dependencies]
+ cc = "1.0"
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/README.md /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/README.md
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/README.md	2026-06-28 19:18:01.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/README.md	2026-07-14 22:56:04.974263912 +0000
+@@ -15,6 +15,18 @@
+ 
+ ---
+ 
++## 0. Kufiri i procesit — v1.5.9
++
++Shadow është target **vetëm binar** (`autolib = false`). `main.rs` përfshin
++trupin e `lib.rs`, prandaj `Shadow::ingest`, vault-i, token-i dhe prodhimi i
++`VerificationReceipt` ekzistojnë vetëm brenda procesit `shadow_platform`.
++Quantum varet vetëm nga `shadow_contracts` dhe dërgon frame të versionuar e të
++kontrolluar me checksum te `shadow_platform --bridge-once`. Pa ekzekutimin e
++main-it, rrjedha ndalon fail-closed. API-të e përshkruara më poshtë janë API të
++brendshme të target-it binar, jo library publike për crate të tjera.
++
++---
++
+ ## 1. Arkitektura — dy origjina, TË NDARA
+ 
+ Dy hyrjet mbërrijnë nga dy ura të ndryshme dhe mbeten **structe të ndara**:
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/examples/full_flow.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/examples/full_flow.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/examples/full_flow.rs	2026-07-05 22:54:45.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/examples/full_flow.rs	2026-07-14 22:53:55.339105640 +0000
+@@ -1,126 +1,25 @@
+-// ╔══════════════════════════════════════════════════════════════════════════╗
+-// ║  examples/full_flow.rs — SHADOW PLATFORM                              ║
+-// ║  Gjata Legacy™  |  Arkitekt: Bledar Gjata                             ║
+-// ║                                                                          ║
+-// ║  Demonstrim i plotë: Quantum (PassPackage) + Light (LightEnvelope)     ║
+-// ║  → Shadow::ingest → verdikt → vault → maturim Legacy.                 ║
+-// ║                                                                          ║
+-// ║    cargo run --example full_flow                                       ║
+-// ║    cargo run --example full_flow --no-default-features --features pure_rust
+-// ╚══════════════════════════════════════════════════════════════════════════╝
+-
+-use shadow_platform::{destfake, LightEnvelope, PassPackage, Shadow, SupremeVerdict};
+-
+-fn quantum_pkg(id: &str, mass: f32, suggested: u8) -> PassPackage {
+-    PassPackage {
+-        package_id:           id.to_string(),
+-        epistemic_mass:       mass,
+-        evidence_density:     0.95,
+-        logical_coherence:    0.93,
+-        causal_integrity:     0.95,
+-        convergence_strength: 0.92,
+-        reproducibility:      0.94,
+-        potentiality_score:   0.93,
+-        ibe_score:            0.95,
+-        chain_coherence:      0.94,
+-        conservation_ok:      true,
+-        candidate_scores:     vec![0.90, 0.92, 0.91],
+-        suggested_verdict:    suggested,
+-        raw_bytes:            id.as_bytes().to_vec(),
+-    }
+-}
+-
+-fn weak_pkg(id: &str) -> PassPackage {
+-    PassPackage {
+-        package_id:        id.to_string(),
+-        epistemic_mass:    0.15,
+-        candidate_scores:  vec![0.10],
+-        suggested_verdict: 0,
+-        raw_bytes:         id.as_bytes().to_vec(),
+-        ..Default::default()
+-    }
+-}
+-
+-fn show(title: &str, v: &SupremeVerdict) {
+-    println!("  ┌─ {}", title);
+-    println!("  │   verified={}  primitive={}  band={}",
+-             v.verified, v.primitive, v.knowledge_band.label());
+-    println!("  │   legacy_score={:.3}  lgc_law=0b{:06b}", v.legacy_score, v.lgc_law);
+-    println!("  │   {}", v.lgc_dsl);
+-    println!("  └─");
+-}
++//! v1.5.9 — mediated full-flow entry notice.
++//!
++//! The historical example instantiated `Shadow` as a library. That route is
++//! intentionally impossible in v1.5.9. The real flow is now:
++//!
++//! Light → Quantum → checksummed `shadow_contracts` frame → Shadow main.rs
++//! → internal Shadow core → sealed receipt → Quantum → Light/Nura.
++//!
++//! Build both executables first, then run Quantum with the shared handoff dir:
++//! `cargo build --workspace`
++//! `cargo run -p quantum-platform`
+ 
+ fn main() {
+-    println!("╔══════════════════════════════════════════════════════════════════╗");
+-    println!("║  ESS-MAI SHADOW — Quantum + Light → Shadow (zero-copy)     ║");
+-    println!("║  Gjata Legacy™ | Arkitekt: Bledar Gjata                         ║");
+-    println!("╚══════════════════════════════════════════════════════════════════╝\n");
+-
+-    let shadow = Shadow::new().expect("init Shadow");
+-
+-    // ── RAST 1: input i fortë + vula 500 → pritet PRIMITIVE ───────────────
+-    println!("▸ RAST 1: Quantum i fortë (mass=1.0) + Light I VULOSUR (500)");
+-    let pkg1   = quantum_pkg("primitive-001", 1.0, 2);
+-    let light1 = LightEnvelope::sealed("sess-A", "INDUSTRIAL", vec![1, 2, 3, 4, 5], b"trace1".to_vec());
+-    let r1 = shadow.ingest(pkg1, light1).unwrap();
+-    show("Vendimi suprem", &r1.verdict);
+-
+-    // ── RAST 2: input i fortë POR vula e hequr → VERIFIED, jo primitive ───
+-    println!("\n▸ RAST 2: Quantum i fortë + Light I HEQUR (fragmentim) → s'ka 500");
+-    let pkg2   = quantum_pkg("verified-002", 1.0, 2);
+-    let light2 = LightEnvelope::stripped("sess-B", "INDUSTRIAL", vec![1, 2, 3, 4, 5], b"trace2".to_vec());
+-    let r2 = shadow.ingest(pkg2, light2).unwrap();
+-    show("Vendimi suprem", &r2.verdict);
+-
+-    // ── RAST 3: input i dobët → DIJE NEGATIVE (kufi i vlefshëm) ───────────
+-    println!("\n▸ RAST 3: Quantum i dobët (mass=0.15) → Dije Negative");
+-    let pkg3   = weak_pkg("negative-003");
+-    let light3 = LightEnvelope::stripped("sess-C", "HOME", vec![1], b"trace3".to_vec());
+-    let r3 = shadow.ingest(pkg3, light3).unwrap();
+-    show("Vendimi suprem", &r3.verdict);
+-
+-    // ── RAST 4: konsultim i kufirit negativ ───────────────────────────────
+-    println!("\n▸ RAST 4: A njihet tashmë si negative kjo rrugë? (kufi aktiv)");
+-    let pkg4   = weak_pkg("negative-003b");
+-    let light4 = LightEnvelope::stripped("sess-D", "HOME", vec![1], b"trace4".to_vec());
+-    let r4 = shadow.ingest(pkg4, light4).unwrap();
+-    match &r4.known_negative {
+-        Some(ctx) => println!("  ✓ njohur: proces={} masë={:.3} frekuencë={}",
+-                              ctx.process, ctx.mass_at_fail, ctx.frequency),
+-        None      => println!("  (asnjë model i mëparshëm negativ për këtë proces/masë)"),
+-    }
+-
+-    // ── RAST 5: Primitive → Legacy përmes PËRFORCIMIT NDËR-DOMAIN (≥5) ────
+-    println!("\n▸ RAST 5: I njëjti input i vulosur, i përforcuar në 5 DOMAIN → Legacy");
+-    let domains: [&str; 5] = ["science", "industrial", "medical", "security", "research"];
+-    for (i, &dom) in domains.iter().enumerate() {
+-        // I NJËJTI package_id → raw_bytes identik → content_hash i njëjtë → dedupe.
+-        let pkg   = quantum_pkg("legacy-seed", 1.0, 2);
+-        let light = LightEnvelope::sealed("sess-L", dom, vec![1, 2, 3, 4, 5], b"seed".to_vec());
+-        let _ = shadow.ingest(pkg, light).unwrap();
+-        let st = shadow.stats();
+-        println!("  [{}/5] domain={:<10} → primitive={} legacy={}",
+-                 i + 1, dom, st.primitive_count, st.legacy_count);
+-    }
+-    println!("  (kristalizimi ndodh në domain-in e 5-të: 5 gjurmë unike + vulë konsistente)");
+-
+-    // ── RAST 6: info PA gjurmë → destfake (purge), s'persiston si dije ─────
+-    println!("\n▸ RAST 6: Input pa proof_chain (gjurmë boshe) → Luvik refuzon → purge");
+-    let purged_before = destfake().purged_count();
+-    let pkg6   = quantum_pkg("no-trace-006", 1.0, 2);
+-    let light6 = LightEnvelope::sealed("sess-X", "INDUSTRIAL", vec![], b"x".to_vec()); // proof bosh
+-    let r6 = shadow.ingest(pkg6, light6).unwrap();
+-    println!("  lgc_law=0x{:02X} (0x20=PURGED)  ·  purged total: {} → {}",
+-             r6.verdict.lgc_law, purged_before, destfake().purged_count());
+-
+-    // ── Statistikat finale ────────────────────────────────────────────────
+-    let s = shadow.stats();
+-    println!("\n╔══════════════════════════════════════════════════════════════════╗");
+-    println!("║  ARKIVI SOVRAN — gjendja finale                                  ║");
+-    println!("╠══════════════════════════════════════════════════════════════════╣");
+-    println!("║  kernel:    total={:<4} passed={:<4} blocked={:<4} frozen={:<5}    ║",
+-             s.total, s.passed, s.blocked, s.frozen);
+-    println!("║  primitive={:<3}  legacy={:<3}  fact={:<3}  hypothesis={:<3}  negative={:<3} ║",
+-             s.primitive_count, s.legacy_count, s.fact_count, s.hypothesis_count, s.negative_count);
+-    println!("╚══════════════════════════════════════════════════════════════════╝");
++    let handoff = std::env::var("ESSMAI_HANDOFF_DIR")
++        .unwrap_or_else(|_| "<MUNGON>".to_string());
++    let shadow = std::env::var("ESSMAI_SHADOW_BIN")
++        .unwrap_or_else(|_| "<sibling target/debug/shadow_platform>".to_string());
++
++    println!("ESS-MAI v1.5.9 — mediated full flow");
++    println!("ESSMAI_HANDOFF_DIR={handoff}");
++    println!("ESSMAI_SHADOW_BIN={shadow}");
++    println!("Nuk ekziston më rrugë direct-core nga example/Quantum.");
++    println!("Ekzekuto: cargo build --workspace");
++    println!("Pastaj:   cargo run -p quantum-platform");
+ }
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/lib.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/lib.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/lib.rs	2026-07-14 11:45:42.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/lib.rs	2026-07-14 22:46:35.615342863 +0000
+@@ -1,4 +1,8 @@
+-#![warn(clippy::unwrap_used)] // HAPI 7.4: bën .unwrap() të dukshëm (path kritike → .expect/error handling)
++// v1.5.9 — KY SKEDAR NUK ËSHTË MË TARGET LIBRARIE.
++// Cargo.toml ka `autolib = false`; `shadow/src/main.rs` e përfshin këtë trup
++// me `include!("lib.rs")`. Prandaj autoriteti më poshtë kompilohet vetëm brenda
++// procesit Shadow dhe nuk mund të linkohet si rlib/staticlib nga Quantum.
++
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+ // ║  LIB.RS — ESS-MAI SHADOW PLATFORM                                ║
+ // ║  Gjata Legacy™  |  Arkitekt: Bledar Gjata                             ║
+@@ -71,7 +75,9 @@
+ pub mod shadow_gateway;
+ pub mod shadow_runtime_pulse; // PULSI REAL i autoritetit — presume lexon jetën (v1.4.5)
+ 
+-// ── API publike ─────────────────────────────────────────────────────────────
++// ── API e brendshme e binarit Shadow ─────────────────────────────────────────
++// `pub` këtu nënkupton dukshmëri brenda crate-it binar dhe testeve të tij;
++// v1.5.9 nuk prodhon target library, ndaj kjo API nuk linkohet nga crate të tjera.
+ 
+ // Fasada + përgjigjet
+ pub use shadow_gateway::{Shadow, ShadowResponse, ShadowStats};
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/main.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/main.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/main.rs	2026-07-08 01:01:01.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/main.rs	2026-07-14 22:53:27.300417656 +0000
+@@ -1,36 +1,30 @@
++#![warn(clippy::unwrap_used)]
++include!("lib.rs");
++mod process_bridge;
++
++// Testi historik i integrimit ruhet, por kompilohet BRENDA target-it binar.
++// Kështu invariantët verifikohen pa ringjallur një target library të linkueshëm.
++#[cfg(test)]
++#[path = "../tests/integration.rs"]
++mod integration_tests;
++
+ // ╔══════════════════════════════════════════════════════════════════════════╗
+-// ║  SHADOW MAIN.RS — EKZEKUTUESI I AUTORITETIT                              ║
+-// ║  Gjata Legacy™  |  ESS-MAI Shadow Platform                                ║
+-// ║                                                                          ║
+-// ║  MODELI I AUTORITETIT (rregull global i ESS-MAI):                        ║
+-// ║    • lib.rs (shadow_platform) = KUSHTETUTA — burimi i VETËM i autoritetit║
+-// ║      (vault-i, portat, verdikti, ligji). Single source of authority.     ║
+-// ║    • main.rs = DIRIGJENTI / MOTORI EKZEKUTUES — nuk vendos, nuk arsyeton,║
+-// ║      nuk mban asnjë ligj a policy të vetin.                              ║
+-// ║                                                                          ║
+-// ║  AUTORIZIMI ËSHTË NË KOHË KOMPILIMI, JO DINAMIK: main thërret vetëm      ║
+-// ║  funksione PUBLIKE të lib-it; vetë fakti që funksioni ekziston dhe është ║
+-// ║  i ekspozuar ËSHTË autorizimi. main NUK e lexon tekstin e lib-it në      ║
+-// ║  runtime — kjo është më e sigurt, më idiomatike, dhe kontrollohet nga    ║
+-// ║  vetë struktura e programit.                                             ║
++// ║ SHADOW MAIN.RS — KUSHTI I DOMOSDOSHËM I AUTORITETIT (v1.5.9)          ║
++// ║ Gjata Legacy™ | ESS-MAI Shadow Platform                                ║
+ // ║                                                                          ║
+-// ║    Rregulli:  asnjë veprim s'ekzekutohet nga main nëse lib.rs s'e        ║
+-// ║               ekspozon publikisht. Çdo degë më poshtë = një thirrje lib. ║
++// ║ Cargo vendos `autolib = false`: Shadow NUK prodhon rlib/staticlib.       ║
++// ║ `include!("lib.rs")` e kompilon kushtetutën vetëm brenda këtij binari.   ║
++// ║ Prandaj as Quantum dhe asnjë crate tjetër nuk mund të ndërtojë Shadow,   ║
++// ║ të hapë vault-in, të thërrasë ingest-in ose të prodhojë receipt pa       ║
++// ║ ekzekutuar main.rs.                                                       ║
+ // ║                                                                          ║
+-// ║  Në filozofinë e ESS-MAI: Light koordinon · Quantum propozon ·          ║
+-// ║  Shadow(lib) autorizon · Shadow(main) ekzekuton veprime të autorizuara.  ║
+-// ║                                                                          ║
+-// ║  ROLE, JO AGJENT: Shadow s'është agjent (s'mendon/vendos/improvizon si   ║
+-// ║  subjekt autonom) — është ROL EKZEKUTIV + makinë gjendjesh verifikuese.  ║
+-// ║  Shadow = librari e GJALLË (wisdom): vault me persistencë reale që       ║
+-// ║  mbijeton mes nisjeve.                                                    ║
+-// ║                                                                          ║
+-// ║  LIGJE: zero if/else (match), zero panic, fail-closed stdin.             ║
++// ║ Quantum njeh vetëm `shadow_contracts`: formën wire të kërkesës dhe       ║
++// ║ dëshmisë. Vlera reale lind këtu, pas PA gate + Verification Collapse +   ║
++// ║ token-it sovran. Mungesa/dështimi i këtij procesi = fail-closed.         ║
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-use shadow_platform::{Shadow, ShadowStats};
+-use shadow_platform::lab_contracts::proclaim_law;
+-use shadow_platform::phase9_integration::Phase9Integration;
++use crate::lab_contracts::proclaim_law;
++use crate::phase9_integration::Phase9Integration;
+ use std::io::BufRead as _;
+ 
+ /// Skedari i vault-it persistent — dija e Shadow mbijeton mes nisjeve.
+@@ -133,7 +127,7 @@
+     handoff_path(PA_EXPORT_FILE)
+ }
+ 
+-fn main() {
++fn interactive_main() {
+     // ── BOOT: sistemi LEXON ligjin — autoriteti shpallet para çdo veprimi ──
+     proclaim_law("SHADOW");
+ 
+@@ -141,8 +135,8 @@
+     // urdhëron, presume ping-on; edhe modulet anësore përgjigjen me rol+status,
+     // zero arsyetim shtesë në to. Sweep-i informon, KURRË s'bllokon nisjen.
+     {
+-        use shadow_platform::lab_contracts::gcl_presume as presume;
+-        use shadow_platform::lab_contracts::CollapsePhase;
++        use crate::lab_contracts::gcl_presume as presume;
++        use crate::lab_contracts::CollapsePhase;
+         fn gati_gjithnje() -> presume::GclReadiness { presume::GclReadiness::Ready }
+         fn gati_env() -> presume::GclReadiness {
+             match std::env::var("ESSMAI_HANDOFF_DIR") {
+@@ -152,33 +146,33 @@
+         }
+     presume::register("pa_feed(pa_wire)",     presume::GclRole::AnchorGate,    gati_env);
+     // v1.4.5 (audit p.3): READY nga PULSI runtime, jo gati_gjithnje.
+-    presume::register("judge_supreme(zonë)",  presume::GclRole::VerdictY,      shadow_platform::shadow_runtime_pulse::judge_status);
+-    presume::register("gcl_apply(Trust X)",   presume::GclRole::TrustX,        shadow_platform::shadow_runtime_pulse::gcl_apply_status);
+-    presume::register("vault_negative(WAL)",  presume::GclRole::NegativeVault, shadow_platform::shadow_runtime_pulse::negvault_status);
++    presume::register("judge_supreme(zonë)",  presume::GclRole::VerdictY,      crate::shadow_runtime_pulse::judge_status);
++    presume::register("gcl_apply(Trust X)",   presume::GclRole::TrustX,        crate::shadow_runtime_pulse::gcl_apply_status);
++    presume::register("vault_negative(WAL)",  presume::GclRole::NegativeVault, crate::shadow_runtime_pulse::negvault_status);
+     presume::register("shadow_apupk",         presume::GclRole::Support("apupk"),      gati_gjithnje);
+     presume::register("shadow_snb",           presume::GclRole::Support("snb"),        gati_gjithnje);
+         // ZGJERIMI v1.4.2 (audit A6): NK-maturim + TRL-verdikt hyjnë në apel.
+-        presume::register("nk_maturim(vault)",    presume::GclRole::Support("nk-piqet"),  shadow_platform::shadow_runtime_pulse::maturation_status);
+-        presume::register("trl_verdict(shadow_lab)", presume::GclRole::Support("trl"),   shadow_platform::shadow_runtime_pulse::trl_verdict_status);
++        presume::register("nk_maturim(vault)",    presume::GclRole::Support("nk-piqet"),  crate::shadow_runtime_pulse::maturation_status);
++        presume::register("trl_verdict(shadow_lab)", presume::GclRole::Support("trl"),   crate::shadow_runtime_pulse::trl_verdict_status);
+         let dir_rrjedhe = std::env::var("ESSMAI_HANDOFF_DIR")
+             .unwrap_or_else(|_| std::env::temp_dir().to_string_lossy().into_owned());
+         let _ = presume::sweep("SHADOW", CollapsePhase::Verification, &dir_rrjedhe);
+ 
+         // ══ FRYMA E PARË (v1.4.4): autoriteti provon çekiçin, urën dhe
+         // matricën e ligjit para se të gjykojë — dëshmi e vulosur në ndezje.
+-        use shadow_platform::lab_contracts::first_guardian as fryma;
++        use crate::lab_contracts::first_guardian as fryma;
+         fn org_env() -> bool {
+             match std::env::var("ESSMAI_HANDOFF_DIR") { Ok(_) => true, Err(_) => false }
+         }
+         fn org_matrica_gcl() -> bool {
+-            use shadow_platform::lab_contracts::gcl_presume::GclRole;
+-            use shadow_platform::lab_contracts::CollapsePhase;
++            use crate::lab_contracts::gcl_presume::GclRole;
++            use crate::lab_contracts::CollapsePhase;
+             GclRole::VerdictY.required_in(CollapsePhase::Verification)
+                 && !GclRole::Support("x").required_in(CollapsePhase::Verification)
+                 && !GclRole::VerdictY.required_in(CollapsePhase::Coordination)
+         }
+         presume::register("fryma_e_pare", presume::GclRole::Support("frymë"),
+-            shadow_platform::lab_contracts::first_guardian::breath_status);
++            crate::lab_contracts::first_guardian::breath_status);
+         let _ = fryma::attest("SHADOW", &dir_rrjedhe, &[
+             fryma::RiteCheck { name: "fnv_known_vector",  run: fryma::known_vector_lock,  critical: true },
+             fryma::RiteCheck { name: "pa_wire_roundtrip", run: fryma::wire_roundtrip_lock, critical: true },
+@@ -255,9 +249,9 @@
+             "presume" => {
+                 let d = std::env::var("ESSMAI_HANDOFF_DIR")
+                     .unwrap_or_else(|_| std::env::temp_dir().to_string_lossy().into_owned());
+-                let _ = shadow_platform::lab_contracts::gcl_presume::sweep(
++                let _ = crate::lab_contracts::gcl_presume::sweep(
+                     "SHADOW",
+-                    shadow_platform::lab_contracts::CollapsePhase::Verification,
++                    crate::lab_contracts::CollapsePhase::Verification,
+                     &d);
+             }
+             "wisdom" | "status" => print_wisdom(&shadow.stats()),
+@@ -323,3 +317,11 @@
+     }
+     println!("  └─────────────────────────────────────────────────────────────");
+ }
++
++
++fn main() {
++    match process_bridge::dispatch_from_args() {
++        Some(code) => std::process::exit(code),
++        None => interactive_main(),
++    }
++}
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/process_bridge.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/process_bridge.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/src/process_bridge.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/src/process_bridge.rs	2026-07-14 22:42:41.432149074 +0000
+@@ -0,0 +1,224 @@
++//! v1.5.9 — complete mediation boundary.
++//!
++//! Only the Shadow executable calls this module. It decodes public wire
++//! contracts, opens the sovereign persistent vault, feeds the Light PA gate,
++//! invokes the internal Shadow core, and writes a sealed response. No other
++//! crate can link the core because the package has `autolib = false`.
++
++use shadow_contracts::{
++    LightInboundWire, NegativeKnowledgeWire, QuantumInboundWire,
++    ShadowCycleResponse, ShadowNegativeResponse, ShadowVerdictWire,
++    VerificationReceiptWire,
++};
++use std::path::{Path, PathBuf};
++
++pub fn dispatch_from_args() -> Option<i32> {
++    let args: Vec<String> = std::env::args().collect();
++    match args.as_slice() {
++        [_, flag, request, response] if flag == "--bridge-once" => {
++            Some(exit_code(run_cycle(Path::new(request), Path::new(response))))
++        }
++        [_, flag, request, response] if flag == "--negative-once" => {
++            Some(exit_code(run_negative(Path::new(request), Path::new(response))))
++        }
++        [_, flag, ..] if flag.starts_with("--bridge") || flag.starts_with("--negative") => {
++            eprintln!("[SHADOW MAIN] argumente të pavlefshme për portën e ndërmjetësuar");
++            Some(64)
++        }
++        _ => None,
++    }
++}
++
++fn exit_code(result: Result<(), String>) -> i32 {
++    match result {
++        Ok(()) => 0,
++        Err(e) => {
++            eprintln!("[SHADOW MAIN] FAIL-CLOSED: {e}");
++            70
++        }
++    }
++}
++
++fn run_cycle(request_path: &Path, response_path: &Path) -> Result<(), String> {
++    require_main_mediation("bridge-once")?;
++    let request_bytes = std::fs::read(request_path)
++        .map_err(|e| format!("kërkesa wire s'u lexua: {e}"))?;
++    let request = shadow_contracts::decode_cycle_request(&request_bytes)
++        .map_err(|e| format!("kërkesa wire u refuzua: {e}"))?;
++
++    validate_cycle_identity(&request.quantum, &request.light)?;
++
++    let vault_path = super::wisdom_vault_path();
++    let shadow = crate::Shadow::with_disk(&vault_path)
++        .map_err(|e| format!("vault-i sovran s'u hap: {e}"))?;
++
++    let pa_path = super::pa_export_path();
++    let fed = shadow
++        .feed_primitive_anchors(&pa_path, &request.quantum.session_id)
++        .map_err(|e| format!("PA gate refuzoi sesionin: {e}"))?;
++    println!(
++        "  [SHADOW MAIN/MEDIATION] session={} PA_fed={} vault={}",
++        request.quantum.session_id, fed, vault_path
++    );
++
++    let negative = request.negative;
++    let response = shadow
++        .ingest_bridged(into_quantum(request.quantum), into_light(request.light))
++        .map_err(|e| format!("ingest_bridged dështoi: {e}"))?;
++
++    let negative_persisted = persist_negative(&shadow, &negative).is_ok();
++    match negative_persisted {
++        true => {}
++        false => eprintln!(
++            "  [SHADOW MAIN/MEDIATION] negative knowledge nuk u persistua për input={}",
++            negative.input_id
++        ),
++    }
++
++    let receipt = response.verification_receipt;
++    let verdict = response.verdict;
++    let wire = ShadowCycleResponse {
++        session_id: response.session_id,
++        verdict: ShadowVerdictWire {
++            verified: verdict.verified,
++            primitive: verdict.primitive,
++            knowledge_band: verdict.knowledge_band.as_u8(),
++            legacy_score: verdict.legacy_score,
++            lgc_dsl: verdict.lgc_dsl,
++        },
++        verification_receipt: VerificationReceiptWire {
++            session_id: receipt.session_id,
++            parent_i0: receipt.parent_i0,
++            primitive_anchor: receipt.primitive_anchor,
++            xy_digest: receipt.xy_digest,
++            pd_binding_digest: receipt.pd_binding_digest,
++            pd_continuum_activation_digest: receipt.pd_continuum_activation_digest,
++            y_verdict: receipt.y_verdict,
++            x_verdict: receipt.x_verdict,
++            seal: receipt.seal,
++            generation: receipt.generation,
++            receipt_id: receipt.receipt_id,
++        },
++        negative_persisted,
++    };
++    atomic_write(response_path, &shadow_contracts::encode_cycle_response(&wire))
++}
++
++fn run_negative(request_path: &Path, response_path: &Path) -> Result<(), String> {
++    require_main_mediation("negative-once")?;
++    let request_bytes = std::fs::read(request_path)
++        .map_err(|e| format!("kërkesa negative s'u lexua: {e}"))?;
++    let request = shadow_contracts::decode_negative_request(&request_bytes)
++        .map_err(|e| format!("kërkesa negative u refuzua: {e}"))?;
++
++    let shadow = crate::Shadow::with_disk(super::wisdom_vault_path())
++        .map_err(|e| format!("vault-i sovran s'u hap: {e}"))?;
++    let persisted = persist_negative(&shadow, &request.negative).is_ok();
++    let negative_export = match (persisted, request.export_negative_knowledge) {
++        (true, true) => shadow.export_negative_knowledge(),
++        _ => Vec::new(),
++    };
++    let response = ShadowNegativeResponse { persisted, negative_export };
++    atomic_write(response_path, &shadow_contracts::encode_negative_response(&response))
++}
++
++fn require_main_mediation(site: &str) -> Result<(), String> {
++    match crate::phase9_integration::Phase9Integration::verify_no_bypass(site) {
++        true => Ok(()),
++        false => Err(format!("Phase9 refuzoi bypass-in te {site}")),
++    }
++}
++
++fn validate_cycle_identity(q: &QuantumInboundWire, l: &LightInboundWire) -> Result<(), String> {
++    match (
++        q.session_id.is_empty(),
++        q.session_id == l.session_id,
++        q.territory == l.territory,
++        q.primitive_flags == l.primitive_flags,
++    ) {
++        (false, true, true, true) => Ok(()),
++        (true, _, _, _) => Err("session_id bosh".to_string()),
++        (_, false, _, _) => Err("origjinat Quantum/Light kanë session të ndryshëm".to_string()),
++        (_, _, false, _) => Err("origjinat Quantum/Light kanë territory të ndryshëm".to_string()),
++        (_, _, _, false) => Err("origjinat Quantum/Light kanë primitive_flags të ndryshëm".to_string()),
++    }
++}
++
++fn into_quantum(q: QuantumInboundWire) -> crate::bridge::QuantumInbound {
++    crate::bridge::QuantumInbound {
++        package_id: q.package_id,
++        session_id: q.session_id,
++        territory: q.territory,
++        epistemic_mass: q.epistemic_mass,
++        evidence_density: q.evidence_density,
++        logical_coherence: q.logical_coherence,
++        causal_integrity: q.causal_integrity,
++        convergence_strength: q.convergence_strength,
++        reproducibility: q.reproducibility,
++        potentiality_score: q.potentiality_score,
++        ibe_score: q.ibe_score,
++        chain_coherence: q.chain_coherence,
++        conservation_ok: q.conservation_ok,
++        candidate_scores: q.candidate_scores,
++        suggested_verdict: q.suggested_verdict,
++        primitive_flags: q.primitive_flags,
++        raw_bytes: q.raw_bytes,
++        xy_x: q.xy_x,
++        xy_y: q.xy_y,
++        xy_mass: q.xy_mass,
++        pd_binding_digest: q.pd_binding_digest,
++        pd_continuum_activation_digest: q.pd_continuum_activation_digest,
++        pd_parent_i0: q.pd_parent_i0,
++        collapse_refused: q.collapse_refused,
++        negative_paths: q.negative_paths,
++        hcp_input_id: q.hcp_input_id,
++        hcp_token_gen: q.hcp_token_gen,
++        hcp_token_nonce: q.hcp_token_nonce,
++        hcp_directive_bit: q.hcp_directive_bit,
++    }
++}
++
++fn into_light(l: LightInboundWire) -> crate::bridge::LightInbound {
++    crate::bridge::LightInbound {
++        session_id: l.session_id,
++        territory: l.territory,
++        primitive_flags: l.primitive_flags,
++        epistemic_mass: l.epistemic_mass,
++        proof_chain: l.proof_chain,
++        payload: l.payload,
++    }
++}
++
++fn persist_negative(shadow: &crate::Shadow, n: &NegativeKnowledgeWire) -> Result<(), String> {
++    shadow
++        .on_negative(
++            n.input_id,
++            n.reason,
++            &n.process,
++            n.mass,
++            n.frequency,
++            &n.bytes,
++            n.ts_ns,
++        )
++        .map_err(|e| format!("on_negative dështoi: {e}"))
++}
++
++fn atomic_write(path: &Path, bytes: &[u8]) -> Result<(), String> {
++    let parent = path.parent().ok_or_else(|| "response path pa parent".to_string())?;
++    std::fs::create_dir_all(parent).map_err(|e| format!("response parent s'u krijua: {e}"))?;
++    let tmp = temporary_path(path);
++    std::fs::write(&tmp, bytes).map_err(|e| format!("response temp s'u shkrua: {e}"))?;
++    match std::fs::rename(&tmp, path) {
++        Ok(()) => Ok(()),
++        Err(e) => {
++            let _ = std::fs::remove_file(&tmp);
++            Err(format!("response nuk u publikua atomikisht: {e}"))
++        }
++    }
++}
++
++fn temporary_path(path: &Path) -> PathBuf {
++    let mut tmp = path.as_os_str().to_os_string();
++    tmp.push(format!(".{}.tmp", std::process::id()));
++    PathBuf::from(tmp)
++}
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/tests/integration.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/tests/integration.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow/tests/integration.rs	2026-07-05 22:54:45.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow/tests/integration.rs	2026-07-14 22:53:27.299653824 +0000
+@@ -2,8 +2,8 @@
+ // ║  tests/integration.rs — SHADOW PLATFORM                               ║
+ // ║  Gjata Legacy™  |  Arkitekt: Bledar Gjata                             ║
+ // ║                                                                          ║
+-// ║  Teston INVARIANTËT DETERMINISTË të autoritetit suprem përmes hyrjes   ║
+-// ║  publike (Shadow::ingest), me dy origjinat e ndara (Quantum + Light).  ║
++// ║  Teston INVARIANTËT DETERMINISTË brenda target-it binar Shadow.       ║
++// ║  v1.5.9: përfshihet nga main.rs; nuk krijon crate/library anashkaluese. ║
+ // ║                                                                          ║
+ // ║  SHËNIM: të gjitha kontrollet që prekin kernelin janë në NJË test të   ║
+ // ║  vetëm (sekuencial) sepse gjendja e ngrirjes/statistikave të kernelit  ║
+@@ -12,7 +12,7 @@
+ // ║  Funksionon nën default (C FFI) dhe `--no-default-features --features pure_rust`.
+ // ╚══════════════════════════════════════════════════════════════════════════╝
+ 
+-use shadow_platform::{
++use crate::{
+     KnowledgeBand, LightEnvelope, PassPackage, Shadow, ShadowError,
+ };
+ 
+@@ -60,8 +60,8 @@
+     let shadow = Shadow::new().expect("init Shadow");
+ 
+     // §1 — Vula 500 (deterministe, aritmetikë e pastër)
+-    assert!(shadow_platform::ShadowGjLegacy::seal_check(0xA451), "0xA451 është vula 500");
+-    assert!(!shadow_platform::ShadowGjLegacy::seal_check(0x0000), "0x0000 = e hequr");
++    assert!(crate::ShadowGjLegacy::seal_check(0xA451), "0xA451 është vula 500");
++    assert!(!crate::ShadowGjLegacy::seal_check(0x0000), "0x0000 = e hequr");
+ 
+     // §2 — E vulosur ⇒ primitive == verified (primitive = verified & seal,
+     //       seal=1 për 0xA451 në sistem jo të ngrirë)
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow-contracts/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow-contracts/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow-contracts/Cargo.toml	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow-contracts/Cargo.toml	2026-07-14 22:41:22.840915432 +0000
+@@ -0,0 +1,10 @@
++[package]
++name = "shadow_contracts"
++version = "1.5.9"
++edition = "2021"
++authors = ["Bledar Gjata <gjata@legacy.al>"]
++description = "ESS-MAI public wire contracts for mediated Shadow process communication"
++
++[lib]
++name = "shadow_contracts"
++path = "src/lib.rs"
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow-contracts/src/lib.rs /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow-contracts/src/lib.rs
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/shadow-contracts/src/lib.rs	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/shadow-contracts/src/lib.rs	2026-07-14 22:49:01.248249686 +0000
+@@ -0,0 +1,459 @@
++//! ESS-MAI Shadow process contracts — public form, zero sovereign authority.
++//!
++//! This crate intentionally contains only transport shapes and deterministic
++//! codecs. It cannot construct `Shadow`, open the sovereign vault, issue an
++//! LgcToken, seal a verdict, or produce a `VerificationReceipt`. Those actions
++//! exist only inside the `shadow_platform` executable.
++
++use std::fmt;
++
++pub const PROTOCOL_VERSION: u16 = 1;
++pub const MAX_FRAME_BYTES: usize = 64 * 1024 * 1024;
++pub const MAX_FIELD_BYTES: usize = 16 * 1024 * 1024;
++pub const MAX_VECTOR_ITEMS: usize = 1_000_000;
++
++const MAGIC: [u8; 8] = *b"ESSMSW01";
++const KIND_CYCLE_REQUEST: u8 = 1;
++const KIND_CYCLE_RESPONSE: u8 = 2;
++const KIND_NEGATIVE_REQUEST: u8 = 3;
++const KIND_NEGATIVE_RESPONSE: u8 = 4;
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct QuantumInboundWire {
++    pub package_id: String,
++    pub session_id: String,
++    pub territory: String,
++    pub epistemic_mass: f32,
++    pub evidence_density: f32,
++    pub logical_coherence: f32,
++    pub causal_integrity: f32,
++    pub convergence_strength: f32,
++    pub reproducibility: f32,
++    pub potentiality_score: f32,
++    pub ibe_score: f32,
++    pub chain_coherence: f32,
++    pub conservation_ok: bool,
++    pub candidate_scores: Vec<f32>,
++    pub suggested_verdict: u8,
++    pub primitive_flags: u32,
++    pub raw_bytes: Vec<u8>,
++    pub xy_x: Option<String>,
++    pub xy_y: Option<String>,
++    pub xy_mass: Option<u32>,
++    pub pd_binding_digest: Option<u64>,
++    pub pd_continuum_activation_digest: Option<u64>,
++    pub pd_parent_i0: Option<String>,
++    pub collapse_refused: Option<String>,
++    pub negative_paths: Vec<String>,
++    pub hcp_input_id: Option<u64>,
++    pub hcp_token_gen: Option<u64>,
++    pub hcp_token_nonce: Option<u64>,
++    pub hcp_directive_bit: Option<u8>,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct LightInboundWire {
++    pub session_id: String,
++    pub territory: String,
++    pub primitive_flags: u32,
++    pub epistemic_mass: f32,
++    pub proof_chain: Vec<u64>,
++    pub payload: Vec<u8>,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct NegativeKnowledgeWire {
++    pub input_id: u64,
++    pub reason: u32,
++    pub process: String,
++    pub mass: f32,
++    pub frequency: u32,
++    pub bytes: Vec<u8>,
++    pub ts_ns: u64,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct ShadowCycleRequest {
++    pub quantum: QuantumInboundWire,
++    pub light: LightInboundWire,
++    pub negative: NegativeKnowledgeWire,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct VerificationReceiptWire {
++    pub session_id: String,
++    pub parent_i0: String,
++    pub primitive_anchor: u64,
++    pub xy_digest: u64,
++    pub pd_binding_digest: u64,
++    pub pd_continuum_activation_digest: u64,
++    pub y_verdict: u8,
++    pub x_verdict: u8,
++    pub seal: u64,
++    pub generation: u64,
++    pub receipt_id: String,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct ShadowVerdictWire {
++    pub verified: u8,
++    pub primitive: u8,
++    pub knowledge_band: u8,
++    pub legacy_score: f32,
++    pub lgc_dsl: String,
++}
++
++impl ShadowVerdictWire {
++    pub fn is_verified(&self) -> bool { self.verified == 1 }
++    pub fn is_primitive(&self) -> bool { self.primitive == 1 }
++    pub fn knowledge_band_label(&self) -> &'static str {
++        match self.knowledge_band {
++            1 => "hyp",
++            2 => "fact",
++            3 => "sci",
++            _ => "neg",
++        }
++    }
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct ShadowCycleResponse {
++    pub session_id: String,
++    pub verdict: ShadowVerdictWire,
++    pub verification_receipt: VerificationReceiptWire,
++    pub negative_persisted: bool,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct ShadowNegativeRequest {
++    pub negative: NegativeKnowledgeWire,
++    pub export_negative_knowledge: bool,
++}
++
++#[derive(Debug, Clone, PartialEq)]
++pub struct ShadowNegativeResponse {
++    pub persisted: bool,
++    pub negative_export: Vec<u8>,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum WireError {
++    FrameTooLarge,
++    Truncated,
++    InvalidMagic,
++    InvalidVersion(u16),
++    InvalidKind { expected: u8, actual: u8 },
++    InvalidChecksum,
++    InvalidBool(u8),
++    InvalidOption(u8),
++    InvalidUtf8,
++    FieldTooLarge,
++    VectorTooLarge,
++    TrailingBytes,
++}
++
++impl fmt::Display for WireError {
++    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
++        write!(f, "{self:?}")
++    }
++}
++
++impl std::error::Error for WireError {}
++
++pub fn fnv1a64(bytes: &[u8]) -> u64 {
++    let mut h: u64 = 0xcbf2_9ce4_8422_2325;
++    for b in bytes {
++        h ^= *b as u64;
++        h = h.wrapping_mul(0x0000_0100_0000_01b3);
++    }
++    h
++}
++
++struct Writer { bytes: Vec<u8> }
++impl Writer {
++    fn new() -> Self { Self { bytes: Vec::new() } }
++    fn u8(&mut self, v: u8) { self.bytes.push(v); }
++    fn bool(&mut self, v: bool) { self.u8(v as u8); }
++    fn u16(&mut self, v: u16) { self.bytes.extend_from_slice(&v.to_le_bytes()); }
++    fn u32(&mut self, v: u32) { self.bytes.extend_from_slice(&v.to_le_bytes()); }
++    fn u64(&mut self, v: u64) { self.bytes.extend_from_slice(&v.to_le_bytes()); }
++    fn f32(&mut self, v: f32) { self.u32(v.to_bits()); }
++    fn bytes(&mut self, v: &[u8]) {
++        self.u32(v.len() as u32);
++        self.bytes.extend_from_slice(v);
++    }
++    fn string(&mut self, v: &str) { self.bytes(v.as_bytes()); }
++    fn option_u8(&mut self, v: Option<u8>) {
++        match v { Some(x) => { self.u8(1); self.u8(x); }, None => self.u8(0) }
++    }
++    fn option_u32(&mut self, v: Option<u32>) {
++        match v { Some(x) => { self.u8(1); self.u32(x); }, None => self.u8(0) }
++    }
++    fn option_u64(&mut self, v: Option<u64>) {
++        match v { Some(x) => { self.u8(1); self.u64(x); }, None => self.u8(0) }
++    }
++    fn option_string(&mut self, v: &Option<String>) {
++        match v { Some(x) => { self.u8(1); self.string(x); }, None => self.u8(0) }
++    }
++    fn vec_f32(&mut self, v: &[f32]) {
++        self.u32(v.len() as u32);
++        for x in v { self.f32(*x); }
++    }
++    fn vec_u64(&mut self, v: &[u64]) {
++        self.u32(v.len() as u32);
++        for x in v { self.u64(*x); }
++    }
++    fn vec_string(&mut self, v: &[String]) {
++        self.u32(v.len() as u32);
++        for x in v { self.string(x); }
++    }
++}
++
++struct Reader<'a> { bytes: &'a [u8], pos: usize }
++impl<'a> Reader<'a> {
++    fn new(bytes: &'a [u8]) -> Self { Self { bytes, pos: 0 } }
++    fn take(&mut self, n: usize) -> Result<&'a [u8], WireError> {
++        let end = self.pos.checked_add(n).ok_or(WireError::Truncated)?;
++        match end <= self.bytes.len() {
++            true => { let out = &self.bytes[self.pos..end]; self.pos = end; Ok(out) }
++            false => Err(WireError::Truncated),
++        }
++    }
++    fn u8(&mut self) -> Result<u8, WireError> { Ok(self.take(1)?[0]) }
++    fn bool(&mut self) -> Result<bool, WireError> {
++        match self.u8()? { 0 => Ok(false), 1 => Ok(true), x => Err(WireError::InvalidBool(x)) }
++    }
++    fn u16(&mut self) -> Result<u16, WireError> {
++        let b = self.take(2)?; Ok(u16::from_le_bytes([b[0], b[1]]))
++    }
++    fn u32(&mut self) -> Result<u32, WireError> {
++        let b = self.take(4)?; Ok(u32::from_le_bytes([b[0], b[1], b[2], b[3]]))
++    }
++    fn u64(&mut self) -> Result<u64, WireError> {
++        let b = self.take(8)?;
++        Ok(u64::from_le_bytes([b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7]]))
++    }
++    fn f32(&mut self) -> Result<f32, WireError> { Ok(f32::from_bits(self.u32()?)) }
++    fn bytes(&mut self) -> Result<Vec<u8>, WireError> {
++        let n = self.u32()? as usize;
++        match n <= MAX_FIELD_BYTES { true => Ok(self.take(n)?.to_vec()), false => Err(WireError::FieldTooLarge) }
++    }
++    fn string(&mut self) -> Result<String, WireError> {
++        String::from_utf8(self.bytes()?).map_err(|_| WireError::InvalidUtf8)
++    }
++    fn option_tag(&mut self) -> Result<bool, WireError> {
++        match self.u8()? { 0 => Ok(false), 1 => Ok(true), x => Err(WireError::InvalidOption(x)) }
++    }
++    fn option_u8(&mut self) -> Result<Option<u8>, WireError> {
++        match self.option_tag()? { true => Ok(Some(self.u8()?)), false => Ok(None) }
++    }
++    fn option_u32(&mut self) -> Result<Option<u32>, WireError> {
++        match self.option_tag()? { true => Ok(Some(self.u32()?)), false => Ok(None) }
++    }
++    fn option_u64(&mut self) -> Result<Option<u64>, WireError> {
++        match self.option_tag()? { true => Ok(Some(self.u64()?)), false => Ok(None) }
++    }
++    fn option_string(&mut self) -> Result<Option<String>, WireError> {
++        match self.option_tag()? { true => Ok(Some(self.string()?)), false => Ok(None) }
++    }
++    fn count(&mut self) -> Result<usize, WireError> {
++        let n = self.u32()? as usize;
++        match n <= MAX_VECTOR_ITEMS { true => Ok(n), false => Err(WireError::VectorTooLarge) }
++    }
++    fn vec_f32(&mut self) -> Result<Vec<f32>, WireError> {
++        let n = self.count()?; let mut out = Vec::with_capacity(n);
++        for _ in 0..n { out.push(self.f32()?); } Ok(out)
++    }
++    fn vec_u64(&mut self) -> Result<Vec<u64>, WireError> {
++        let n = self.count()?; let mut out = Vec::with_capacity(n);
++        for _ in 0..n { out.push(self.u64()?); } Ok(out)
++    }
++    fn vec_string(&mut self) -> Result<Vec<String>, WireError> {
++        let n = self.count()?; let mut out = Vec::with_capacity(n);
++        for _ in 0..n { out.push(self.string()?); } Ok(out)
++    }
++    fn finish(self) -> Result<(), WireError> {
++        match self.pos == self.bytes.len() { true => Ok(()), false => Err(WireError::TrailingBytes) }
++    }
++}
++
++fn frame(kind: u8, payload: Vec<u8>) -> Vec<u8> {
++    let mut out = Writer::new();
++    out.bytes.extend_from_slice(&MAGIC);
++    out.u16(PROTOCOL_VERSION);
++    out.u8(kind);
++    out.u8(0);
++    out.u64(payload.len() as u64);
++    out.bytes.extend_from_slice(&payload);
++    let checksum = fnv1a64(&out.bytes);
++    out.u64(checksum);
++    out.bytes
++}
++
++fn unframe(bytes: &[u8], expected_kind: u8) -> Result<&[u8], WireError> {
++    match bytes.len() <= MAX_FRAME_BYTES { true => {}, false => return Err(WireError::FrameTooLarge) }
++    let mut r = Reader::new(bytes);
++    let magic = r.take(8)?;
++    match magic == MAGIC.as_slice() { true => {}, false => return Err(WireError::InvalidMagic) }
++    let version = r.u16()?;
++    match version == PROTOCOL_VERSION { true => {}, false => return Err(WireError::InvalidVersion(version)) }
++    let kind = r.u8()?;
++    match kind == expected_kind {
++        true => {},
++        false => return Err(WireError::InvalidKind { expected: expected_kind, actual: kind }),
++    }
++    let _reserved = r.u8()?;
++    let payload_len = r.u64()? as usize;
++    match payload_len <= MAX_FRAME_BYTES { true => {}, false => return Err(WireError::FrameTooLarge) }
++    let payload_start = r.pos;
++    let _ = r.take(payload_len)?;
++    let checksum_start = r.pos;
++    let checksum = r.u64()?;
++    r.finish()?;
++    match fnv1a64(&bytes[..checksum_start]) == checksum {
++        true => Ok(&bytes[payload_start..payload_start + payload_len]),
++        false => Err(WireError::InvalidChecksum),
++    }
++}
++
++fn put_quantum(w: &mut Writer, q: &QuantumInboundWire) {
++    w.string(&q.package_id); w.string(&q.session_id); w.string(&q.territory);
++    w.f32(q.epistemic_mass); w.f32(q.evidence_density); w.f32(q.logical_coherence);
++    w.f32(q.causal_integrity); w.f32(q.convergence_strength); w.f32(q.reproducibility);
++    w.f32(q.potentiality_score); w.f32(q.ibe_score); w.f32(q.chain_coherence);
++    w.bool(q.conservation_ok); w.vec_f32(&q.candidate_scores); w.u8(q.suggested_verdict);
++    w.u32(q.primitive_flags); w.bytes(&q.raw_bytes); w.option_string(&q.xy_x);
++    w.option_string(&q.xy_y); w.option_u32(q.xy_mass); w.option_u64(q.pd_binding_digest);
++    w.option_u64(q.pd_continuum_activation_digest); w.option_string(&q.pd_parent_i0);
++    w.option_string(&q.collapse_refused); w.vec_string(&q.negative_paths);
++    w.option_u64(q.hcp_input_id); w.option_u64(q.hcp_token_gen);
++    w.option_u64(q.hcp_token_nonce); w.option_u8(q.hcp_directive_bit);
++}
++fn get_quantum(r: &mut Reader<'_>) -> Result<QuantumInboundWire, WireError> {
++    Ok(QuantumInboundWire {
++        package_id: r.string()?, session_id: r.string()?, territory: r.string()?,
++        epistemic_mass: r.f32()?, evidence_density: r.f32()?, logical_coherence: r.f32()?,
++        causal_integrity: r.f32()?, convergence_strength: r.f32()?, reproducibility: r.f32()?,
++        potentiality_score: r.f32()?, ibe_score: r.f32()?, chain_coherence: r.f32()?,
++        conservation_ok: r.bool()?, candidate_scores: r.vec_f32()?, suggested_verdict: r.u8()?,
++        primitive_flags: r.u32()?, raw_bytes: r.bytes()?, xy_x: r.option_string()?,
++        xy_y: r.option_string()?, xy_mass: r.option_u32()?, pd_binding_digest: r.option_u64()?,
++        pd_continuum_activation_digest: r.option_u64()?, pd_parent_i0: r.option_string()?,
++        collapse_refused: r.option_string()?, negative_paths: r.vec_string()?,
++        hcp_input_id: r.option_u64()?, hcp_token_gen: r.option_u64()?,
++        hcp_token_nonce: r.option_u64()?, hcp_directive_bit: r.option_u8()?,
++    })
++}
++fn put_light(w: &mut Writer, l: &LightInboundWire) {
++    w.string(&l.session_id); w.string(&l.territory); w.u32(l.primitive_flags);
++    w.f32(l.epistemic_mass); w.vec_u64(&l.proof_chain); w.bytes(&l.payload);
++}
++fn get_light(r: &mut Reader<'_>) -> Result<LightInboundWire, WireError> {
++    Ok(LightInboundWire { session_id: r.string()?, territory: r.string()?, primitive_flags: r.u32()?,
++        epistemic_mass: r.f32()?, proof_chain: r.vec_u64()?, payload: r.bytes()? })
++}
++fn put_negative(w: &mut Writer, n: &NegativeKnowledgeWire) {
++    w.u64(n.input_id); w.u32(n.reason); w.string(&n.process); w.f32(n.mass);
++    w.u32(n.frequency); w.bytes(&n.bytes); w.u64(n.ts_ns);
++}
++fn get_negative(r: &mut Reader<'_>) -> Result<NegativeKnowledgeWire, WireError> {
++    Ok(NegativeKnowledgeWire { input_id: r.u64()?, reason: r.u32()?, process: r.string()?,
++        mass: r.f32()?, frequency: r.u32()?, bytes: r.bytes()?, ts_ns: r.u64()? })
++}
++fn put_receipt(w: &mut Writer, x: &VerificationReceiptWire) {
++    w.string(&x.session_id); w.string(&x.parent_i0); w.u64(x.primitive_anchor);
++    w.u64(x.xy_digest); w.u64(x.pd_binding_digest); w.u64(x.pd_continuum_activation_digest);
++    w.u8(x.y_verdict); w.u8(x.x_verdict); w.u64(x.seal); w.u64(x.generation); w.string(&x.receipt_id);
++}
++fn get_receipt(r: &mut Reader<'_>) -> Result<VerificationReceiptWire, WireError> {
++    Ok(VerificationReceiptWire { session_id: r.string()?, parent_i0: r.string()?,
++        primitive_anchor: r.u64()?, xy_digest: r.u64()?, pd_binding_digest: r.u64()?,
++        pd_continuum_activation_digest: r.u64()?, y_verdict: r.u8()?, x_verdict: r.u8()?,
++        seal: r.u64()?, generation: r.u64()?, receipt_id: r.string()? })
++}
++fn put_verdict(w: &mut Writer, v: &ShadowVerdictWire) {
++    w.u8(v.verified); w.u8(v.primitive); w.u8(v.knowledge_band); w.f32(v.legacy_score); w.string(&v.lgc_dsl);
++}
++fn get_verdict(r: &mut Reader<'_>) -> Result<ShadowVerdictWire, WireError> {
++    Ok(ShadowVerdictWire { verified: r.u8()?, primitive: r.u8()?, knowledge_band: r.u8()?,
++        legacy_score: r.f32()?, lgc_dsl: r.string()? })
++}
++
++pub fn encode_cycle_request(x: &ShadowCycleRequest) -> Vec<u8> {
++    let mut w = Writer::new(); put_quantum(&mut w, &x.quantum); put_light(&mut w, &x.light); put_negative(&mut w, &x.negative);
++    frame(KIND_CYCLE_REQUEST, w.bytes)
++}
++pub fn decode_cycle_request(bytes: &[u8]) -> Result<ShadowCycleRequest, WireError> {
++    let mut r = Reader::new(unframe(bytes, KIND_CYCLE_REQUEST)?);
++    let out = ShadowCycleRequest { quantum: get_quantum(&mut r)?, light: get_light(&mut r)?, negative: get_negative(&mut r)? };
++    r.finish()?; Ok(out)
++}
++pub fn encode_cycle_response(x: &ShadowCycleResponse) -> Vec<u8> {
++    let mut w = Writer::new(); w.string(&x.session_id); put_verdict(&mut w, &x.verdict); put_receipt(&mut w, &x.verification_receipt); w.bool(x.negative_persisted);
++    frame(KIND_CYCLE_RESPONSE, w.bytes)
++}
++pub fn decode_cycle_response(bytes: &[u8]) -> Result<ShadowCycleResponse, WireError> {
++    let mut r = Reader::new(unframe(bytes, KIND_CYCLE_RESPONSE)?);
++    let out = ShadowCycleResponse { session_id: r.string()?, verdict: get_verdict(&mut r)?, verification_receipt: get_receipt(&mut r)?, negative_persisted: r.bool()? };
++    r.finish()?; Ok(out)
++}
++pub fn encode_negative_request(x: &ShadowNegativeRequest) -> Vec<u8> {
++    let mut w = Writer::new(); put_negative(&mut w, &x.negative); w.bool(x.export_negative_knowledge);
++    frame(KIND_NEGATIVE_REQUEST, w.bytes)
++}
++pub fn decode_negative_request(bytes: &[u8]) -> Result<ShadowNegativeRequest, WireError> {
++    let mut r = Reader::new(unframe(bytes, KIND_NEGATIVE_REQUEST)?);
++    let out = ShadowNegativeRequest { negative: get_negative(&mut r)?, export_negative_knowledge: r.bool()? };
++    r.finish()?; Ok(out)
++}
++pub fn encode_negative_response(x: &ShadowNegativeResponse) -> Vec<u8> {
++    let mut w = Writer::new(); w.bool(x.persisted); w.bytes(&x.negative_export);
++    frame(KIND_NEGATIVE_RESPONSE, w.bytes)
++}
++pub fn decode_negative_response(bytes: &[u8]) -> Result<ShadowNegativeResponse, WireError> {
++    let mut r = Reader::new(unframe(bytes, KIND_NEGATIVE_RESPONSE)?);
++    let out = ShadowNegativeResponse { persisted: r.bool()?, negative_export: r.bytes()? };
++    r.finish()?; Ok(out)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn negative() -> NegativeKnowledgeWire {
++        NegativeKnowledgeWire { input_id: 7, reason: 9, process: "npim".into(), mass: 0.4,
++            frequency: 2, bytes: vec![1, 2, 3], ts_ns: 11 }
++    }
++
++    #[test]
++    fn cycle_roundtrip_and_checksum() {
++        let request = ShadowCycleRequest {
++            quantum: QuantumInboundWire {
++                package_id: "p".into(), session_id: "s".into(), territory: "t".into(),
++                epistemic_mass: 0.5, evidence_density: 0.6, logical_coherence: 0.7,
++                causal_integrity: 0.8, convergence_strength: 0.9, reproducibility: 1.0,
++                potentiality_score: 0.4, ibe_score: 0.3, chain_coherence: 0.2,
++                conservation_ok: true, candidate_scores: vec![0.1, 0.9], suggested_verdict: 1,
++                primitive_flags: 0xA451, raw_bytes: vec![4, 5], xy_x: Some("x".into()),
++                xy_y: Some("y".into()), xy_mass: Some(500), pd_binding_digest: Some(12),
++                pd_continuum_activation_digest: Some(13), pd_parent_i0: Some("i0".into()),
++                collapse_refused: None, negative_paths: vec!["n".into()], hcp_input_id: Some(1),
++                hcp_token_gen: Some(2), hcp_token_nonce: Some(3), hcp_directive_bit: Some(1),
++            },
++            light: LightInboundWire { session_id: "s".into(), territory: "t".into(),
++                primitive_flags: 0xA451, epistemic_mass: 0.5, proof_chain: vec![8], payload: vec![9] },
++            negative: negative(),
++        };
++        let bytes = encode_cycle_request(&request);
++        assert_eq!(decode_cycle_request(&bytes).unwrap(), request);
++        let mut corrupted = bytes;
++        corrupted[25] ^= 1;
++        assert_eq!(decode_cycle_request(&corrupted), Err(WireError::InvalidChecksum));
++    }
++
++    #[test]
++    fn negative_roundtrip() {
++        let request = ShadowNegativeRequest { negative: negative(), export_negative_knowledge: true };
++        assert_eq!(decode_negative_request(&encode_negative_request(&request)).unwrap(), request);
++    }
++}
+diff -ruN '--exclude=ESS_MAI_V1_5_9_FILELIST.sha256' '--exclude=V1_5_9_FROM_V1_5_8.diff' /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/ui/Cargo.toml /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/ui/Cargo.toml
+--- /mnt/data/v158_audit/v1_5_7_ess_mai/ess_mai/ui/Cargo.toml	2026-07-14 17:07:17.000000000 +0000
++++ /mnt/data/v159_work/v1_5_7_ess_mai/ess_mai/ui/Cargo.toml	2026-07-14 22:44:33.552258272 +0000
+@@ -5,7 +5,7 @@
+ # ═══════════════════════════════════════════════════════════════════════════
+ [package]
+ name    = "essmai_ui"
+-version = "1.5.7"
++version = "1.5.9"
+ edition = "2021"
+ 
+ # Shkëputja nga workspace-i i rrënjës — UI ndërtohet i pavarur.

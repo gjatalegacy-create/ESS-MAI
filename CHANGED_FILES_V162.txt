@@ -1,0 +1,49 @@
+ESS-MAI v1.6.2 — CHANGED FILES
+Baseline: v1.6.1
+
+Total changed: 44
+
+ADDED    AUDIT_V162_UNTRUST_START_TO_END.md
+ADDED    CHANGELOG_v1.6.2.md
+ADDED    ESS_MAI_V1_6_2_IMPLEMENTATION_MAP.md
+ADDED    V162_SIMULATION_MAP.md
+ADDED    VALIDATE_V162.ps1
+MODIFIED VERSION_ESSMAI.txt
+MODIFIED ess-mai.md
+MODIFIED light/Cargo.toml
+MODIFIED light/src/lab_contracts/mod.rs
+MODIFIED light/src/lab_contracts/verification_receipt.rs
+MODIFIED light/src/living_trust_contract.rs
+MODIFIED light/src/main.rs
+MODIFIED light/src/pd_light.rs
+MODIFIED light/ui/src-tauri/Cargo.toml
+MODIFIED light/ui/src-tauri/tauri.conf.json
+MODIFIED quantum/Cargo.toml
+MODIFIED quantum/src/lab_contracts/mod.rs
+MODIFIED quantum/src/lab_contracts/verification_receipt.rs
+MODIFIED quantum/src/lib.rs
+MODIFIED quantum/src/living_trust_contract.rs
+MODIFIED quantum/src/main.rs
+MODIFIED quantum/src/progressive_debatic/runtime.rs
+MODIFIED quantum/src/runtime_pulse.rs
+MODIFIED quantum/src/shadow_process_bridge.rs
+MODIFIED quantum/src/token_forge.rs
+MODIFIED shadow-contracts/Cargo.toml
+MODIFIED shadow-contracts/src/lib.rs
+MODIFIED shadow/Cargo.toml
+MODIFIED shadow/src/bridge/mod.rs
+MODIFIED shadow/src/bridge/quantum_in.rs
+MODIFIED shadow/src/bridge/shadow_callable.rs
+MODIFIED shadow/src/bridge/shadow_out.rs
+MODIFIED shadow/src/lab_contracts/mod.rs
+MODIFIED shadow/src/lab_contracts/verification_receipt.rs
+MODIFIED shadow/src/lib.rs
+MODIFIED shadow/src/living_trust_contract.rs
+MODIFIED shadow/src/main.rs
+MODIFIED shadow/src/process_bridge.rs
+MODIFIED shadow/src/shadow_gateway.rs
+MODIFIED shadow/src/shadow_gj_legacy.rs
+MODIFIED shadow/src/sovereign_ffi_gate.rs
+MODIFIED shadow/src/types.rs
+MODIFIED ui/Cargo.toml
+MODIFIED ui/tauri.conf.json

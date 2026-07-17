@@ -1,0 +1,53 @@
+ESS-MAI v1.5.2 — FILE SCOPE
+Baseline autoritativ: projekti i plotë v1.5.1
+Politika: vetëm korrigjime të mbështetura nga Cargo + ndjekje statike e kontratave
+
+SKEDARË RUNTIME / TEST TË MODIFIKUAR
+- light/src/sovereign/ring.rs
+  Pronësia Quantum e SEAL_EBPF në test; SPSC i tipizuar; rrugë bridge për consumer-in; testet.
+- quantum/src/sovereign/ring.rs
+  SPSC i tipizuar simetrik; rrugë bridge për consumer-in; testet.
+- light/src/sovereign/lgc_gate.rs
+  Token opak; testet pa unwrap_err; nonce binding; repr(C); fail-closed conversion.
+- quantum/src/sovereign/lgc_gate.rs
+  I njëjti capability contract si Light.
+- light/src/lab_contracts/gcl_presume.rs
+- quantum/src/lab_contracts/gcl_presume.rs
+- shadow/src/lab_contracts/gcl_presume.rs
+  CollapsePhase::Coordination + test idempotence i qëndrueshëm ndaj testimit paralel; kopjet mbeten identike.
+- light/src/sovereign/mod.rs
+- quantum/src/sovereign/mod.rs
+- quantum/src/lib.rs
+  Re-eksporte additive të RingProducer/RingConsumer.
+
+DOKUMENTIM / RELEASE
+- VERSION_ESSMAI.txt
+- light/README.md
+- quantum/README.md
+- CHANGELOG_v1.5.2.md
+- AUDIT_CARGO_V152.md
+- VALIDATE_V152.ps1
+- STATIC_AUDIT_V152.txt
+- CHANGED_FILES_V152.txt
+- DIFF_FROM_V1_5_1.patch
+- SHA256SUMS.txt (rigjeneruar për pemën v1.5.2; përjashton vetveten)
+
+TË PAPREKURA BYTE-PËR-BYTE
+- quantum/src/npro.rs
+- quantum/src/npim.rs
+- quantum/src/npro_lim_bridge.rs
+- quantum/src/pro.rs
+- quantum/src/pim.rs
+- quantum/src/lim.rs
+- shadow/src/knowledge_vault.rs
+- shadow/src/vault_disk.rs
+- shadow/src/sovereign_ffi_gate.rs
+- light/src/sovereign/laws.rs
+- quantum/src/sovereign/laws.rs
+- registrat ekzistues të vulave Light/Quantum/Shadow
+
+NUK U PËRDOR
+- cargo fix
+- ndryshim automatik i warnings
+- centralizim i Cargo profiles pa vendim për panic policy
+- ndryshim i NPRO/NPIM, negativity_score, wire/FFI payload-eve ose autoritetit të Shadow

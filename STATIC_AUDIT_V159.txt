@@ -1,0 +1,33 @@
+ESS-MAI v1.5.9 STATIC ARCHITECTURE AUDIT
+Date: 2026-07-15
+Baseline: v1.5.8
+
+PASS — workspace contains shadow-contracts.
+PASS — Light, Quantum, Shadow, shadow-contracts, and both UI package versions are 1.5.9.
+PASS — all modified Cargo.toml files parse as TOML.
+PASS — quantum/Cargo.toml has no dependency on ../shadow or package shadow_platform.
+PASS — Quantum source has no shadow_lib:: or shadow_platform:: core invocation.
+PASS — shadow/Cargo.toml has autolib=false and no [lib] target.
+PASS — Shadow produces no rlib/staticlib target; its core is included only by the binary main.rs.
+PASS — shadow/src/main.rs includes lib.rs and owns process dispatch.
+PASS — shadow/src/process_bridge.rs opens the vault, feeds PA, invokes ingest_bridged, persists negative knowledge, and emits the response.
+PASS — quantum/src/shadow_process_bridge.rs invokes the shadow_platform executable and fails closed on missing binary/non-zero exit/missing response/session mismatch.
+PASS — request/response frames include protocol version, kind, length, and FNV-1a corruption checksum.
+PASS — Shadow main validates session, territory, and primitive flags across Quantum and Light origins before core ingress.
+PASS — QuantumInboundWire and internal QuantumInbound have the same 29 fields.
+PASS — LightInboundWire and internal LightInbound have the same 6 fields.
+PASS — NPIM negative knowledge is persisted in the same Shadow instance that seals the cycle receipt.
+PASS — E0521 correction remains: export_pd_verified_line source is &'static str.
+PASS — historical Shadow integration invariants remain active as binary-unit tests through main.rs.
+PASS — full_flow example no longer links or imports Shadow core.
+PASS — ess-mai.md contains explicit v1.5.8 and v1.5.9 theory/implementation/verification/release records.
+PASS — PD continuum contract remains byte-identical across Light/Quantum/Shadow:
+       3b321a035d8ef6358c8d09ade0c00a32d05e5e6ff2068b670935b361991cad56
+PASS — PD Spine 9 contract remains byte-identical across Light/Quantum/Shadow:
+       ae4843ac3395a66b3ccbc0b6a578c56408da85c05f33eb5fcda157e652258c3b
+PASS — VerificationReceipt contract remains byte-identical across Light/Quantum/Shadow:
+       cfb106bf6752b017128ad367592f36718b05738c0ed6114a07f4ea159927b15e
+PASS — delimiter/bracket static scan passed for every modified Rust source.
+
+CARGO STATUS — NOT EXECUTED IN PACKAGING ENVIRONMENT (cargo/rustc unavailable).
+AUTHORITATIVE NEXT PROOF — VALIDATE_V159.ps1 on Windows GNU Rust 1.96.0 or later compatible toolchain.

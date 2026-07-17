@@ -1,0 +1,52 @@
+ESS-MAI v1.6.3 — CHANGED FILES
+Baseline: v1.6.2
+Target: v1.6.3
+
+ADDED    AUDIT_V163_SCIENTIFIC_PROJECT_CONTINUUM.md
+ADDED    CHANGELOG_v1.6.3.md
+ADDED    ESS_MAI_V1_6_3_IMPLEMENTATION_MAP.md
+ADDED    STATIC_AUDIT_V163.txt
+ADDED    V163_SIMULATION_MAP.md
+ADDED    VALIDATE_V163.ps1
+MODIFIED VERSION_ESSMAI.txt
+MODIFIED ess-mai.md
+MODIFIED light/Cargo.toml
+MODIFIED light/src/apupk/apupk_coordinator.rs
+ADDED    light/src/gcl_project_contract.rs
+MODIFIED light/src/legacy_emotional_ui.rs
+MODIFIED light/src/living_trust_contract.rs
+MODIFIED light/src/main.rs
+MODIFIED light/src/pd_light.rs
+ADDED    light/src/project_process_bridge.rs
+MODIFIED light/src/quantum_bridge.rs
+MODIFIED light/src/sovereign_bridges.rs
+MODIFIED light/ui/src-tauri/Cargo.toml
+MODIFIED light/ui/src-tauri/tauri.conf.json
+MODIFIED quantum/Cargo.toml
+MODIFIED quantum/src/bridge_light/mod.rs
+ADDED    quantum/src/gcl_project_contract.rs
+MODIFIED quantum/src/lib.rs
+MODIFIED quantum/src/living_trust_contract.rs
+MODIFIED quantum/src/main.rs
+MODIFIED quantum/src/shadow_process_bridge.rs
+MODIFIED shadow-contracts/Cargo.toml
+MODIFIED shadow-contracts/src/lib.rs
+MODIFIED shadow/Cargo.toml
+MODIFIED shadow/src/bridge/quantum_in.rs
+MODIFIED shadow/src/bridge/shadow_out.rs
+ADDED    shadow/src/gcl_project_contract.rs
+MODIFIED shadow/src/lib.rs
+MODIFIED shadow/src/living_trust_contract.rs
+MODIFIED shadow/src/main.rs
+MODIFIED shadow/src/process_bridge.rs
+MODIFIED shadow/src/shadow_apupk.rs
+MODIFIED shadow/src/shadow_gateway.rs
+MODIFIED shadow/src/shadow_gj_legacy.rs
+MODIFIED shadow/src/sovereign_ffi_gate.rs
+MODIFIED shadow/src/sovereign_log.rs
+MODIFIED shadow/src/types.rs
+MODIFIED shadow/tests/integration.rs
+MODIFIED ui/Cargo.toml
+MODIFIED ui/tauri.conf.json
+
+TOTAL=46

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nura Legacy — Project Upload & System Emotion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">✦</div>
+            <div class="brand-text">
+                <span class="brand-nura">NURA</span>
+                <span class="brand-legacy">LEGACY</span>
+            </div>
+        </div>
+
+        <section class="role-card">
+            <strong>UI E VJETËR</strong>
+            <span>Upload projekti</span>
+            <span>Emocion sistemi</span>
+        </section>
+
+        <section class="emotion-card" id="emotionCard">
+            <div class="emotion-orb" id="emotionOrb"></div>
+            <div id="emotionPhase">SYSTEM_IDLE</div>
+            <small id="emotionMeta">Në pritje të gjendjes reale</small>
+        </section>
+
+        <div class="status-badge">
+            <div class="status-icon">◈</div>
+            <div class="status-text">
+                <span class="status-title">ESS-MAI v1.6.4</span>
+                <span class="status-sub">LIGHT INTAKE ONLY</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="hero">
+            <h1>MY LIVING PROJECT</h1>
+            <p>Materiali i përdoruesit dorëzohet te Light. UI-ja nuk verifikon dhe nuk vendos.</p>
+        </header>
+
+        <form id="projectForm" class="project-form">
+            <div class="grid two">
+                <label>Emri i projektit
+                    <input id="projectName" required maxlength="200">
+                </label>
+                <label>Domeni
+                    <input id="domain" required placeholder="science / engineering / medicine">
+                </label>
+            </div>
+
+            <label>Hipoteza
+                <textarea id="hypothesis" required rows="2"></textarea>
+            </label>
+
+            <label>Përmbajtja e projektit
+                <textarea id="projectContent" required rows="5"></textarea>
+            </label>
+
+            <div class="grid two">
+                <label>Përshkrimi i projektit
+                    <textarea id="projectDescription" rows="3"></textarea>
+                </label>
+                <label>Si u krijua / dokumentacioni
+                    <textarea id="documentationDescription" required rows="3"></textarea>
+                </label>
+            </div>
+
+            <label>Supozimet — një për rresht
+                <textarea id="assumptions" rows="3"></textarea>
+            </label>
+
+            <label class="file-box">Skedarët e provës
+                <input id="projectFiles" type="file" multiple>
+                <span id="fileSummary">Asnjë skedar i zgjedhur</span>
+            </label>
+
+            <button id="uploadBtn" type="submit">DORËZO TE LIGHT</button>
+        </form>
+
+        <section class="trace-zone" id="traceZone"></section>
+    </main>
+</div>
+<script type="module" src="main.js"></script>
+</body>
+</html>

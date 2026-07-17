@@ -1,0 +1,68 @@
+ESS-MAI v1.5.6 — STATIC AUDIT
+================================
+
+BASELINE
+- Source: v1_5_5_ess_mai(1).zip
+- Target: v1_5_6_ess_mai.zip
+- Web: not used
+- cargo fix: not used
+
+AUTHORITATIVE MAP VERIFIED
+- i + U(user input) → i₀
+- PD(i₀) → output + iZ
+- output + iZ → next i₀
+- PD → Spine 9 → Layer 1 → Layer 2 → Layer 3 → PD → pre-seal
+- Shadow receipt → PD Quantum finalize → PD Light → Nura
+
+STATIC RESULTS
+- Rust source files inspected: 266
+- Delimiter scan: no new delimiter error in modified/new Rust files.
+- The same two heuristic-parser false positives exist unchanged in baseline and target:
+  light/src/lingua.rs and light/src/legalgocrypt.rs.
+- Selected constructor/function arity scan: 0 mismatches.
+- TOML parse: OK.
+- JSON parse: OK.
+- light/ui/src/main.js node --check: OK.
+- ui/dist/index.html inline JavaScript node --check: OK.
+- installer/ci_gate.sh bash -n: OK.
+- Trailing-whitespace diff check: OK.
+
+IDENTICAL CONTRACTS (LIGHT = QUANTUM = SHADOW)
+- pd_continuum_contract.rs: identical
+- pd_spine_contract.rs: identical
+- verification_receipt.rs: identical
+- gcl_presume.rs: identical
+- QuantumInbound mirror fields/types: identical with Shadow.
+- ShadowLightResponse mirror fields/types: identical with Shadow.
+
+NUMERIC INVARIANTS
+- PD/MPRO continuum path contains no f32.
+- MASS_SCALE = 10_000.
+- MPRO_EVALUATIONS = 16.
+- 1/16 = 625 fixed units; 8/16 = 5_000; 16/16 = 10_000.
+
+FAIL-CLOSED INVARIANTS
+- parent_i₀ comes from the real Light Primitive Anchor, not session_id.
+- missing/corrupt PA prevents PD continuum activation.
+- session open and compatibility ingest do not create pre-seal.
+- authorize_after_spine is the only producer of PdPreSealReceipt.
+- all three layers are required before PendingNextI0/pre-seal.
+- receipt binds PD candidate and PD continuum activation.
+- PD Light rebuilds output/iZ/next-i₀ and rejects mismatch.
+- old handoff formats without output+iZ are rejected.
+
+TAMPER STIMULATION
+Sample A:
+  output=5c6cbe05e9f2b961
+  iZ=3e88f87ac7c57863
+  next=i0-ca652311b4335d79
+Sample B (only output text changed):
+  output=6b01b663a83ff3be
+  iZ=68f7514a1e6068fa
+  next=i0-0b83c3cce897908d
+Result: changing verified output changes output digest, iZ and next i₀.
+
+CARGO STATUS
+- cargo/rustc/rustfmt were not available in the packaging environment.
+- Cargo-green is NOT claimed.
+- Run VALIDATE_V156.ps1 on the authoritative Windows machine.

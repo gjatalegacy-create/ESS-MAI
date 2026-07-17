@@ -1,0 +1,23 @@
+# ESS-MAI UI — Nura Legacy (Tauri 2 hardened process bridge)
+# The UI remains outside the sovereign runtime workspace. It may invoke Light
+# only; Quantum and Shadow are never direct UI dependencies or child processes.
+[package]
+name = "essmai_ui"
+version = "1.6.7"
+edition = "2021"
+
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+shadow_contracts = { path = "../shadow-contracts" }
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "unwind"
