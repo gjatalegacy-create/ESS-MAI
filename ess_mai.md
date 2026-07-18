@@ -3524,3 +3524,298 @@ SHADOW STATE SYSTEMIZATION  PROCESS-RUNTIME INTEGRATED
 FINAL AUTHORITY             SHADOW_GJ_LEGACY UNCHANGED
 CARGO / RELEASE ACCEPTANCE  PENDING LAPTOP EVIDENCE
 ```
+
+---
+
+# v1.7.0 — GCL Primitive Multi-Verification në Shadow
+
+## Identiteti autoritativ
+
+```text
+GCL = ESS-MAI
+ESS-MAI = GCL
+```
+
+GCL nuk trajtohet si një gjykatë ose ligj ndihmës brenda sistemit. Ligjet, gjykatat, VDS, NightWatch, memoria e verifikimit dhe wisdom janë muskujt me të cilët GCL/ESS-MAI verifikon vetveten. Ato i shërbejnë GCL-së dhe forcohen prej algoritmit të tij; nuk formojnë autoritete paralele.
+
+## Burimi i rikthyer nga v1.4.6
+
+v1.4.6 përmbante origjinalitetin:
+
+```text
+GCL issue(Verification)
+→ VerefiedDiarySupremelaw
+→ AwaitingAnchor
+→ AnchorTrusted
+→ ProposalReceived
+→ ProcessJudged
+→ StructureHeld
+→ DiaryVerdict
+```
+
+Po aty, Shadow merrte PA + Xi/Yi që prisnin nga Light dhe kontrollonte propozimin Quantum me `X ∈ Xi` dhe `Y ∈ Yi`. Gjashtë gjykatat, VerificationMemory, NightWatch dhe WisdomWarehouse ekzistonin, por call graph-u production nuk i bashkonte me provën primitive/VDS në një attestation të vetme.
+
+## Shkëputja e v1.6.9
+
+v1.6.9 e kishte aktivizuar `ShadowVerificationRuntime` dhe `S.MULTI_VERIFY` në production, por runtime-i merrte vetëm:
+
+```text
+PassPackage + LightEnvelope
+```
+
+Ai nuk merrte provën konkrete që GCL sapo kishte verifikuar në gateway:
+
+```text
+i₀/PA
+Xi
+Yi
+VDS state
+transformimin e propozimit Quantum
+```
+
+Kështu multi-verifikimi ishte real, por nuk mund të provonte në mënyrë të tipizuar se po gjykonte transformimin e të njëjtit i₀.
+
+## Integrimi v1.7.0
+
+U shtua `GclPrimitiveVerification`, një attestation e brendshme Shadow që nuk është verdict dhe nuk ndryshon wire-in. Ajo lidh:
+
+```text
+GCL directive seal
++ VDS state
++ primitive anchor
++ parent i₀ digest
++ X∈Xi
++ Y∈Yi
++ XY/refusal digest
++ PD binding
++ continuum activation
++ GCL process continuity
++ Quantum/Spine transformation evidence
++ StructureHeld
+```
+
+Rrjedha production tani është:
+
+```text
+main.rs
+→ process_bridge
+→ feed PA/Xi/Yi
+→ ingest_bridged
+→ GCL commissions VDS
+→ parent i₀ ↔ PA
+→ Xi/Yi/refusal
+→ Quantum transform/PD/Spine evidence
+→ negative assets persisted
+→ GclPrimitiveVerification
+→ ShadowVerificationRuntime
+→ scientific domain/procedure/TRL
+→ six courts + NightWatch
+→ GCL multi-verification product
+→ S.MULTI_VERIFY
+→ Judiciary
+→ sovereign laws
+→ ShadowGjLegacy
+→ DiaryVerdict
+→ GCL Trust(X) after Verified(Y)
+```
+
+## Parent i₀ dhe identiteti i ciklit
+
+U korrigjua një shkëputje semantike e rëndësishme:
+
+```text
+session_id = identiteti i ciklit
+pd_parent_i0 = i0-{PA:016x}
+```
+
+Shadow nuk i barazon më këto dy tekste. `pd_parent_i0` duhet të përputhet me PA-në që Shadow kishte në pritje.
+
+## Multi-verifikimi si forcë e GCL-së
+
+Rezultati nuk është mesatare. Është produkt fail-closed:
+
+```text
+final_bit =
+    primitive_bit
+  ∧ proposal_bit
+  ∧ transformation_bit
+  ∧ science_bit
+  ∧ gcl_bit
+  ∧ court_bit
+  ∧ watch_bit
+```
+
+Kodi i arsyes identifikon hallkën:
+
+```text
+B1 primitive/i₀/XiYi
+B2 proposal/refusal
+B3 transformation Quantum/PD/Spine
+B4 scientific domain/procedure
+B5 GCL process continuity
+A1 courts
+A3 NightWatch
+A9 all gates passed
+```
+
+Judiciary e shumëzon rezultatin me këtë portë. Një dështim i i₀, Xi/Yi, shkencës, GCL-së ose transformimit nuk mund të fshihet nga score të larta të gjykatave të tjera.
+
+## Verifikimi shkencor i propozimit Quantum
+
+Quantum u vëzhgua, por nuk u ndryshua. Shadow përdor vetëm materialin real që Quantum tashmë dërgon:
+
+```text
+domain
+hypothesis
+TRL level/pass
+lab_test_id
+findings
+files
+context/evidence SHA-256
+GCL process digest
+final evidence
+Action State / masks
+Spine completion
+```
+
+Science/procedure dhe GCL continuity janë porta të ndara. Një mismatch i procesit GCL raportohet si GCL failure, jo maskohet si domain failure.
+
+## Negative knowledge dhe gjendja StructureHeld
+
+`StructureHeld` nuk vendoset vetëm sepse ekziston një listë negativesh. Çdo negative path duhet të parse-ohet dhe të persistojë realisht në KnowledgeVault. Numri total dhe numri i ruajtur raportohen veç. Një rrugë e korruptuar ose dështim persistence e mbyll attestation-in fail-closed.
+
+## Diary dhe reinforcement
+
+- Një `ShadowError` teknik nuk vulos `DiaryVerdict`.
+- D=0 ose D=1 i prodhuar nga pipeline-i mund të vulosë ditarin.
+- `gcl_apply` mbetet pas verdict-it.
+- Trust(X) përforcohet vetëm kur `Verified(Y)=1`.
+- `ShadowGjLegacy` mbetet autoriteti final.
+
+## Kufiri main.rs / lib.rs
+
+Nuk u ndryshua:
+
+```text
+shadow/Cargo.toml: autolib = false
+main.rs: include!("lib.rs")
+main.rs/process_bridge: hyrja e vetme production
+```
+
+`lib.rs` nuk u kthye në library target të dukshëm.
+
+## Korrigjimet reale Cargo të trashëguara nga prova v1.6.9
+
+Versioni ruan korrigjimet që u provuan nga Cargo në laptop:
+
+1. u hoq rieksporti publik i `split_and_record_heart` crate-private;
+2. `ShadowVerificationRuntime` thërret pronarin real `ShadowSpine::absorb_negative_if_present`;
+3. u hoqën importet ghost `PassPackage` dhe `ShadowError`;
+4. u hoqën dy helper-at privatë `vec_u32` pa caller;
+5. `gcl_reinforce_on_verified` mbetet vetëm test helper, për të mos dyfishuar `gcl_apply` production.
+
+Pas këtyre korrigjimeve, v1.6.9 kaloi realisht:
+
+```text
+cargo check -p shadow_platform --all-targets
+Finished dev profile
+0 errors
+```
+
+## Skedarët e ndryshuar në v1.7.0
+
+```text
+shadow/src/verefied_diary_supremelaw.rs
+shadow/src/shadow_gateway.rs
+shadow/src/shadow_spine.rs
+```
+
+Plus u mbartën pesë korrigjimet Cargo të provuara në:
+
+```text
+shadow/src/lib.rs
+shadow/src/shadow_type.rs
+shadow/src/bridge/shadow_callable.rs
+shadow-contracts/src/lib.rs
+shadow/src/shadow_gateway.rs
+```
+
+Quantum, Light, UI dhe installer mbeten byte-identike me baseline-in v1.6.9.
+
+## Testet e shtuara/adaptuara
+
+- full VDS bound chain;
+- refusal processed but never positive;
+- parent i₀ bound to waiting PA, not session ID;
+- stateful production multi-verification;
+- primitive Xi/Yi mismatch cannot be averaged;
+- Quantum transformation must keep GCL continuity;
+- refusal cannot become positive;
+- scientific domain mismatch;
+- scientific project GCL process mismatch.
+
+## Validimi në ambientin e ndërtimit
+
+```text
+Rust source files scanned             279
+Lexical/delimiter structural errors     0
+Quantum tree changes                    0
+Light tree changes                      0
+UI tree changes                         0
+Installer tree changes                  0
+main.rs/lib.rs boundary              PASS
+GCL typed attestation                PRESENT
+Multi gate before Judiciary          PRESENT
+```
+
+Ky ambient nuk ka `cargo` ose `rustc`; prandaj testet, Clippy dhe release build të v1.7.0 mbeten për provën reale në laptop.
+
+## Progresi i v1.7.0
+
+```text
+1. v1.4.6 original-flow map                    COMPLETE
+2. v1.6.9 gap map                              COMPLETE
+3. Quantum proposal observation                COMPLETE / UNMODIFIED
+4. GCL-commissioned VDS proof                  IMPLEMENTED
+5. parent i₀ ↔ PA continuity                   IMPLEMENTED
+6. Xi/Yi/refusal gate                          IMPLEMENTED
+7. Quantum/PD/Spine transformation binding     IMPLEMENTED
+8. scientific domain/procedure gate            IMPLEMENTED
+9. GCL continuity gate                         IMPLEMENTED
+10. courts/NightWatch product gate             IMPLEMENTED
+11. negative assets → StructureHeld            IMPLEMENTED
+12. DiaryVerdict technical-error protection    IMPLEMENTED
+13. targeted tests authored                    IMPLEMENTED_NOT_EXECUTED
+14. static structural validation               PASS
+15. Shadow Cargo/tests/Clippy                   PENDING_EXTERNAL
+16. workspace/release acceptance               PENDING_EXTERNAL
+```
+
+**Scope progress:** `14/16 = 87.5%`. Ky është progres implementimi, jo release readiness.
+
+## Komandat e validimit real
+
+Nga `v1.7.0_ess_mai/ess_mai`:
+
+```powershell
+cargo check -p shadow_platform --all-targets
+cargo test -p shadow_platform --no-run
+cargo test -p shadow_platform --no-fail-fast
+cargo build --release -p shadow_platform
+cargo clippy -p shadow_platform --all-targets -- -D warnings
+cargo check --workspace --all-targets
+cargo test --workspace --no-fail-fast
+```
+
+## Statusi
+
+```text
+GCL/ESS-MAI AUTHORITY             PRESERVED
+V1.4.6 PRIMITIVE ORIGINALITY      ADAPTED
+V1.6.9 MULTI-RUNTIME              STRENGTHENED
+QUANTUM                           OBSERVED / BYTE-UNCHANGED
+SHADOW FINAL AUTHORITY            UNCHANGED
+STATIC VALIDATION                 PASS
+V1.7.0 CARGO/RELEASE              PENDING REAL LAPTOP EVIDENCE
+```
+

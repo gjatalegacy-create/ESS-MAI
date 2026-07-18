@@ -25,7 +25,6 @@
 use crate::bridge::{LightInbound, QuantumInbound};
 use crate::bridge::shadow_out::{ShadowLightResponse, SupremeOutcome};
 use crate::shadow_gateway::Shadow;
-use crate::types::ShadowError;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LIGHT VERDICT — përgjigja në formatin 2-gjendjesh që LIGHT pret

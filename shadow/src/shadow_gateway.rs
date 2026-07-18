@@ -13,7 +13,9 @@
 
 use crate::bridge::{LightInbound, QuantumInbound};
 use crate::lab_contracts::{PrimitiveSplit, NegativePath, GjataCollapseLaw, CollapsePhase};
-use crate::verefied_diary_supremelaw::{VerefiedDiarySupremelaw, VdsEvent};
+use crate::verefied_diary_supremelaw::{
+    GclPrimitiveMode, GclPrimitiveVerification, VerefiedDiarySupremelaw, VdsEvent,
+};
 use crate::knowledge_vault::{init_global_vault, KnowledgeVault};
 use crate::shadow_gj_legacy::ShadowGjLegacy;
 use crate::shadow_pipeline::{now_ns, run_pipeline};
@@ -374,7 +376,9 @@ impl Shadow {
                 .get(&parent_i0).map(|(pa, _)| *pa).unwrap_or(0),
         };
         let context = VerificationContext::direct(&parent_i0, &parent_i0, primitive_anchor);
-        let decision = self.ingest_unsealed(pkg, light)?;
+        let decision = self.ingest_unsealed(
+            pkg, light, GclPrimitiveVerification::direct_test(primitive_anchor),
+        )?;
         // Rruga direkte: ankora ende jeton në pa_waiting; mbyll Y→X para seal-it.
         self.gcl_reinforce_on_verified(&decision.session_id, &decision.verdict);
         self.seal_decision(decision, context)
@@ -387,6 +391,7 @@ impl Shadow {
         &self,
         pkg: PassPackage,
         mut light: LightEnvelope,
+        primitive_proof: GclPrimitiveVerification,
     ) -> Result<UnsealedShadowDecision, ShadowError> {
         match self.is_frozen() {
             true => return Err(ShadowError::Frozen(
@@ -410,7 +415,7 @@ impl Shadow {
         };
         let mut staged = runtime.clone();
         let attestation = crate::shadow_spine::ShadowSpine::adjudicate_runtime(
-            &mut staged, input_id, &pkg, &light, ts,
+            &mut staged, input_id, &pkg, &light, primitive_proof, ts,
         );
         let session_id = std::mem::take(&mut light.session_id);
         let verdict = run_pipeline(pkg, light, &self.vault, attestation, ts)?;
@@ -459,6 +464,7 @@ impl Shadow {
     /// sesionit në vault (real_hits+1, me kaskadë promovimi hipotezë→fakt).
     /// Thirret VETËM pas verdiktit — kurrë para (rendi Y→X është ligj).
     /// Jashtë zonës së ndaluar; vetëm konsumon verdiktin, s'e ndryshon atë.
+    #[cfg(test)]
     fn gcl_reinforce_on_verified(&self, session_id: &str, verdict: &SupremeVerdict) {
         let anchor = match self.pa_waiting.lock() {
             Ok(map)       => map.get(session_id).map(|(pa, _)| *pa),
@@ -568,6 +574,18 @@ impl Shadow {
         }
     }
 
+    /// Provon që parent i₀ i PD-së është identiteti i lindur nga PA-ja që
+    /// Shadow kishte në pritje. session_id është vetëm identitet cikli.
+    fn parent_i0_matches_anchor(parent_i0: Option<&str>, anchor: Option<u64>) -> bool {
+        match (parent_i0, anchor) {
+            (Some(parent), Some(pa_id)) => {
+                let expected = format!("i0-{pa_id:016x}");
+                parent == expected.as_str()
+            }
+            _ => false,
+        }
+    }
+
     /// FAZA 3 — Hyrje me DY KANALE: adapton tipat kufitarë të urave
     /// (Quantum `QuantumInbound` + Light `LightInbound`) → tipat e brendshëm,
     /// pastaj i kalon te `ingest`. Origjinat mbeten të ndara deri brenda passage-it.
@@ -607,7 +625,9 @@ impl Shadow {
         let session_for_diary = q.session_id.clone();
 
         // ── MUSKULI verefied_diary_supremelaw — ditari strukturor i gjykimit.
-        // Gjykohet i0/X i besueshëm + PROCESI i ultimatum-it + Y — jo vetëm Y.
+        // GCL/ESS-MAI aktivizon muskulin; ligjet/gjykatat vetëm i shërbejnë.
+        // I njëjti i₀/PA, Xi/Yi dhe transformim Quantum futen si provë e tipizuar
+        // në multi-verifikim — jo si kontroll paralel dhe jo si verdict i dytë.
         let mut vds = match VerefiedDiarySupremelaw::commission(
             GjataCollapseLaw::issue(CollapsePhase::Verification)) {
             Ok(m)  => m,
@@ -615,12 +635,8 @@ impl Shadow {
                 format!("gjata_collapse_law: {}", b.text))),
         };
 
-        // PA-GATE: Light regjistroi herët PA + (Xi,Yi) — propozimi i Quantum
-        // që vjen TANI e gjen dhe e konsumon (remove — pa rritje memorie).
-        // LIGJI I KYÇIT (i njëjtë kudo): helmimi rikuperohet me into_inner —
-        // ankora KURRË s'humbet heshtazi nga paniku i një filli tjetër.
-        // (Gjetja e auditit v1.3.2: 'Err(_) => None' e vjetër e anashkalonte
-        // heshtazi verifikimin XY — rrjedhë e klasës ANCHOR_LOST.)
+        // PA-GATE: Light regjistroi herët PA + (Xi,Yi); propozimi i Quantum
+        // e gjen dhe e konsumon me pronësi të vetme.
         let anchor = match self.pa_waiting.lock() {
             Ok(mut map)   => map.remove(&q.session_id),
             Err(poisoned) => {
@@ -631,12 +647,25 @@ impl Shadow {
                 poisoned.into_inner().remove(&q.session_id)
             }
         };
-        // GCL LIVE (v1.3.2): ankora sapo u KONSUMUA nga pritja — pa_id ruhet
-        // KËTU që laku Y→X të mbyllet pas verdiktit (shih poshtë, pas ingest).
         let gcl_anchor: Option<u64> = anchor.as_ref().map(|(pa, _)| *pa);
+        let parent_i0 = pd_parent_i0.as_deref().unwrap_or(&q.session_id);
+        // Quantum e ndërton parent_i0 nga PA real: `i0-{pa_id:016x}`.
+        // session_id identifikon ciklin dhe NUK duhet të shkrihet me i₀.
+        let parent_i0_matches = Self::parent_i0_matches_anchor(
+            pd_parent_i0.as_deref(),
+            gcl_anchor,
+        );
+        let transformation_traced =
+            final_evidence_digest != 0
+                && pd_binding_digest != 0
+                && pd_continuum_activation_digest != 0
+                && spine_completion_digest != 0;
+        let gcl_continuity = pd_gcl_process_digest != 0
+            && parent_i0_matches
+            && transformation_traced;
         let verification_context = VerificationContext::from_xy(
             &q.session_id,
-            pd_parent_i0.as_deref().unwrap_or(&q.session_id),
+            parent_i0,
             gcl_anchor.unwrap_or(0),
             xy_x.as_deref().unwrap_or(""),
             xy_y.as_deref().unwrap_or(""),
@@ -649,60 +678,97 @@ impl Shadow {
             spine_completion_digest,
         );
 
-        // 1) REFUZIMI I MBARTUR: Quantum refuzoi ndershëm (XiYi=∅) — kolapsi
-        //    shënohet; verdikti 0/1 vendoset nga rruga sovrane siç e ka rrjedhën.
-        match &collapse_refused {
-            Some(reason) => println!(
-                "  [KOLAPS/3] session={} REFUZIM i mbartur nga Quantum: {} → verdikti ndjek rrugën sovrane (→0)",
-                q.session_id, reason),
-            None => {}
-        }
-
-        // 2) VERIFIKIMI DY-KANALËSH (jo cross-elimination): X dhe Y verifikohen
-        //    VEÇ e VEÇ dhe pastaj lidhen në verdikt — nuk luftojnë njëra-tjetrën.
-        //    • KANALI X: x ∈ Xi  → inputi i propozuar është nga hapësira e
-        //      ankoruar e besueshme (X = hyrje e qëndrueshme).
-        //    • KANALI Y: y ∈ Yi  → outputi i propozuar është nga hapësira e
-        //      daljes (Y = output i sigurt/i verifikueshëm).
-        //    TË DYJA duhet të qëndrojnë PAVARËSISHT (x_ok ∧ y_ok). Mospërputhje
-        //    = FAIL-CLOSED (propozim jashtë hapësirave të ankoruara s'hyn kurrë).
-        //    Kur njëra mungon → rrugë e vjetër (pas-pajtueshmëri).
-        match (&anchor, &xy_x, &xy_y) {
-            (Some((pa_id, split)), Some(x), Some(y)) => {
-                match split.has_material() {
-                    true => {
-                        let x_ok = split.xi.iter().any(|t| t == x);
-                        let y_ok = split.yi.iter().any(|t| t == y);
-                        match x_ok && y_ok {
-                            true => {
-                                println!(
-                                "  [KOLAPS/3] session={} anchor={:016x} XY↔(Xi,Yi) PËRPUTHJE: ({} ↔ {}) mass_fixed={} → verifikimi vazhdon",
-                                q.session_id, pa_id, x, y, xy_mass.unwrap_or(0));
-                                // Ditari: X u besua → Y erdhi → procesi u gjykua.
-                                let _ = vds.advance(VdsEvent::TrustAnchor);
-                                let _ = vds.advance(VdsEvent::ReceiveProposal);
-                                let _ = vds.advance(VdsEvent::JudgeProcess);
+        // Multi-verifikimi primitiv i v1.4.6, i përshtatur në kontratat e v1.6.9:
+        //   i₀/PA → Xi/Yi → propozimi/refuzimi Quantum → procesi → struktura.
+        // Partial XY është korrupsion; refuzimi i mbartur është propozim i ligjshëm
+        // por final_bit=0. Rruga legacy ruhet e deklaruar, jo e maskuar si Bound.
+        let (proof_mode, xi_verified, yi_verified, proposal_received) =
+            match (&anchor, &xy_x, &xy_y, &collapse_refused) {
+                (Some((pa_id, split)), Some(x), Some(y), None) => {
+                    match split.has_material() {
+                        true => {
+                            let x_ok = split.xi.iter().any(|t| t == x);
+                            let y_ok = split.yi.iter().any(|t| t == y);
+                            match x_ok & y_ok {
+                                true => {
+                                    println!(
+                                        "  [KOLAPS/3] session={} anchor={:016x} XY↔(Xi,Yi) PËRPUTHJE: ({} ↔ {}) mass_fixed={}",
+                                        q.session_id, pa_id, x, y, xy_mass.unwrap_or(0));
+                                    for event in [
+                                        VdsEvent::TrustAnchor,
+                                        VdsEvent::ReceiveProposal,
+                                        VdsEvent::JudgeProcess,
+                                    ] {
+                                        match vds.advance(event) {
+                                            Ok(_) => {}
+                                            Err(b) => return Err(ShadowError::SealInvalid(
+                                                format!("VDS process breach: {}", b.text))),
+                                        }
+                                    }
+                                    (GclPrimitiveMode::Bound, true, true, true)
+                                }
+                                false => return Err(ShadowError::SealInvalid(format!(
+                                    "KOLAPS/3: XY=({},{}) JASHTË hapësirave të ankoruara (x∈Xi:{} y∈Yi:{}) — fail-closed",
+                                    x, y, x_ok, y_ok))),
                             }
-                            false => return Err(ShadowError::SealInvalid(format!(
-                                "KOLAPS/3: XY=({},{}) JASHTË hapësirave të ankoruara (x∈Xi:{} y∈Yi:{}) — fail-closed",
-                                x, y, x_ok, y_ok))),
+                        }
+                        false => {
+                            println!(
+                                "  [KOLAPS/3] session={} anchor={:016x} pa material (Xi,Yi) → LEGACY_COMPATIBLE e deklaruar",
+                                q.session_id, pa_id);
+                            (GclPrimitiveMode::LegacyCompatible, false, false, true)
                         }
                     }
-                    false => println!(
-                        "  [KOLAPS/3] session={} anchor={:016x} pa material (Xi,Yi) → rrugë e vjetër",
-                        q.session_id, pa_id),
                 }
-            }
-            (Some((pa_id, _)), _, _) => println!(
-                "  [SHADOW PA-GATE] session={} anchor={:016x} u pa herët nga Light → propozimi i Quantum vazhdon",
-                q.session_id, pa_id),
-            _ => {} // s'kishte PA të para-regjistruar — rrugë e vjetër
-        }
+                (None, Some(x), Some(y), None) =>
+                    return Err(ShadowError::SealInvalid(format!(
+                        "KOLAPS/3: XY=({},{}) mbërriti pa i₀/PA në pritje — fail-closed",
+                        x, y
+                    ))),
+                (Some((pa_id, _)), None, None, Some(reason)) => {
+                    println!(
+                        "  [KOLAPS/3] session={} anchor={:016x} REFUZIM i mbartur nga Quantum: {}",
+                        q.session_id, pa_id, reason);
+                    for event in [
+                        VdsEvent::TrustAnchor,
+                        VdsEvent::ReceiveProposal,
+                        VdsEvent::JudgeProcess,
+                    ] {
+                        match vds.advance(event) {
+                            Ok(_) => {}
+                            Err(b) => return Err(ShadowError::SealInvalid(
+                                format!("VDS refusal breach: {}", b.text))),
+                        }
+                    }
+                    (GclPrimitiveMode::Refused, false, false, true)
+                }
+                (_, Some(_), None, _) | (_, None, Some(_), _) =>
+                    return Err(ShadowError::SealInvalid(
+                        "KOLAPS/3: propozim XY i pjesshëm — X dhe Y duhet të vijnë bashkë".to_string()
+                    )),
+                (None, None, None, Some(reason)) =>
+                    return Err(ShadowError::SealInvalid(format!(
+                        "KOLAPS/3: refuzimi Quantum '{}' nuk ka i₀/PA në pritje", reason
+                    ))),
+                (Some((pa_id, _)), None, None, None) => {
+                    println!(
+                        "  [SHADOW PA-GATE] session={} anchor={:016x} pa XY/refuzim → LEGACY_COMPATIBLE",
+                        q.session_id, pa_id);
+                    (GclPrimitiveMode::LegacyCompatible, false, false, true)
+                }
+                (None, None, None, None) =>
+                    (GclPrimitiveMode::LegacyCompatible, false, false, true),
+                (_, Some(_), Some(_), Some(_)) =>
+                    return Err(ShadowError::SealInvalid(
+                        "KOLAPS/3: Quantum dërgoi njëkohësisht XY dhe collapse_refused".to_string()
+                    )),
+            };
 
-        // 3) DIJA NEGATIVE = ASET: rrugët e eliminuara (-Xi/-Yi) ruhen
-        //    PËRGJITHMONË në vault (rruga reale apply_negative — WAL/persistente),
-        //    që eliminimet e ardhshme të përshpejtohen. Kurrë s'fshihen.
+        // DIJA NEGATIVE = ASET: eliminimet e Quantum ruhen si precedent negativ.
+        // StructureHeld lejohet vetëm kur çdo aset negativ u sistemua realisht.
         let neg_ts = now_ns();
+        let mut negative_assets_held = true;
+        let mut negative_assets_persisted: usize = 0;
         for wire in negative_wire.iter() {
             match NegativePath::from_wire(wire) {
                 Some(np) => {
@@ -712,28 +778,78 @@ impl Shadow {
                         claim_id, REASON_COLLAPSE_ELIM, process,
                         ingest_mass, 1, np.term.into_bytes(), neg_ts,
                     ) {
-                        Ok(_)  => {}
-                        Err(e) => eprintln!("  [KOLAPS/3] ALARM: rruga negative s'u vulos në vault ({e:?}) — aset i humbur (verdikti s'bllokohet)"),
+                        Ok(_)  => {
+                            negative_assets_persisted = negative_assets_persisted.saturating_add(1);
+                        }
+                        Err(e) => {
+                            negative_assets_held = false;
+                            eprintln!(
+                                "  [KOLAPS/3] ALARM: rruga negative s'u vulos në vault ({e:?}) — StructureHeld refuzohet"
+                            );
+                        }
                     }
                 }
-                None => eprintln!("  [KOLAPS/3] ALARM KORRUPSION: negative wire i keqformuar — rruga u kapërcye"),
+                None => {
+                    negative_assets_held = false;
+                    eprintln!(
+                        "  [KOLAPS/3] ALARM KORRUPSION: negative wire i keqformuar — StructureHeld refuzohet"
+                    );
+                }
             }
         }
         match negative_wire.is_empty() {
             false => println!(
-                "  [KOLAPS/3] session={} {} rrugë negative u vulosën në vault (ASET)",
-                q.session_id, negative_wire.len()),
+                "  [KOLAPS/3] session={} negative_total={} persisted={} structure_held={}",
+                q.session_id,
+                negative_wire.len(),
+                negative_assets_persisted,
+                negative_assets_held,
+            ),
             true => {}
         }
 
-        // Ditari: struktura qëndroi (negativat aset, asnjë rrëzim strukturor).
-        // FAIL-LOUD: dështimi i state-machine të verifikimit raportohet.
-        match vds.advance(VdsEvent::HoldStructure) {
-            Ok(_)  => {}
-            Err(e) => eprintln!("  [VDS] ALARM: HoldStructure dështoi ({e:?}) — ditari strukturor i rrezikuar"),
-        }
+        let primitive_proof: GclPrimitiveVerification = match proof_mode {
+            GclPrimitiveMode::Bound | GclPrimitiveMode::Refused => {
+                match negative_assets_held {
+                    true => {}
+                    false => return Err(ShadowError::SealInvalid(
+                        "VDS StructureHeld refuzuar: asetet negative nuk u sistemuan plotësisht".to_string()
+                    )),
+                }
+                match vds.advance(VdsEvent::HoldStructure) {
+                    Ok(_) => {}
+                    Err(b) => return Err(ShadowError::SealInvalid(
+                        format!("VDS HoldStructure breach: {}", b.text))),
+                }
+                match vds.attest_structure(
+                    proof_mode,
+                    gcl_anchor.unwrap_or(0),
+                    shadow_contracts::digest_parts(&[parent_i0.as_bytes()]),
+                    verification_context.xy_digest,
+                    pd_binding_digest,
+                    pd_continuum_activation_digest,
+                    gcl_anchor.is_some(),
+                    parent_i0_matches,
+                    xi_verified,
+                    yi_verified,
+                    proposal_received,
+                    transformation_traced,
+                    gcl_continuity,
+                ) {
+                    Ok(proof) => proof,
+                    Err(b) => return Err(ShadowError::SealInvalid(
+                        format!("VDS primitive attestation breach: {}", b.text))),
+                }
+            }
+            GclPrimitiveMode::LegacyCompatible =>
+                vds.attest_legacy_compatible(),
+            GclPrimitiveMode::DirectTest =>
+                vds.attest_legacy_compatible(),
+        };
 
-        let decision = self.ingest_unsealed(q.into_pass_package(), l.into_envelope());
+        let decision = self.ingest_unsealed(
+            q.into_pass_package(), l.into_envelope(), primitive_proof,
+        );
 
         // ══ GCL LIVE — RRUGA E URËS (rregullimi kurorë i v1.3.2) ═══════════
         // GJETJA: ankora u HOQ nga pa_waiting më lart (KOLAPS/3 e kërkon me
@@ -754,20 +870,39 @@ impl Shadow {
             _ => {} // pa ankorë — rrugë e vjetër, asgjë për të rifortësuar
         }
 
-        // ══ LAW 0 (Verification Collapse): vendimi u mor — verdikt (Ok) OSE
-        // refuzim sovran (Err); të dyja janë kolaps: hapësira 1 → 0.
-        // Invarianti: "Asgjë nuk pranohet pa Sovereign_Verification_Collapse."
-        let mut law0 = crate::lab_contracts::UncertaintyLedger::new();
-        match vds.advance(VdsEvent::SealDiary) {
-            Ok(_)  => {}
-            Err(e) => eprintln!("  [VDS] ALARM: SealDiary dështoi ({e:?}) — vula e ditarit të verifikimit e rrezikuar"),
+        // ══ LAW 0 (Verification Collapse) ═══════════════════════════════════
+        // DiaryVerdict dhe kolapsi 1→0 lindin vetëm kur pipeline-i prodhoi
+        // verdikt real (D=0 ose D=1). ShadowError teknik nuk maskohet si verdict.
+        let decision_completed = decision.is_ok();
+        match (decision_completed, primitive_proof.mode) {
+            (true, GclPrimitiveMode::Bound | GclPrimitiveMode::Refused) => {
+                match vds.advance(VdsEvent::SealDiary) {
+                    Ok(_) => println!("  {}", vds.diary_line(&session_for_diary)),
+                    Err(b) => return Err(ShadowError::SealInvalid(
+                        format!("VDS SealDiary breach: {}", b.text))),
+                }
+            }
+            (true, GclPrimitiveMode::LegacyCompatible | GclPrimitiveMode::DirectTest) => println!(
+                "  [VDS-DIARY] session={} gjendja=LEGACY_COMPATIBLE (pa maskim si provë Bound)",
+                session_for_diary
+            ),
+            (false, _) => eprintln!(
+                "  [VDS-DIARY] session={} JO E VULOSUR: pipeline-i nuk prodhoi verdict",
+                session_for_diary
+            ),
         }
-        println!("  {}", vds.diary_line(&session_for_diary));
-        match law0.record(crate::lab_contracts::CollapsePhase::Verification,
-                          "kolaps3_D", 1.0, 0.0) {
-            Ok(())  => println!("  [LAW0]     Verification Collapse 1→0 (D u vendos) | is_collapsed={}",
-                law0.is_collapsed()),
-            Err(v)  => eprintln!("  [LAW0] {}", v.report()),
+
+        let mut law0 = crate::lab_contracts::UncertaintyLedger::new();
+        match decision_completed {
+            true => match law0.record(crate::lab_contracts::CollapsePhase::Verification,
+                                      "kolaps3_D", 1.0, 0.0) {
+                Ok(()) => println!(
+                    "  [LAW0]     Verification Collapse 1→0 (D u vendos) | is_collapsed={}",
+                    law0.is_collapsed()
+                ),
+                Err(v) => eprintln!("  [LAW0] {}", v.report()),
+            },
+            false => {}
         }
         // Vetëm tani output-i është përfundimtar: pipeline + anchor Y→X +
         // ditari + Verification Collapse janë mbyllur. Këtu lind token-i final.
@@ -992,6 +1127,21 @@ mod pa_feed_tests {
             other => panic!("pritej TransportCorrupt(fusha), erdhi {:?}", other),
         }
         let _ = std::fs::remove_file(&p);
+    }
+
+    #[test]
+    fn pd_parent_i0_is_bound_to_the_waiting_primitive_anchor_not_session_id() {
+        let pa = 0xA451u64;
+        assert!(Shadow::parent_i0_matches_anchor(
+            Some("i0-000000000000a451"),
+            Some(pa),
+        ));
+        assert!(!Shadow::parent_i0_matches_anchor(Some("SESSION-1"), Some(pa)));
+        assert!(!Shadow::parent_i0_matches_anchor(None, Some(pa)));
+        assert!(!Shadow::parent_i0_matches_anchor(
+            Some("i0-000000000000a452"),
+            Some(pa),
+        ));
     }
 
     #[test]
