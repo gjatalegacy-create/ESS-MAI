@@ -157,7 +157,7 @@ pub use sovereign_log::{RecReader, RecWriter, SovereignLog};
 pub use bridge::{LightInbound, QuantumInbound};
 #[cfg(test)]
 pub use bridge::{
-    split_and_record_heart, DefaultLightShadowBridge, LightShadowBridge,
+    DefaultLightShadowBridge, LightShadowBridge,
     ShadowLightResponse, SupremeOutcome,
 };
 pub use ffi_ring::{RingSlot, ShadowRing, RING_CAP, SLOT_BYTES};

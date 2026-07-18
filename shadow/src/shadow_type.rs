@@ -4,7 +4,7 @@
 // ║  Verifikon gjendjen e paketimit të Quantum.                           ║
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
-use crate::types::{PassPackage, ShadowNode, ShadowPassage, ShadowVerdict};
+use crate::types::{ShadowNode, ShadowPassage, ShadowVerdict};
 
 pub struct ShadowType;
 

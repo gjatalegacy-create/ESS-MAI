@@ -968,10 +968,6 @@ impl Writer {
         self.u32(v.len() as u32);
         for x in v { self.u8(*x); }
     }
-    fn vec_u32(&mut self, v: &[u32]) {
-        self.u32(v.len() as u32);
-        for x in v { self.u32(*x); }
-    }
     fn vec_f32(&mut self, v: &[f32]) {
         self.u32(v.len() as u32);
         for x in v { self.f32(*x); }
@@ -1040,10 +1036,6 @@ impl<'a> Reader<'a> {
     fn vec_u8(&mut self) -> Result<Vec<u8>, WireError> {
         let n = self.count()?; let mut out = Vec::with_capacity(n);
         for _ in 0..n { out.push(self.u8()?); } Ok(out)
-    }
-    fn vec_u32(&mut self) -> Result<Vec<u32>, WireError> {
-        let n = self.count()?; let mut out = Vec::with_capacity(n);
-        for _ in 0..n { out.push(self.u32()?); } Ok(out)
     }
     fn vec_f32(&mut self) -> Result<Vec<f32>, WireError> {
         let n = self.count()?; let mut out = Vec::with_capacity(n);
