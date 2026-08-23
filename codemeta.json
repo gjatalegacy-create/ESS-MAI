@@ -11,7 +11,11 @@
       "givenName": "Bledar",
       "familyName": "Gjata",
       "name": "Bledar Gjata",
-      "url": "https://github.com/gjatalegacy-create"
+      "url": "https://github.com/gjatalegacy-create",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Gjata Legacy"
+      }
     }
   ],
   "license": "https://spdx.org/licenses/Apache-2.0",
