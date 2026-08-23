@@ -1,4 +1,4 @@
-# ESS-MAI by Bledar Gjata
+# ESS-MAI by Bledar Gjata · Gjata Legacy
 
 ## Gjata Collapse Law (GCL) · Sovereign Deterministic Reasoning Research Architecture
 
