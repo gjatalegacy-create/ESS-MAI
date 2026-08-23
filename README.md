@@ -4,6 +4,9 @@
 
 **ESS-MAI** is an experimental deep-tech research and systems-engineering project by **Bledar Gjata**. It investigates a Rust-based architecture for bounded hierarchical authority, traceable sovereign AI, deterministic reasoning, and the preservation and operational use of negative knowledge.
 
+- **Author / Architect:** Bledar Gjata
+- **Project:** ESS-MAI
+- **Organization:** Gjata Legacy
 - **Canonical repository:** https://github.com/gjatalegacy-create/ESS-MAI
 - **Author profile:** https://github.com/gjatalegacy-create
 - **Core research concept:** Gjata Collapse Law (GCL)
