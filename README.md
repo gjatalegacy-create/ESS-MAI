@@ -1,7 +1,32 @@
-# ESS-MAI — Sistemi Sovran i Arsyetimit Deterministik
-### Gjata Legacy™ / Nura Legacy
+# ESS-MAI by Bledar Gjata
 
-Sistem i vetëm me tre platforma, role absolutisht të ndara, **i fortësuar për runtime real**.
+## Gjata Collapse Law (GCL) · Sovereign Deterministic Reasoning Research Architecture
+
+**ESS-MAI** is an experimental deep-tech research and systems-engineering project by **Bledar Gjata**. It investigates a Rust-based architecture for bounded hierarchical authority, traceable sovereign AI, deterministic reasoning, and the preservation and operational use of negative knowledge.
+
+- **Canonical repository:** https://github.com/gjatalegacy-create/ESS-MAI
+- **Author profile:** https://github.com/gjatalegacy-create
+- **Core research concept:** Gjata Collapse Law (GCL)
+- **Implementation environment:** Rust and Cargo
+- **Status:** active research prototype with partial materialization
+
+This repository is evaluated through source code, reproducible `cargo build` and test results, documented successes and failures, and executable proof-of-concept packages. A successful build proves compilation only for the tested scope; it does not by itself prove every architectural or scientific claim.
+
+Executable POCs, prior-art records, build evidence, and materialization reports are maintained as additions to this canonical repository. They are **not** published as separate ESS-MAI repositories.
+
+## Research scope
+
+- Gjata Collapse Law (GCL) and bounded hierarchical authority
+- negative knowledge as operational system state
+- Light–Quantum–Shadow separation of roles
+- traceability and deterministic decision paths
+- Rust-based system contracts and fail-closed behavior
+- executable POCs and reproducible experimental evidence
+- formal-methods-inspired invariants and runtime verification
+
+## Technical documentation / Dokumentacioni teknik
+
+Dokumentacioni teknik më poshtë ruan përshkrimin ekzistues të arkitekturës dhe materializimit të projektit.
 
 ## Arkitektura: Triniteti Light–Quantum–Shadow
 
