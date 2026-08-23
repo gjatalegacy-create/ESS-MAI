@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: "Gjata"
     given-names: "Bledar"
+    affiliation: "Gjata Legacy"
 repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
 url: "https://github.com/gjatalegacy-create/ESS-MAI"
 license: "Apache-2.0"
