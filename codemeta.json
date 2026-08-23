@@ -1,0 +1,31 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ESS-MAI",
+  "description": "An experimental Rust-based research architecture investigating Gjata Collapse Law, bounded hierarchical authority, negative knowledge, traceable sovereign AI, deterministic reasoning, and executable proof-of-concept evidence.",
+  "codeRepository": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "url": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Bledar",
+      "familyName": "Gjata",
+      "name": "Bledar Gjata",
+      "url": "https://github.com/gjatalegacy-create"
+    }
+  ],
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "programmingLanguage": "Rust",
+  "applicationCategory": "Research Software",
+  "keywords": [
+    "ESS-MAI",
+    "Bledar Gjata",
+    "Gjata Collapse Law",
+    "GCL",
+    "negative knowledge",
+    "sovereign AI",
+    "deterministic systems",
+    "runtime verification",
+    "executable POC"
+  ]
+}
