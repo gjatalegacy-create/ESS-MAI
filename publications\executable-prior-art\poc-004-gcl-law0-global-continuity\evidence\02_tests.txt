@@ -1,0 +1,43 @@
+COMMAND=cargo test --workspace --locked --offline
+RESULT=PASS
+PROFILE=test unoptimized+debuginfo
+CARGO_REPORTED_COMPILE_ELAPSED=1.47s
+EXIT_CODE=0
+
+EXTRACTED_GCL_PRODUCTION_TESTS:
+PASS constitutional_invariants_bound_to_phases
+PASS factic_probability_is_measured_not_guessed
+PASS empty_ledger_uncollapsed_infinite_space
+PASS law_manifest_readable_and_sealed
+PASS pair_space_real_counting
+PASS law0_violation_is_fail_closed
+PASS supreme_directive_issue_verify_roundtrip
+PASS platforms_are_roles_not_agents
+PASS law0_monotone_chain_collapses_to_zero
+PASS three_muscles_declared_globally
+PASS system_laws_registry_complete_and_sealed
+GCL_PRODUCTION_TESTS_PASSED=11
+GCL_PRODUCTION_TESTS_FAILED=0
+
+EXTRACTED_SHADOW_RECEIPT_TESTS:
+PASS only_gcl_pairs_are_constitutional
+PASS receipt_is_deterministic_and_bound_to_parent_and_pd_candidate
+SHADOW_RECEIPT_TESTS_PASSED=2
+SHADOW_RECEIPT_TESTS_FAILED=0
+
+POC_EXPERIMENT_TESTS:
+PASS canonical_chain_and_local_fail_closed_gate_are_materialized
+PASS cross_step_discontinuity_is_reproducible
+PASS terminal_verification_can_regress_and_uncollapse
+PASS negative_uncertainty_space_is_currently_accepted
+PASS infinite_uncertainty_space_is_currently_accepted
+PASS shadow_has_the_receipt_mechanism_but_law0_is_not_an_input_yet
+POC_TESTS_PASSED=6
+POC_TESTS_FAILED=0
+
+TOTAL_UNIT_TESTS_PASSED=19
+TOTAL_UNIT_TESTS_FAILED=0
+DOC_TESTS_PASSED=0
+DOC_TESTS_FAILED=0
+
+INTERPRETATION=Counterexample tests pass when the current implementation gap is reproduced; they do not classify the stronger constitutional invariant as passing.

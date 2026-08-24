@@ -1,0 +1,44 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ESS-MAI Executable Prior Art — POC Collection",
+  "description": "Surgically bounded executable ESS-MAI proof-of-concept capsules that report experimental success and failure as an architecture-preserving advancement method. The full ESS-MAI v1.8.9 core is excluded; C01 and C02 are reference-only and are not evidence.",
+  "codeRepository": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "url": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "programmingLanguage": "Rust",
+  "author": {
+    "@type": "Person",
+    "givenName": "Bledar",
+    "familyName": "Gjata",
+    "email": "gjata@legacy.al",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Gjata Legacy"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Gjata Legacy"
+  },
+  "keywords": [
+    "ESS-MAI",
+    "executable prior art",
+    "proof of concept",
+    "POC",
+    "negative knowledge",
+    "GCL"
+  ],
+  "hasPart": [
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "POC 003 — ESS-MAI System Cold-Start Reachability",
+      "version": "0.2.0"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "POC 004 — GCL LAW-0 Global Continuity",
+      "version": "0.2.0"
+    }
+  ]
+}

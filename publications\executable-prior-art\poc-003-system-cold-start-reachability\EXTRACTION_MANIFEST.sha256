@@ -1,0 +1,34 @@
+# ESS-MAI SYSTEM POC-003 production-extraction identity manifest
+#
+# WHOLE-FILE records use the conventional format:
+#   <sha256><two spaces><capsule-relative path>
+# The 20 files below were independently compared byte-for-byte with their
+# corresponding files in the local v189 source workspace on 2026-08-24.
+#
+# WHOLE-FILE PRODUCTION EXTRACTS (20)
+ecf9912f951d481db32022fb0a9d62725d086e3f3748269a97144034799d0b7c  crates/gcl-constitution/Cargo.toml
+2ea2645c63d8ca617b3659d2f8480f11f2375845b16e81eb43808a181088807b  crates/gcl-constitution/src/constitution.rs
+79c204190c6ab257fb827060cf7f8ffd620da333c6ec9903b89f20818f4d2a9c  crates/gcl-constitution/src/extension.rs
+f8441fa4dd3d4981d9c85420dd4192b6da3db09517b0270c0dede94a977e5d85  crates/gcl-constitution/src/lib.rs
+8047c0191c0a4c72b648696d06c8f5584a2ce1ae897602c807dcb9da46648881  crates/gcl-constitution/src/phase.rs
+911659a97dac00049168e832556706e7d15da81f21d7bfa5b5b6929fd8b4c554  crates/quantum-surgical/src/candidate_weight.rs
+869c24779789bea0c917bd59078e18b0b624c99dde8b850a3617ae42863535c9  crates/quantum-surgical/src/lab_contracts/collapse.rs
+37a9853e9a8bc6acc2882de8f2320aef466afd21872ccb679c72ec0030ca4d09  crates/quantum-surgical/src/lab_contracts/gjata_collapse_law.rs
+60c906d563973d8d31d19f6099138aad4819df1242159cf1e1f4faffcbdd3995  crates/quantum-surgical/src/lab_contracts/pa_wire.rs
+1508fe707992aa55b602eff9aaf00a9a0610afe4cf28b08c8b7654b42ae523bc  crates/quantum-surgical/src/request_bound_relevance.rs
+f0aae8b432eacd8878b55acee9764f26901aa9d351749dbbc6c2268e42c0d615  crates/quantum-surgical/src/ultimatum_collapse_law.rs
+b82d241598238a74ef00952954f46cb78d270d2f4f6efc7850db10c14d48416d  crates/shadow-contracts/Cargo.toml
+9fa529a7db3e1d98f06e1579e015c0b2e2cb8e0523f4448873c82687fbd0aa87  crates/shadow-contracts/src/lib.rs
+ecbab84bfc65f2561be133f12b047f5e863423c823e294f5bec8f1e06fb673eb  crates/shadow-contracts/src/negative_asset.rs
+d36197f18c778465217b3ba6828206af7fed0af6fcbced131adc8909fe78fd62  crates/system-poc/src/alnur_karina_athar.rs
+78a4c900aed1bb7e4ba90a45592f5f194dae83d58f5062cf6f63e5b28b74a17a  crates/system-poc/src/asht_quantum.rs
+19a19bcaaa4634891a7d5f027f17415d6292f7bb71db1f98c66caec1e2ffe984  crates/system-poc/src/besa_nlight.rs
+1942bdb1326b75cfe41b07c35be85159c995ea04773d37acbbfcae658fe360d3  crates/system-poc/src/selection_hold.rs
+551ee89ae36a74cdb467137bdc19b195659e910c5d4f5f45110ce2661593ae01  crates/system-poc/src/shadow_process_bridge.rs
+498d585fe87bbbf8197f30552b294ac302710a0af7d6d90d6882c492ebd1cc22  crates/system-poc/src/shadow_selection_bridge.rs
+#
+# NORMALIZED-LF EXCERPT record (not a whole-file claim):
+#   destination lines 70-193 are exactly the 124 production lines at
+#   v189 shadow/src/knowledge_vault.rs lines 777-900.
+# The SHA-256 is over those 124 lines joined with LF and terminated by one LF.
+# EXCERPT-SHA256 ac838a0c0736bfed88f5a00318cb51aa001e8042e66f4695cec7ac65c90c2204  crates/system-poc/src/shadow_projection.rs  70  193

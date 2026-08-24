@@ -1,0 +1,30 @@
+DATE=2026-08-24
+EMPTY_RUNS=3/3 exit code 0 with identical observations
+POSITIVE_CONTROL_RUNS=1/1 exit code 0
+
+--- EMPTY COLD START (REPEATED 3 TIMES) ---
+artifact=ESS-MAI-SYSTEM-POC-003
+mode=EMPTY_COLD_START
+gcl_parent_authority=true
+shadow_selection_processes=2
+besa_selection=positive:0 negative:0 accepted_empty:true
+asht_succeeded=false
+asht_error=request-bound relevance found no exact positive candidate
+post_asht_probe_reached=false
+production_shadow_commit_executed=false
+classification=COLD_START_REACHABILITY_GAP_REPRODUCED
+
+--- EXACT-PAIR POSITIVE CONTROL ---
+artifact=ESS-MAI-SYSTEM-POC-003
+mode=EXACT_PAIR_POSITIVE_CONTROL
+gcl_parent_authority=true
+shadow_selection_processes=2
+besa_selection=positive:1 negative:1 accepted_empty:false
+asht_succeeded=true
+asht_error=NONE
+post_asht_probe_reached=true
+production_shadow_commit_executed=false
+classification=POST_ASHT_REACHABILITY_CONTROL_PASS
+
+CAUSAL_INTERPRETATION=the disclosed Asht gate passes with exact-pair evidence and fails closed in generation-zero emptiness
+FULL_PRODUCTION_E2E=NOT_RUN

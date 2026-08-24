@@ -1,0 +1,13 @@
+DATE=2026-08-24
+COMMAND=cargo fmt --all -- --check
+EXIT_CODE=1
+CLASSIFICATION=IDENTITY_PRESERVATION_BOUNDARY
+
+OBSERVATION=current rustfmt proposes formatting changes to multiple byte-identical production extracts and to new glue
+ACTION_TAKEN=no formatting mutation applied
+REASON=applying rustfmt to production extracts would destroy byte identity recorded in EXTRACTION_MANIFEST.sha256
+
+CARGO_BUILD_RESULT=PASS
+CARGO_TEST_RESULT=84 passed; 0 failed
+
+INTERPRETATION=this is not a Cargo compilation failure; formatting is deliberately excluded as a release gate for exact extracts

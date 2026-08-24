@@ -1,0 +1,30 @@
+SCAN_SCOPE=all publication source, manifests, documentation, scripts, and evidence under <POC_ROOT>
+EXCLUDED=target/** generated compiler artifacts
+TOOL=ripgrep
+
+ABSOLUTE_USER_PATH_PATTERN=machine-specific user-profile absolute path
+ABSOLUTE_USER_PATH_MATCHES=0
+
+FORBIDDEN_ARTIFACT_LABEL_PATTERN=whole-word prohibited alternate artifact label and its status form
+FORBIDDEN_ARTIFACT_LABEL_MATCHES=0
+
+CONFLICT_MARKER_MATCHES=0
+
+C01_C02_REFERENCES=allowed only when explicitly classified as reference-not-evidence
+IMPLEMENTATION_EVIDENCE_SOURCE=<V189_SOURCE> only
+
+CREDENTIAL_PATTERNS:
+- PEM/OpenSSH/RSA/EC private-key headers
+- AWS access-key form
+- Google API-key form
+- GitHub token forms
+- OpenAI-style secret-key form
+- quoted api_key/password assignments
+- HTTP bearer-authorization header form
+CREDENTIAL_PATTERN_MATCHES=0
+
+KNOWN_AUTHOR_EMAIL=gjata@legacy.al
+KNOWN_AUTHOR_EMAIL_CLASSIFICATION=expected package metadata, not a credential
+
+GENERATED_TARGET_NOTE=target artifacts may contain machine-specific absolute build paths and are excluded from the publication allowlist and hash manifest.
+SENSITIVE_SCAN=PASS

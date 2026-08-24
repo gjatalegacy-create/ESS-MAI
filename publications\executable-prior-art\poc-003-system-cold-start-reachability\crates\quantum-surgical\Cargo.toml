@@ -1,0 +1,17 @@
+[package]
+name = "ess-mai-quantum-surgical"
+version = "0.2.0"
+edition = "2021"
+authors = ["Bledar Gjata <gjata@legacy.al>"]
+description = "Surgical ESS-MAI Quantum closure for the POC-003 cold-start reachability experiment"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+name = "quantum_lim"
+path = "src/lib.rs"
+doctest = false
+
+[dependencies]
+gcl_constitution = { package = "gcl-constitution", path = "../gcl-constitution" }
+shadow_contracts = { path = "../shadow-contracts" }

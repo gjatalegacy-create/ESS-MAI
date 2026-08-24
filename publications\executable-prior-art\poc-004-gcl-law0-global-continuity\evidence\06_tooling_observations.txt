@@ -1,0 +1,38 @@
+These observations are retained for transparency. They are not LAW-0 experimental failures and are not counted as passing scientific evidence.
+
+ATTEMPT_1=EXTRACTION_ORCHESTRATION_FAIL
+CAUSE=The JavaScript tool isolate did not expose atob for an internal base64 decode attempt.
+FILES_WRITTEN_BY_FAILED_ATTEMPT=0
+RESOLUTION=Use patch-based extraction and verify all extracted files by SHA-256.
+
+ATTEMPT_2=INITIAL_FORMAT_CHECK_FAIL
+CAUSE=The new experiment source required standard rustfmt layout changes.
+PRODUCTION_SOURCE_AFFECTED=false
+RESOLUTION=Format only the experiment package; rerun cargo fmt --all -- --check; verify extracted hashes unchanged.
+FINAL_FORMAT_RESULT=PASS
+
+ATTEMPT_3=FIRST_TEMP_STAGE_SETUP_FAIL
+CAUSE=New-Item was invoked with unsupported -LiteralPath; no stage manifest was created.
+STAGE_CLEANUP=PASS
+RESOLUTION=Retry with New-Item -Path and the same validated temporary-directory boundary.
+FINAL_STANDALONE_RESULT=PASS
+
+ATTEMPT_4=TARGETED_FULL_WORKSPACE_SHADOW_TEST_BLOCKED_BEFORE_COMPILE
+COMMAND=cargo test --manifest-path <V189_SOURCE>/Cargo.toml -p shadow_platform --no-default-features --features pure_rust --locked --offline transaction_roundtrip_validation_is_closed -- --exact --nocapture
+ISOLATED_TARGET=<POC_ROOT>/shadow_audit_target
+CAUSE=Offline root-workspace dependency resolution requested rust-stemmers through the unrelated quantum-platform package; the package was not present in the local cache.
+SHADOW_CODE_COMPILED=false
+SCIENTIFIC_RESULT_CLASSIFICATION=TOOLING_DEPENDENCY_RESOLUTION_FAILURE_NOT_SHADOW_FAILURE
+V189_SOURCE_MUTATION=none
+ISOLATED_TARGET_RETAINED=false
+
+ATTEMPT_5=RUSTFMT_TOUCHED_EXTRACTED_SHADOW_FORMATTING
+CAUSE=rustfmt followed the experiment path module into the byte-identical extracted Shadow file and normalized alignment whitespace.
+RESOLUTION=Restore the exact v189 whitespace with a patch, add rustfmt skip at the module boundary, rerun format check, compare origin/extracted bytes and SHA-256.
+FINAL_SHADOW_EXTRACTION_SHA256=93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
+FINAL_EXTRACTION_IDENTITY=6_OF_6_PASS
+V189_SOURCE_AFFECTED=false
+
+RECURRING_NON_FATAL_WARNING=Cargo/rustc could not canonicalize <USER_PROFILE>.
+EFFECT_ON_EXIT_STATUS=none
+EFFECT_ON_SOURCE_IDENTITY=none

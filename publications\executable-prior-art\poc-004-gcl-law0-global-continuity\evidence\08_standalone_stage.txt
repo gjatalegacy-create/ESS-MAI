@@ -1,0 +1,23 @@
+OBJECTIVE=Build and test an isolated copy containing no v189 directory and no preexisting target cache.
+STAGE_LOCATION=<SYSTEM_TEMP>/ess-mai-law0-standalone-<RANDOM_ID>
+V189_PRESENT_IN_STAGE=false
+PREEXISTING_TARGET_PRESENT=false
+
+COMMAND_1=cargo build --manifest-path <STAGE>/Cargo.toml --workspace --locked --offline
+BUILD_RESULT=PASS
+CARGO_REPORTED_ELAPSED=4.49s
+
+COMMAND_2=cargo test --manifest-path <STAGE>/Cargo.toml --workspace --locked --offline
+TEST_RESULT=PASS
+CARGO_REPORTED_COMPILE_ELAPSED=1.42s
+GCL_PRODUCTION_TESTS=11 passed, 0 failed
+SHADOW_RECEIPT_SOURCE_TESTS=2 passed, 0 failed
+POC_HARNESS_TESTS=6 passed, 0 failed
+TOTAL_UNIT_TESTS=19 passed, 0 failed
+EXIT_CODE=0
+
+STANDALONE_STAGE_RESULT=PASS
+STAGE_CLEANUP=PASS
+TEMPORARY_FILES_RETAINED=0
+
+NON_FATAL_WARNING=Cargo could not canonicalize <USER_PROFILE>.

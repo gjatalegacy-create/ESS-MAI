@@ -1,0 +1,70 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "collection_version": "1.0.0",
+  "status": "release_candidate_not_yet_tagged",
+  "validation_date": "2026-08-24",
+  "collection": {
+    "name": "ESS-MAI Executable Prior Art — POC Collection",
+    "project": "ESS-MAI",
+    "author": "Bledar Gjata",
+    "organization": "Gjata Legacy",
+    "public_email": "gjata@legacy.al",
+    "canonical_repository": "https://github.com/gjatalegacy-create/ESS-MAI",
+    "canonical_path": "publications/executable-prior-art/",
+    "license": "Apache-2.0",
+    "repository_model": "single canonical repository",
+    "artifact_class": "POC",
+    "full_v1_8_9_core_included": false
+  },
+  "policy": {
+    "terminology": "Every published theory or system capsule is a POC, never a demo.",
+    "evidence": "C01 and C02 are reference-only and are not evidence.",
+    "advancement_method": "experimental success + experimental failure = architecture-preserving advancement method",
+    "claim_boundary": "Each POC establishes only claims supported by its own disclosed artifacts and reproducible procedure.",
+    "authority_root": "GCL is the sovereign constitutional parent; subordinate platform authorities remain bounded."
+  },
+  "disclosure_partitions": [
+    "EXTERNAL_FOUNDATION",
+    "PREEXISTING_ESS_MAI",
+    "POC_CONTRIBUTION",
+    "AUTHOR_DECLARED_ADVANCEMENT",
+    "FUTURE_VARIANTS"
+  ],
+  "entries": [
+    {
+      "poc_id": "POC-003",
+      "slug": "poc-003-system-cold-start-reachability",
+      "relative_path": "poc-003-system-cold-start-reachability/",
+      "version": "0.2.0",
+      "class": "SYSTEM_POC",
+      "status": "release_candidate",
+      "experimental_status": "PARTIAL_SYSTEM_MATERIALIZATION_WITH_CAUSAL_CONTROL",
+      "cargo_build": "PASS",
+      "cargo_tests": "84 passed; 0 failed",
+      "runs": "3/3 empty cold-start gap reproduced; 1/1 exact-pair positive control passed",
+      "production_shadow_commit_executed": false,
+      "artifact_manifest_sha256": "f43f7439830c77b4802c3d4cc4000e3d0d8c2b3e5fce12e5f1fd8d5aaa8fc92c"
+    },
+    {
+      "poc_id": "POC-004",
+      "slug": "poc-004-gcl-law0-global-continuity",
+      "relative_path": "poc-004-gcl-law0-global-continuity/",
+      "version": "0.2.0",
+      "class": "THEORY_POC",
+      "status": "release_candidate",
+      "experimental_status": "PARTIAL_MATERIALIZATION",
+      "cargo_build": "PASS",
+      "cargo_tests": "19 passed; 0 failed",
+      "runs": "5/5 success and counterexamples reproduced",
+      "artifact_manifest_sha256": "e8ef70d0af825f46709edcd20d9fed36459d6471c5869782c67e88d64fc56ee3"
+    }
+  ],
+  "exclusions": [
+    "full private ESS-MAI v1.8.9 core",
+    "private source-workspace manifests",
+    "C01 and C02 evidence",
+    "targets, caches, binaries, archives, WAL/vault/hold files",
+    "credentials, private keys, tokens, environment dumps, private absolute paths",
+    "unissued DOI, tag, release, archive, or timestamp claims"
+  ]
+}

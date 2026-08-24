@@ -1,0 +1,22 @@
+COMMAND_1=cargo clean
+CLEAN_TARGET_VERIFIED=<POC_ROOT>/target
+CLEAN_RESULT=PASS
+REMOVED_GENERATED_FILES=503
+REMOVED_GENERATED_BYTES_APPROX=67.5 MiB
+
+COMMAND_2=cargo build --workspace --locked --offline
+BUILD_RESULT=PASS
+PROFILE=dev unoptimized+debuginfo
+CARGO_REPORTED_ELAPSED=4.68s
+EXIT_CODE=0
+
+COMPILED_LOCAL_CRATES:
+- gcl-constitution v1.7.8 from <POC_ROOT>/extracted/gcl-constitution
+- gcl-law0-global-continuity-experiment v0.1.0 from <POC_ROOT>/experiment
+- sha2 v0.10.9 and its locked local-cache dependency closure
+
+NETWORK_DOWNLOADS=0
+DIRECT_EXTERNAL_DEPENDENCIES=1
+PRODUCTION_SOURCE_MUTATION=none
+
+NON_FATAL_WARNING=Cargo could not canonicalize <USER_PROFILE>.

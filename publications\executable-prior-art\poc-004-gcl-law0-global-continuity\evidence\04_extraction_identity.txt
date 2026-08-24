@@ -1,0 +1,14 @@
+COMMAND=./verify_extraction.ps1
+RESULT=PASS
+FILES_VERIFIED=6
+
+PASS ecf9912f951d481db32022fb0a9d62725d086e3f3748269a97144034799d0b7c  extracted/gcl-constitution/Cargo.toml
+PASS f8441fa4dd3d4981d9c85420dd4192b6da3db09517b0270c0dede94a977e5d85  extracted/gcl-constitution/src/lib.rs
+PASS 2ea2645c63d8ca617b3659d2f8480f11f2375845b16e81eb43808a181088807b  extracted/gcl-constitution/src/constitution.rs
+PASS 8047c0191c0a4c72b648696d06c8f5584a2ce1ae897602c807dcb9da46648881  extracted/gcl-constitution/src/phase.rs
+PASS 79c204190c6ab257fb827060cf7f8ffd620da333c6ec9903b89f20818f4d2a9c  extracted/gcl-constitution/src/extension.rs
+PASS 93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c  extracted/shadow_verification_receipt.rs
+
+SOURCE_AND_EXTRACTED_SIZE_MATCH=true
+SOURCE_AND_EXTRACTED_SHA256_MATCH=true
+EXTRACTION_IDENTITY=PASS

@@ -1,0 +1,13 @@
+[package]
+name = "shadow_contracts"
+version = "1.7.8"
+edition = "2021"
+authors = ["Bledar Gjata <gjata@legacy.al>"]
+description = "ESS-MAI public wire contracts for mediated Shadow process communication"
+
+[lib]
+name = "shadow_contracts"
+path = "src/lib.rs"
+
+[dependencies]
+sha2 = "0.10"

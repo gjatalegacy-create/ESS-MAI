@@ -1,0 +1,33 @@
+{
+  "upload_type": "software",
+  "title": "ESS-MAI Executable Prior Art by Bledar Gjata — POC 003 and POC 004",
+  "description": "A public Apache-2.0 collection of two surgically bounded ESS-MAI proof-of-concept capsules. POC 003 reproduces the generation-zero Shadow cold-start reachability gap and a positive causal control. POC 004 reproduces supported local GCL LAW-0 behavior together with counterexamples to stronger global continuity. Experimental success and experimental failure are preserved together as an architecture-preserving advancement method. The full ESS-MAI v1.8.9 core is not included.",
+  "creators": [
+    {
+      "name": "Gjata, Bledar",
+      "affiliation": "Gjata Legacy"
+    }
+  ],
+  "access_right": "open",
+  "license": "apache-2.0",
+  "keywords": [
+    "ESS-MAI",
+    "Bledar Gjata",
+    "Gjata Legacy",
+    "Gjata Collapse Law",
+    "GCL",
+    "negative knowledge",
+    "executable prior art",
+    "proof of concept",
+    "Rust",
+    "cold-start reachability"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/gjatalegacy-create/ESS-MAI",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Metadata template for a manual Zenodo Software record. Publish exactly one compressed collection ZIP. Add the final GitHub tag/commit as related identifiers and set the release version only after they exist."
+}

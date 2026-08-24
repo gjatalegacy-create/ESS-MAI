@@ -1,0 +1,13 @@
+COMMAND=cargo clean
+CLEAN_TARGET_VERIFIED=<POC_ROOT>/target
+RESULT=PASS
+REMOVED_GENERATED_FILES=361
+REMOVED_GENERATED_BYTES_APPROX=60.7 MiB
+TARGET_EXISTS_AFTER_CLEAN=false
+
+PURPOSE=Remove machine-specific compiler artifacts after final build, tests, runs, and standalone-stage verification.
+PUBLICATION_SOURCE_REMOVED=0
+EXTRACTED_SOURCE_REMOVED=0
+EVIDENCE_REMOVED=0
+
+NON_FATAL_WARNING=Cargo could not canonicalize <USER_PROFILE>.

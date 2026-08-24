@@ -1,0 +1,22 @@
+COMMAND=cargo test --workspace --locked --offline -- --test-threads=1
+DATE=2026-08-24
+EXIT_CODE=0
+RESULT=PASS
+
+gcl-constitution=11 passed; 0 failed
+shadow-contracts=13 passed; 0 failed
+ess-mai-quantum-surgical=44 passed; 0 failed
+ess-mai-system-poc-003 unit=10 passed; 0 failed
+cold_start_reachability integration=6 passed; 0 failed
+
+TOTAL=84 passed; 0 failed
+
+KEY_INTEGRATION_ASSERTIONS:
+- wrong GCL phase authority rejected
+- two fresh Shadow selection processes observed
+- Besa accepted complete empty selection
+- Asht failed closed on missing exact positive candidate
+- empty state never reached the post-Asht probe
+- exact-pair control reached post-Asht, then a new empty run stayed empty
+
+PRODUCTION_SHADOW_COMMIT_EXECUTED=false

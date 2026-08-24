@@ -1,0 +1,40 @@
+ESS-MAI POC 004 RELEASE-CANDIDATE VALIDATION
+DATE=2026-08-24
+AUTHOR_ARCHITECT=Bledar Gjata
+PROJECT=ESS-MAI
+ORGANIZATION_AFFILIATION=Gjata Legacy
+CAPSULE_VERSION=0.2.0
+LICENSE=Apache-2.0
+VALIDATION_SCOPE=public surgical capsule only
+
+TOOLCHAIN_CARGO=1.98.0
+TOOLCHAIN_RUSTC=1.98.0
+HOST=x86_64-pc-windows-gnu
+NETWORK_MODE=offline
+LOCKFILE_MODE=locked
+TARGET_MODE=isolated temporary directory removed after validation
+
+EXTRACTION_IDENTITY=PASS
+EXTRACTED_FILES_VERIFIED=6/6
+CARGO_FMT_ALL_CHECK=PASS
+CARGO_BUILD_WORKSPACE_LOCKED_OFFLINE=PASS
+
+GCL_CONSTITUTION_TESTS=11 passed; 0 failed
+EXPERIMENT_BINARY_TESTS=8 passed; 0 failed
+EXPERIMENT_BINARY_BREAKDOWN=2 byte-identical Shadow receipt tests + 6 new harness tests
+TOTAL_TESTS=19 passed; 0 failed
+
+EXECUTIONS=5/5 exit code 0
+EXECUTION_OUTPUT=identical key/value observations across all five runs
+
+SUPPORTED_LOCAL_BEHAVIOR=local tuple non-expansion rejection and atomicity reproduced
+COUNTEREXAMPLES_REPRODUCED=global discontinuity; phase regression; negative domain; infinite domain
+SHADOW_RECEIPT_GAP_REPRODUCED=changing only LAW-0 does not change the current tested receipt identifier
+ADVANCEMENT_PROBE_REPRODUCED=domain-separated receipt-ID plus LAW-0-digest binding changes and detects substitution
+
+FULL_V189_END_TO_END=NOT_RUN_BY_THIS_CAPSULE
+STATIC_V189_SOURCE_MAPPING=NOT_RELABELED_AS_EXECUTED_EVIDENCE
+EXTERNAL_CERTIFICATION=NONE_CLAIMED
+RELEASE_VALIDATION=PASS
+
+NOTE=Machine-specific absolute paths and non-substantive Cargo canonicalization warnings are intentionally omitted from this public evidence summary.

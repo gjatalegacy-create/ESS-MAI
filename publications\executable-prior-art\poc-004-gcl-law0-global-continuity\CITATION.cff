@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this bounded ESS-MAI theory POC, cite this artifact version."
+type: software
+title: "ESS-MAI POC 004 — GCL LAW-0 Global Uncertainty Continuity"
+version: 0.2.0
+authors:
+  - family-names: Gjata
+    given-names: Bledar
+    affiliation: "Gjata Legacy"
+    email: "gjata@legacy.al"
+license: Apache-2.0
+repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
+url: "https://github.com/gjatalegacy-create/ESS-MAI/tree/main/publications/executable-prior-art/poc-004-gcl-law0-global-continuity"
+abstract: >-
+  An isolated executable POC of the v189 GCL LAW-0 uncertainty ledger. The
+  artifact preserves the production crate byte-for-byte, demonstrates in
+  bounded executable cases local tuple
+  non-expansion and atomic rejection, reproduces global continuity, phase-order,
+  and numeric-domain gaps, and defines a bounded architecture-preserving
+  advancement method.
+keywords:
+  - ESS-MAI
+  - Bledar Gjata
+  - Gjata Legacy
+  - GCL
+  - uncertainty ledger
+  - monotone state transition
+  - executable prior art
+  - proof of concept

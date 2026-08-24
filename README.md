@@ -17,6 +17,10 @@ This repository is evaluated through source code, reproducible `cargo build` and
 
 Executable POCs, prior-art records, build evidence, and materialization reports are maintained as additions to this canonical repository. They are **not** published as separate ESS-MAI repositories.
 
+## Executable prior art / POC collection
+
+The public Apache-2.0 collection is maintained at [`publications/executable-prior-art/`](publications/executable-prior-art/). It separates established foundations, pre-existing ESS-MAI materialization, the bounded POC contribution, experimental failures, and the architecture-preserving advancement method. The full private v1.8.9 core is not part of that disclosure.
+
 ## Research scope
 
 - Gjata Collapse Law (GCL) and bounded hierarchical authority
@@ -36,7 +40,7 @@ Dokumentacioni teknik më poshtë ruan përshkrimin ekzistues të arkitekturës 
 ```
 INPUT → LIGHT (koordinim+trace, s'vendos)
       → QUANTUM (arsyetim+presion+eliminim, s'jep verdikt)
-      → SHADOW (autoriteti suprem, vendos 0/1 + ruan njohuri)
+      → SHADOW (verdikt + persistencë brenda juridiksionit të deleguar nga GCL)
       → LIGHT → OUTPUT
 ```
 
@@ -113,11 +117,11 @@ Verifikimi i plotë në Windows GNU:
 .\VALIDATE_V160.ps1
 ```
 
-## Ligjet e Sistemit (të pandryshueshme)
+## Invariantet kushtetuese të synuara dhe të testueshme
 
 1. **Zero if/else klasik** — match/boolean/formula (match-guards të lejuar).
 2. **Quantum s'vendos kurrë** — prodhon provë për Shadow.
-3. **Shadow autoritet i vetëm suprem** — vendos 0/1 + ruan persistent.
+3. **GCL është autoriteti sovran kushtetues** — Shadow ushtron vetëm juridiksionin e deleguar të verdiktit/persistencës dhe nuk merr sovranitetin e parent-it.
 4. **Asnjë klon i panevojshëm** — move në rrugën kryesore.
 5. **Trace para çdo logjike**.
 6. **Reasoning Purity** — vetëm Shadow shkruan persistent.
@@ -128,7 +132,8 @@ Verifikimi i plotë në Windows GNU:
 |-----------|-----|-------|
 | `light/`   | Koordinim, trace, transport, UI, kontrata | `light-platform` |
 | `quantum/` | Arsyetim, NPRO, HCP_PRO, MPRO, Digital Lab | `quantum-platform` |
-| `shadow/`  | Vendim suprem, ECO, NightWatch, VNK vault | `shadow_platform` |
+| `shadow/`  | Verdikt dhe persistencë brenda autoritetit të deleguar nga GCL; ECO, NightWatch, VNK vault | `shadow_platform` |
 
 ---
 **GJATA LEGACY™ — ESS-MAI** • Sovereign Deterministic Reasoning Substrate
+

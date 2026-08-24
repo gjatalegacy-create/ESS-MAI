@@ -1,0 +1,11 @@
+[package]
+name = "gcl-constitution"
+version = "1.7.8"
+edition = "2021"
+authors = ["Bledar Gjata <gjata@legacy.al>"]
+description = "ESS-MAI single physical source for the existing GCL constitutional contract"
+publish = false
+
+[lib]
+name = "gcl_constitution"
+path = "src/lib.rs"

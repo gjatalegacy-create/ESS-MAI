@@ -1,0 +1,12 @@
+[package]
+name = "gcl-law0-global-continuity-experiment"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+gcl_constitution = {
+    package = "gcl-constitution",
+    path = "../extracted/gcl-constitution",
+}
+sha2 = "0.10"

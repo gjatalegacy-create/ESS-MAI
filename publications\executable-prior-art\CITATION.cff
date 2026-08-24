@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use or discuss this POC collection, cite Bledar Gjata, ESS-MAI, and Gjata Legacy."
+title: "ESS-MAI Executable Prior Art — POC Collection"
+type: software
+authors:
+  - family-names: Gjata
+    given-names: Bledar
+    affiliation: Gjata Legacy
+    email: gjata@legacy.al
+abstract: >-
+  A collection of surgically bounded, executable ESS-MAI proof-of-concept
+  capsules. It records experimental successes and failures as an advancement
+  method while excluding the full ESS-MAI v1.8.9 core. C01 and C02 are
+  reference-only and are not evidence.
+license: Apache-2.0
+repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
+url: "https://github.com/gjatalegacy-create/ESS-MAI"
+keywords:
+  - ESS-MAI
+  - executable prior art
+  - proof of concept
+  - POC
+  - negative knowledge
+  - GCL
+

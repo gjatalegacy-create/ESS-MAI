@@ -1,0 +1,18 @@
+COMMAND=cargo build --workspace --all-targets --locked --offline
+DATE=2026-08-24
+EXIT_CODE=0
+RESULT=PASS
+
+PACKAGES_BUILT:
+- gcl-constitution 1.7.8
+- shadow_contracts 1.7.8
+- ess-mai-quantum-surgical 0.2.0
+- ess-mai-system-poc-003 0.2.0
+
+BUILD_WARNINGS=3 dead-code warnings in preserved/disclosed paths outside the bounded execution route
+WARNING_1=SelectionHoldStore methods not all called by this experiment
+WARNING_2=full-cycle bridge function not called by this experiment
+WARNING_3=GCL status helper not called by this experiment
+
+INTERPRETATION=warnings retained as scope debt; no compilation failure
+GENERATED_ARTIFACTS_INCLUDED_IN_CAPSULE=false

@@ -1,0 +1,35 @@
+[package]
+name = "ess-mai-system-poc-003"
+version = "0.2.0"
+edition = "2021"
+authors = ["Bledar Gjata <gjata@legacy.al>"]
+description = "ESS-MAI surgical executable POC for generation-zero Shadow reachability"
+license = "Apache-2.0"
+publish = false
+
+[features]
+default = []
+dev_harness = []
+
+[lib]
+name = "ess_mai_system_poc_003"
+path = "src/lib.rs"
+doctest = false
+
+[[bin]]
+name = "shadow_platform"
+path = "src/bin/shadow_platform.rs"
+
+[[bin]]
+name = "ess-mai-system-poc-003"
+path = "src/bin/ess_mai_system_poc_003.rs"
+
+[[test]]
+name = "cold_start_reachability"
+path = "tests/cold_start_reachability.rs"
+
+[dependencies]
+gcl_constitution = { package = "gcl-constitution", path = "../gcl-constitution" }
+quantum_lim = { package = "ess-mai-quantum-surgical", path = "../quantum-surgical" }
+shadow_contracts = { path = "../shadow-contracts" }
+sha2 = "0.10"

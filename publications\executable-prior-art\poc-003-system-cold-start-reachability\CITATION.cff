@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this bounded ESS-MAI system POC, cite this exact capsule version."
+type: software
+title: "ESS-MAI SYSTEM POC 003 — Surgical Cold-Start Reachability"
+version: 0.2.0
+authors:
+  - family-names: Gjata
+    given-names: Bledar
+    affiliation: "Gjata Legacy"
+    email: "gjata@legacy.al"
+license: Apache-2.0
+repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
+url: "https://github.com/gjatalegacy-create/ESS-MAI/tree/main/publications/executable-prior-art/poc-003-system-cold-start-reachability"
+abstract: >-
+  A surgical executable ESS-MAI system POC that preserves a bounded set of
+  production files byte-for-byte, reproduces a generation-zero Shadow
+  reachability gap, executes a positive causal control, and defines a
+  GCL-governed architecture-preserving advancement method without publishing
+  the full v1.8.9 core.
+keywords:
+  - ESS-MAI
+  - Bledar Gjata
+  - Gjata Legacy
+  - GCL
+  - negative knowledge
+  - cold-start reachability
+  - executable prior art
+  - proof of concept
+  - Rust
