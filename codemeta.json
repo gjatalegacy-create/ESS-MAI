@@ -11,6 +11,7 @@
       "givenName": "Bledar",
       "familyName": "Gjata",
       "name": "Bledar Gjata",
+      "email": "gjata@legacy.al",
       "url": "https://github.com/gjatalegacy-create",
       "affiliation": {
         "@type": "Organization",
@@ -30,6 +31,10 @@
     "sovereign AI",
     "deterministic systems",
     "runtime verification",
-    "executable POC"
+    "executable POC",
+    "AI governance",
+    "reproducible research",
+    "executable prior art",
+    "knowledge representation"
   ]
 }

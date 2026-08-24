@@ -1,0 +1,89 @@
+name: Executable POC validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/poc-validation.yml"
+      - "publications/executable-prior-art/**"
+  pull_request:
+    paths:
+      - ".github/workflows/poc-validation.yml"
+      - "publications/executable-prior-art/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "poc-validation-${{ github.ref }}"
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "1"
+
+jobs:
+  poc-003:
+    name: POC 003 · cold-start reachability
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out disclosed source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Record Rust toolchain
+        shell: pwsh
+        run: |
+          rustc --version --verbose
+          cargo --version --verbose
+
+      - name: Verify extraction identity
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-003-system-cold-start-reachability
+        run: .\scripts\verify_extraction.ps1
+
+      - name: Build locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-003-system-cold-start-reachability
+        run: cargo build --workspace --all-targets --locked
+
+      - name: Test locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-003-system-cold-start-reachability
+        run: cargo test --workspace --all-targets --locked
+
+  poc-004:
+    name: POC 004 · GCL LAW-0 continuity
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out disclosed source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Record Rust toolchain
+        shell: pwsh
+        run: |
+          rustc --version --verbose
+          cargo --version --verbose
+
+      - name: Verify extraction identity
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-004-gcl-law0-global-continuity
+        run: .\verify_extraction.ps1
+
+      - name: Build locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-004-gcl-law0-global-continuity
+        run: cargo build --workspace --all-targets --locked
+
+      - name: Test locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-004-gcl-law0-global-continuity
+        run: cargo test --workspace --all-targets --locked
+

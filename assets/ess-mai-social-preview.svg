@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title description">
+  <title id="title">ESS-MAI by Bledar Gjata and Gjata Legacy</title>
+  <description id="description">Executable research in negative knowledge, bounded authority, and governed deterministic AI.</description>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.58" stop-color="#0b1c31"/>
+      <stop offset="1" stop-color="#102942"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#54d6ff"/>
+      <stop offset="1" stop-color="#7cf0c8"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#8fdcf5" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#background)"/>
+  <rect width="1280" height="640" fill="url(#grid)"/>
+  <circle cx="1155" cy="62" r="230" fill="#42c8f5" opacity="0.055"/>
+  <circle cx="1170" cy="610" r="310" fill="#61e6bd" opacity="0.045"/>
+  <rect x="0" y="0" width="12" height="640" fill="url(#accent)"/>
+
+  <text x="72" y="82" fill="#83e5ff" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="4">GJATA LEGACY · OPEN RESEARCH</text>
+  <text x="68" y="225" fill="#f4fbff" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="112" font-weight="750" letter-spacing="2">ESS-MAI</text>
+  <rect x="72" y="252" width="620" height="5" rx="2.5" fill="url(#accent)"/>
+  <text x="72" y="310" fill="#d9edf7" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="28" font-weight="500">Negative knowledge · governed deterministic AI</text>
+  <text x="72" y="357" fill="#9fc3d6" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="21">Executable Rust POCs with explicit success, failure,</text>
+  <text x="72" y="389" fill="#9fc3d6" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="21">claim boundaries, and architecture-preserving advancement.</text>
+
+  <g font-family="Segoe UI, Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    <rect x="72" y="439" width="100" height="39" rx="19.5" fill="#102d45" stroke="#54d6ff" stroke-opacity="0.7"/>
+    <text x="103" y="464" fill="#bceeff">RUST</text>
+    <rect x="187" y="439" width="92" height="39" rx="19.5" fill="#102d45" stroke="#54d6ff" stroke-opacity="0.7"/>
+    <text x="215" y="464" fill="#bceeff">GCL</text>
+    <rect x="294" y="439" width="197" height="39" rx="19.5" fill="#102d45" stroke="#7cf0c8" stroke-opacity="0.7"/>
+    <text x="319" y="464" fill="#c8f7e8">NEGATIVE KNOWLEDGE</text>
+    <rect x="506" y="439" width="183" height="39" rx="19.5" fill="#102d45" stroke="#7cf0c8" stroke-opacity="0.7"/>
+    <text x="532" y="464" fill="#c8f7e8">EXECUTABLE POCs</text>
+  </g>
+
+  <g font-family="Segoe UI, Inter, Arial, sans-serif">
+    <path d="M 985 157 L 922 240 M 985 157 L 985 240 M 985 157 L 1048 240" fill="none" stroke="#69dded" stroke-width="3" stroke-linecap="round" opacity="0.82"/>
+    <circle cx="985" cy="126" r="56" fill="#102f48" stroke="#7cf0c8" stroke-width="3" filter="url(#glow)"/>
+    <text x="985" y="133" text-anchor="middle" fill="#e8fff8" font-size="27" font-weight="750">GCL</text>
+    <text x="985" y="151" text-anchor="middle" fill="#91cdbd" font-size="11" letter-spacing="1">AUTHORITY ROOT</text>
+
+    <rect x="850" y="240" width="118" height="64" rx="13" fill="#102d45" stroke="#54d6ff" stroke-opacity="0.8"/>
+    <text x="909" y="268" text-anchor="middle" fill="#eaf9ff" font-size="17" font-weight="700">LIGHT</text>
+    <text x="909" y="289" text-anchor="middle" fill="#8ebed2" font-size="11">COORDINATE</text>
+
+    <rect x="976" y="240" width="118" height="64" rx="13" fill="#102d45" stroke="#54d6ff" stroke-opacity="0.8"/>
+    <text x="1035" y="268" text-anchor="middle" fill="#eaf9ff" font-size="17" font-weight="700">QUANTUM</text>
+    <text x="1035" y="289" text-anchor="middle" fill="#8ebed2" font-size="11">REASON</text>
+
+    <rect x="1102" y="240" width="118" height="64" rx="13" fill="#102d45" stroke="#7cf0c8" stroke-opacity="0.8"/>
+    <text x="1161" y="268" text-anchor="middle" fill="#effff9" font-size="17" font-weight="700">SHADOW</text>
+    <text x="1161" y="289" text-anchor="middle" fill="#91cdbd" font-size="11">VERDICT</text>
+
+    <path d="M 850 346 H 1220" stroke="#315875" stroke-width="2"/>
+    <text x="1035" y="387" text-anchor="middle" fill="#b7d6e5" font-size="18" font-weight="600">separation below</text>
+    <text x="1035" y="416" text-anchor="middle" fill="#74dcbf" font-size="18" font-weight="600">constitutional unity above</text>
+  </g>
+
+  <text x="72" y="572" fill="#f1f9fc" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="21" font-weight="650">Bledar Gjata · ESS-MAI · Gjata Legacy</text>
+  <text x="1208" y="572" text-anchor="end" fill="#83aabe" font-family="Consolas, Cascadia Mono, monospace" font-size="15">github.com/gjatalegacy-create/ESS-MAI</text>
+</svg>

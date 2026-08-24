@@ -1,0 +1,60 @@
+name: Evidence-bound research question
+description: Propose a precise question, counterexample, or minimal experiment grounded in the disclosed ESS-MAI POCs.
+title: "[Research question]: "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ESS-MAI treats successful and failed experiments as inputs to advancement. Questions should identify the public evidence they rely on and must not imply access to the private v1.8.9 core.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Research area
+      options:
+        - GCL and bounded hierarchical authority
+        - Negative knowledge
+        - Cold-start reachability
+        - LAW-0 continuity
+        - Light–Quantum–Shadow separation
+        - Claim boundary or prior-art attribution
+        - Reproducibility method
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Precise question or counterexample
+      description: State one falsifiable or inspectable question.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Public evidence used
+      description: Link exact files, lines, test names, manifests, or primary references.
+    validations:
+      required: true
+
+  - type: textarea
+    id: experiment
+    attributes:
+      label: Smallest proposed experiment
+      description: Describe inputs, expected observation, failure condition, and the authority boundary that remains unchanged.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: This question is grounded in public evidence and contains no confidential or private material.
+          required: true
+        - label: This question does not present a future hypothesis as an already materialized result.
+          required: true
+

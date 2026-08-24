@@ -1,35 +1,79 @@
 # ESS-MAI by Bledar Gjata · Gjata Legacy
 
-## Gjata Collapse Law (GCL) · Sovereign Deterministic Reasoning Research Architecture
+![ESS-MAI architecture: GCL authority root above bounded Light, Quantum, and Shadow roles](assets/ess-mai-social-preview.png)
 
-**ESS-MAI** is an experimental deep-tech research and systems-engineering project by **Bledar Gjata**. It investigates a Rust-based architecture for bounded hierarchical authority, traceable sovereign AI, deterministic reasoning, and the preservation and operational use of negative knowledge.
+[![Executable POC validation](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml/badge.svg?branch=main)](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-2f81f7.svg)](LICENSE)
 
-- **Author / Architect:** Bledar Gjata
+## Executable research in negative knowledge and governed deterministic AI
+
+**ESS-MAI** is an experimental deep-tech research and systems-engineering project by **Bledar Gjata** at **Gjata Legacy**. It investigates a Rust-based architecture for bounded hierarchical authority, traceable reasoning, deterministic state transitions, fail-closed behavior, and the preservation of negative knowledge as operational evidence.
+
+> **Evidence rule:** every public claim is bounded by disclosed source, an executable procedure, or an explicitly identified reference. A successful build proves compilation for the tested scope; it does not prove every architectural or scientific claim.
+
+## Start here
+
+| Resource | What it provides |
+| --- | --- |
+| [Executable prior-art collection](publications/executable-prior-art/) | Canonical Apache-2.0 index of the public ESS-MAI POCs |
+| [POC 003 — cold-start reachability](publications/executable-prior-art/poc-003-system-cold-start-reachability/) | System POC reproducing the empty-state reachability gap and an exact-pair causal control |
+| [POC 004 — GCL LAW-0 continuity](publications/executable-prior-art/poc-004-gcl-law0-global-continuity/) | Theory POC reproducing supported local behavior and counterexamples to stronger global continuity |
+| [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Versions, validation results, publication boundaries, and artifact-manifest hashes |
+| [Citation metadata](CITATION.cff) | Author, project, affiliation, license, and research keywords |
+
+The full private ESS-MAI v1.8.9 core is not included in the public POC collection. C01 and C02 are historical references only and are not evidence for these POCs.
+
+## What the project investigates
+
+- **Gjata Collapse Law (GCL):** a constitutional authority model that delegates and bounds subordinate system roles without collapsing them into peers.
+- **Negative knowledge:** failures, exclusions, rejected paths, and non-materialized claims preserved as usable evidence rather than discarded.
+- **Light–Quantum–Shadow separation:** coordination, reasoning, and verdict/persistence remain distinct jurisdictions under GCL.
+- **Traceable deterministic reasoning:** explicit transitions, evidence-bound handoffs, reproducible contracts, and fail-closed gates.
+- **Executable prior art:** Rust/Cargo POCs that publish successful results and experimental failures together with the smallest architecture-preserving advancement method.
+
+## Public evidence snapshot
+
+| POC | Class | Reproduced result |
+| --- | --- | --- |
+| POC 003 v0.2.0 | System POC | Cargo build PASS; 84/84 tests; empty cold-start gap reproduced 3/3; exact-pair control passed 1/1 |
+| POC 004 v0.2.0 | Theory POC | Cargo build PASS; 19/19 tests; supported behavior and counterexamples reproduced 5/5 |
+
+The collection [manifest](publications/executable-prior-art/manifest.json), each POC's `CLAIM_BOUNDARY.md`, and its SHA-256 evidence are the authoritative sources for the current public scope.
+
+## Reproduce the public POCs
+
+```bash
+# POC 003
+cd publications/executable-prior-art/poc-003-system-cold-start-reachability
+cargo build --workspace --all-targets --locked
+cargo test --workspace --all-targets --locked
+
+# POC 004
+cd ../poc-004-gcl-law0-global-continuity
+cargo build --workspace --all-targets --locked
+cargo test --workspace --all-targets --locked
+```
+
+For exact extraction checks, environment notes, and expected outputs, use each capsule's `REPRODUCIBILITY.md`. The public workflow reruns both Cargo suites on the default branch.
+
+## Research participation
+
+- [Submit an independent reproducibility report](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=reproducibility-report.yml)
+- [Open an evidence-bound research question](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=research-question.yml)
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes to a sealed POC.
+- See [SUPPORT.md](SUPPORT.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the public participation boundary.
+- Use [SECURITY.md](SECURITY.md) for private reporting of security-sensitive findings.
+
+## Canonical identity
+
+- **Author / architect:** [Bledar Gjata](https://github.com/gjatalegacy-create)
 - **Project:** ESS-MAI
-- **Organization:** Gjata Legacy
-- **Canonical repository:** https://github.com/gjatalegacy-create/ESS-MAI
-- **Author profile:** https://github.com/gjatalegacy-create
+- **Organization / affiliation:** Gjata Legacy
+- **Public contact:** [gjata@legacy.al](mailto:gjata@legacy.al)
 - **Core research concept:** Gjata Collapse Law (GCL)
-- **Implementation environment:** Rust and Cargo
-- **Status:** active research prototype with partial materialization
-
-This repository is evaluated through source code, reproducible `cargo build` and test results, documented successes and failures, and executable proof-of-concept packages. A successful build proves compilation only for the tested scope; it does not by itself prove every architectural or scientific claim.
-
-Executable POCs, prior-art records, build evidence, and materialization reports are maintained as additions to this canonical repository. They are **not** published as separate ESS-MAI repositories.
-
-## Executable prior art / POC collection
-
-The public Apache-2.0 collection is maintained at [`publications/executable-prior-art/`](publications/executable-prior-art/). It separates established foundations, pre-existing ESS-MAI materialization, the bounded POC contribution, experimental failures, and the architecture-preserving advancement method. The full private v1.8.9 core is not part of that disclosure.
-
-## Research scope
-
-- Gjata Collapse Law (GCL) and bounded hierarchical authority
-- negative knowledge as operational system state
-- Light–Quantum–Shadow separation of roles
-- traceability and deterministic decision paths
-- Rust-based system contracts and fail-closed behavior
-- executable POCs and reproducible experimental evidence
-- formal-methods-inspired invariants and runtime verification
+- **Implementation:** Rust and Cargo
+- **Status:** active experimental research prototype with partial materialization
+- **Published project profile:** [Business Magazine Albania — ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)
 
 ## Technical documentation / Dokumentacioni teknik
 
@@ -44,7 +88,7 @@ INPUT → LIGHT (koordinim+trace, s'vendos)
       → LIGHT → OUTPUT
 ```
 
-## — Fortësim Sigurie (13 rregullime për sistem real)
+## — Fortësim Sigurie (14 rregullime për sistem real)
 
 | # | Dobësia | Rregullimi |
 |---|---------|-----------|
@@ -136,4 +180,3 @@ Verifikimi i plotë në Windows GNU:
 
 ---
 **GJATA LEGACY™ — ESS-MAI** • Sovereign Deterministic Reasoning Substrate
-

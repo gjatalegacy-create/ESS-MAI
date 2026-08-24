@@ -1,0 +1,82 @@
+name: Reproducibility report
+description: Report an independent build, test, extraction, or experiment result for a public ESS-MAI POC.
+title: "[Reproducibility]: "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing ESS-MAI. Report successful and failed reproductions with the same level of detail. Do not include secrets, personal data, or private workspace material.
+
+  - type: dropdown
+    id: capsule
+    attributes:
+      label: Public capsule
+      options:
+        - POC 003 — cold-start reachability
+        - POC 004 — GCL LAW-0 continuity
+        - Collection integrity or metadata
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Commit, tag, or artifact-manifest SHA-256
+      placeholder: Exact identifier tested
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, architecture, rustc version, cargo version, and any relevant environment details.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Exact commands
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: Outcome
+      options:
+        - PASS — result reproduced as documented
+        - PARTIAL — some documented results reproduced
+        - FAIL — documented result did not reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: Observed output and smallest divergence
+      description: Include the relevant output and distinguish observation from interpretation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: advancement
+    attributes:
+      label: Architecture-preserving next experiment
+      description: Optional. State the smallest test or connection that could clarify the result without expanding authority or relaxing a fail-closed gate.
+
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Evidence boundary
+      options:
+        - label: I tested only publicly disclosed material and did not attach credentials, private source, or personal data.
+          required: true
+        - label: I have separated observed behavior from interpretation and future hypotheses.
+          required: true
+
