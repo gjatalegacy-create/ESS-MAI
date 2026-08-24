@@ -73,7 +73,12 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 - **Core research concept:** Gjata Collapse Law (GCL)
 - **Implementation:** Rust and Cargo
 - **Status:** active experimental research prototype with partial materialization
-- **Published project profile:** [Business Magazine Albania — ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)
+
+## Public references
+
+- [Business Magazine Albania — Bledar Gjata and ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)
+- [ACP Albania — ESS-MAI, a project by Bledar Gjata](https://acp.al/posts/6645/ess-mai-projekti-i-bledar-gjates-qe-synon-nje-qasje-te-re-ndaj-inteligjences-artificiale/)
+- [LinkedIn — Bledar Gjata](https://www.linkedin.com/in/bledar-gjata-1a527030b/) · [X — Gjata Legacy](https://x.com/Gjata_Legacy) · [YouTube — ESS-MAI](https://www.youtube.com/watch?v=i23jeqIwqJA)
 
 ## Technical documentation / Dokumentacioni teknik
 
@@ -180,3 +185,4 @@ Verifikimi i plotë në Windows GNU:
 
 ---
 **GJATA LEGACY™ — ESS-MAI** • Sovereign Deterministic Reasoning Substrate
+
