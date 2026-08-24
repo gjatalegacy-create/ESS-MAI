@@ -2,8 +2,10 @@
 
 ![ESS-MAI architecture: GCL authority root above bounded Light, Quantum, and Shadow roles](assets/ess-mai-social-preview.png)
 
-[![Executable POC validation](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml/badge.svg?branch=main)](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml)
+[![POC build and tests](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml/badge.svg?branch=main&label=POC%20build%20%26%20tests)](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-2f81f7.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22074028.svg)](https://doi.org/10.5281/zenodo.22074028)
+[![Software Heritage](https://img.shields.io/badge/Software%20Heritage-archived-f47b20.svg)](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
 
 ## Executable research in negative knowledge and governed deterministic AI
 
@@ -18,27 +20,29 @@
 | [Executable prior-art collection](publications/executable-prior-art/) | Canonical Apache-2.0 index of the public ESS-MAI POCs |
 | [POC 003 — cold-start reachability](publications/executable-prior-art/poc-003-system-cold-start-reachability/) | System POC reproducing the empty-state reachability gap and an exact-pair causal control |
 | [POC 004 — GCL LAW-0 continuity](publications/executable-prior-art/poc-004-gcl-law0-global-continuity/) | Theory POC reproducing supported local behavior and counterexamples to stronger global continuity |
-| [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Versions, validation results, publication boundaries, and artifact-manifest hashes |
+| [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Sealed pre-tag state, validation results, disclosure boundaries, and artifact-manifest hashes |
 | [Citation metadata](CITATION.cff) | Author, project, affiliation, license, and research keywords |
+| [Zenodo software record](https://doi.org/10.5281/zenodo.22074028) | Version DOI for the exact v1.0.0 POC 003 + POC 004 deposit |
+| [Software Heritage archive](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/) | Content-addressed SWHID for the extracted executable-prior-art tree |
 
-The full private ESS-MAI v1.8.9 core is not included in the public POC collection. C01 and C02 are historical references only and are not evidence for these POCs.
+A separate private ESS-MAI v1.8.9 workspace is outside this disclosure. C01 and C02 are historical references only and are not evidence for these POCs.
 
 ## What the project investigates
 
-- **Gjata Collapse Law (GCL):** a constitutional authority model that delegates and bounds subordinate system roles without collapsing them into peers.
+- **Gjata Collapse Law (GCL):** the ESS-MAI-defined constitutional authority model that delegates and bounds subordinate system roles without collapsing them into peers.
 - **Negative knowledge:** failures, exclusions, rejected paths, and non-materialized claims preserved as usable evidence rather than discarded.
-- **Light–Quantum–Shadow separation:** coordination, reasoning, and verdict/persistence remain distinct jurisdictions under GCL.
+- **Light–Quantum–Shadow separation:** named ESS-MAI roles for coordination, reasoning, and verdict/persistence under GCL; “Quantum” does not claim quantum hardware or quantum computation.
 - **Traceable deterministic reasoning:** explicit transitions, evidence-bound handoffs, reproducible contracts, and fail-closed gates.
-- **Executable prior art:** Rust/Cargo POCs that publish successful results and experimental failures together with the smallest architecture-preserving advancement method.
+- **Executable prior art:** Rust/Cargo POCs that publish successful results and experimental failures together with the smallest architecture-preserving advancement method; the publication title is not a patent-office novelty determination.
 
 ## Public evidence snapshot
 
-| POC | Class | Reproduced result |
+| POC | Class | Published maintainer-verified result |
 | --- | --- | --- |
 | POC 003 v0.2.0 | System POC | Cargo build PASS; 84/84 tests; empty cold-start gap reproduced 3/3; exact-pair control passed 1/1 |
 | POC 004 v0.2.0 | Theory POC | Cargo build PASS; 19/19 tests; supported behavior and counterexamples reproduced 5/5 |
 
-The collection [manifest](publications/executable-prior-art/manifest.json), each POC's `CLAIM_BOUNDARY.md`, and its SHA-256 evidence are the authoritative sources for the current public scope.
+The tagged collection [manifest](https://github.com/gjatalegacy-create/ESS-MAI/blob/ess-mai-executable-prior-art-v1.0.0/publications/executable-prior-art/manifest.json) deliberately preserves its historical pre-tag release-candidate state and remains authoritative for disclosed artifact scope and hashes. Publication status is established by the immutable GitHub Release and Zenodo record. Run counts above come from the deposited maintainer evidence and are not presented as independent replication.
 
 ## Reproduce the public POCs
 
@@ -76,6 +80,10 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 
 ## Public references
 
+- [Zenodo — ESS-MAI Executable Prior Art v1.0.0](https://doi.org/10.5281/zenodo.22074028)
+- [Software Heritage — content-addressed POC collection](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
+- [OpenAIRE — indexed ESS-MAI research software](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22074028)
+- [GitHub Release — POC 003 + POC 004 executable prior art](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.0.0)
 - [Business Magazine Albania — Bledar Gjata and ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)
 - [ACP Albania — ESS-MAI, a project by Bledar Gjata](https://acp.al/posts/6645/ess-mai-projekti-i-bledar-gjates-qe-synon-nje-qasje-te-re-ndaj-inteligjences-artificiale/)
 - [LinkedIn — Bledar Gjata](https://www.linkedin.com/in/bledar-gjata-1a527030b/) · [X — Gjata Legacy](https://x.com/Gjata_Legacy) · [YouTube — ESS-MAI](https://www.youtube.com/watch?v=i23jeqIwqJA)
@@ -185,4 +193,3 @@ Verifikimi i plotë në Windows GNU:
 
 ---
 **GJATA LEGACY™ — ESS-MAI** • Sovereign Deterministic Reasoning Substrate
-
