@@ -92,7 +92,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 20
     env:
-      CARGO_TARGET_DIR: ${{ runner.temp }}/poc005-target
+      CARGO_TARGET_DIR: ${{ github.workspace }}/../_audit_build_cache/poc005-target
     steps:
       - name: Check out disclosed source
         uses: actions/checkout@v4
@@ -130,7 +130,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 20
     env:
-      CARGO_TARGET_DIR: ${{ runner.temp }}/poc006-target
+      CARGO_TARGET_DIR: ${{ github.workspace }}/../_audit_build_cache/poc006-target
     steps:
       - name: Check out disclosed source
         uses: actions/checkout@v4
