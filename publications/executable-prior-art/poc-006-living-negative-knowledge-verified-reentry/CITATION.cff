@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this executable prior-art POC, please cite it."
+title: "ESS-MAI POC-006: Living Negative Knowledge — Verified Re-entry"
+type: software
+authors:
+  - family-names: Gjata
+    given-names: Bledar
+version: 1.0.0
+date-released: 2026-09-13
+license: Apache-2.0
+keywords:
+  - ESS-MAI
+  - negative knowledge
+  - verified re-entry
+  - fail-closed AI
+  - executable prior art
+  - Rust
+abstract: >-
+  A bounded executable proof of concept extracted from ESS-MAI v189 that tests
+  sealed negative-history re-entry, future hard blocking, and fail-closed
+  refusal when required history is missing, corrupt, or downgraded, while
+  documenting the remaining Boolean-only receipt gap.
+repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"

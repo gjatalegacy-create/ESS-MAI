@@ -1,8 +1,10 @@
 {
   "manifest_schema_version": "1.0.0",
-  "collection_version": "1.0.0",
-  "status": "release_candidate_not_yet_tagged",
-  "validation_date": "2026-08-24",
+  "collection_version": "1.1.0",
+  "status": "release_bound_by_git_tag",
+  "release_tag": "ess-mai-executable-prior-art-v1.1.0",
+  "release_date": "2026-09-13",
+  "validation_date": "2026-09-10",
   "collection": {
     "name": "ESS-MAI Executable Prior Art — POC Collection",
     "project": "ESS-MAI",
@@ -21,7 +23,8 @@
     "evidence": "C01 and C02 are reference-only and are not evidence.",
     "advancement_method": "experimental success + experimental failure = architecture-preserving advancement method",
     "claim_boundary": "Each POC establishes only claims supported by its own disclosed artifacts and reproducible procedure.",
-    "authority_root": "GCL is the sovereign constitutional parent; subordinate platform authorities remain bounded."
+    "authority_root": "GCL is the sovereign constitutional parent; subordinate platform authorities remain bounded.",
+    "parallel_knowledge": "Constructive K+ and rigorous-negative K- are distinct sibling outcomes under GCL; HOLD is neither; both verified knowledge streams advance later cycles by different operations."
   },
   "disclosure_partitions": [
     "EXTERNAL_FOUNDATION",
@@ -37,7 +40,7 @@
       "relative_path": "poc-003-system-cold-start-reachability/",
       "version": "0.2.0",
       "class": "SYSTEM_POC",
-      "status": "release_candidate",
+      "status": "released_in_collection_v1.0.0",
       "experimental_status": "PARTIAL_SYSTEM_MATERIALIZATION_WITH_CAUSAL_CONTROL",
       "cargo_build": "PASS",
       "cargo_tests": "84 passed; 0 failed",
@@ -51,12 +54,43 @@
       "relative_path": "poc-004-gcl-law0-global-continuity/",
       "version": "0.2.0",
       "class": "THEORY_POC",
-      "status": "release_candidate",
+      "status": "released_in_collection_v1.0.0",
       "experimental_status": "PARTIAL_MATERIALIZATION",
       "cargo_build": "PASS",
       "cargo_tests": "19 passed; 0 failed",
       "runs": "5/5 success and counterexamples reproduced",
       "artifact_manifest_sha256": "e8ef70d0af825f46709edcd20d9fed36459d6471c5869782c67e88d64fc56ee3"
+    },
+    {
+      "poc_id": "POC-005",
+      "slug": "poc-005-ffi-law0-authority-nonduplication",
+      "relative_path": "poc-005-ffi-law0-authority-nonduplication/",
+      "version": "1.0.0",
+      "class": "THEORY_POC",
+      "status": "verified_for_collection_v1.1.0",
+      "experimental_status": "PARTIAL_MATERIALIZATION",
+      "cargo_build": "PASS",
+      "native_tests": "8 passed; 0 failed",
+      "detached_tests": "1 passed; 0 failed",
+      "runtime": "one post-authorization result; seven concurrent copied-handle replays refused",
+      "direct_ffi_knowledge_write_materialized": false,
+      "artifact_manifest_sha256": "26cba0e9c9f01996500ed5be50fd45de275c9028c06ee239e26d38f8a32a72b8"
+    },
+    {
+      "poc_id": "POC-006",
+      "slug": "poc-006-living-negative-knowledge-verified-reentry",
+      "relative_path": "poc-006-living-negative-knowledge-verified-reentry/",
+      "version": "1.0.0",
+      "class": "THEORY_POC",
+      "status": "verified_for_collection_v1.1.0",
+      "experimental_status": "PARTIAL_MATERIALIZATION",
+      "cargo_build": "PASS",
+      "native_tests": "separate runs: 12/12, 19/19, 1/1; four focused verdict filters each 1/1 (overlap not summed)",
+      "detached_tests": "30 passed; 0 failed",
+      "runtime": "valid re-entry hard-blocks the known failure; corrupt, missing, and downgraded required history refuse PRO",
+      "parallel_knowledge": "source-evidenced Constructive -> Primitive (K+) and RigorousNegative -> Negative (K-); POC-006 executes only the K- re-entry half",
+      "full_negative_receipt_wire_materialized": false,
+      "artifact_manifest_sha256": "ec061d227521e4ecd66426dfd1fa2841c72b60fb0c1c543013f063adc746ede4"
     }
   ],
   "exclusions": [

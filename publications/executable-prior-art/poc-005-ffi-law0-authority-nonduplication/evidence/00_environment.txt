@@ -1,0 +1,13 @@
+EVIDENCE_CLASS=REPRODUCIBILITY_METADATA
+VERIFICATION_DATE=2026-09-10
+OS=Windows 10 Pro 10.0.19045 x86_64
+HOST_TRIPLE=x86_64-pc-windows-gnu
+RUSTC_VERSION=rustc 1.98.0 (88d9e12ae 2026-08-18)
+CARGO_VERSION=cargo 1.98.0 (797e8a9bc 2026-08-05)
+NETWORK_DURING_FINAL_BUILD=OFFLINE
+CARGO_TARGET_LOCATION=<workspace>/_audit_build_cache/poc005_release_witness
+SOURCE_FILES_MODIFIED=0
+
+Cargo emitted the non-fatal host-environment warning:
+warn: could not canonicalize path <USER_PROFILE>
+

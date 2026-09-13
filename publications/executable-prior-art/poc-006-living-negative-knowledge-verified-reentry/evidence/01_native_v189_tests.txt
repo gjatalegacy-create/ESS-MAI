@@ -1,0 +1,26 @@
+EVIDENCE_CLASS=PRIMARY_RUNTIME_EVIDENCE_SUMMARY
+SOURCE_WORKSPACE=ESS-MAI v1.8.9 wrapper / internal package version 1.7.8
+SOURCE_MODE=READ_ONLY
+CARGO_TARGET=EXTERNAL_DISPOSABLE
+
+COMMAND_1=cargo test -p quantum-platform pro_nk_gate --locked -- --test-threads=1
+EXIT_STATUS_1=0
+RESULT_1=12 passed; 0 failed
+
+COMMAND_2=cargo test -p shadow_platform --no-default-features --features pure_rust negative_ --locked -- --test-threads=1
+EXIT_STATUS_2=0
+RESULT_2=19 passed; 0 failed
+
+COMMAND_3=cargo test -p shadow_platform --no-default-features --features pure_rust durability_roundtrip --locked -- --test-threads=1
+EXIT_STATUS_3=0
+RESULT_3=1 passed; 0 failed
+
+COMMAND_4_TEMPLATE=cargo test -p shadow_platform --no-default-features --features pure_rust <FILTER> --locked -- --test-threads=1
+FILTER_4A=constructive_pair_is_closed RESULT=1 passed; 0 failed
+FILTER_4B=rigorous_negative_requires_real_proof RESULT=1 passed; 0 failed
+FILTER_4C=mixed_pairs_are_structural_refusals RESULT=1 passed; 0 failed
+FILTER_4D=out_of_domain_bits_are_refused RESULT=1 passed; 0 failed
+COUNTING_NOTE=Focused filters can overlap broader name filters and are not summed into a unique-test total.
+
+WARNINGS=dead-code warnings outside the focal path; path canonicalization warning for C:\Users\<local-user> (redacted)
+INTERPRETATION=The tested native components pass; this does not prove a full cross-process receipt.

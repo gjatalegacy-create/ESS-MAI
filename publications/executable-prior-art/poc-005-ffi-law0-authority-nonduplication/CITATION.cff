@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this bounded ESS-MAI theory POC, cite this artifact version."
+type: software
+title: "ESS-MAI POC-005: FFI LAW-0 Authority Non-Duplication"
+version: 0.1.0
+date-released: 2026-09-13
+authors:
+  - family-names: Gjata
+    given-names: Bledar
+abstract: >-
+  An isolated executable theory POC testing the ESS-MAI v189 separation of a
+  copyable C ABI handle from Rust-owned once-consumable authority. It
+  reproduces replay and forgery refusal while preserving the negative result
+  that direct FFI knowledge persistence remains held without a committed
+  constitutional verdict.
+license: Apache-2.0
+repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
+keywords:
+  - ESS-MAI
+  - GCL
+  - capability security
+  - FFI
+  - replay resistance
+  - executable prior art
+  - proof of concept

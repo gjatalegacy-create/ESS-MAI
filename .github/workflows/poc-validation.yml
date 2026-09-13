@@ -87,3 +87,78 @@ jobs:
         working-directory: publications/executable-prior-art/poc-004-gcl-law0-global-continuity
         run: cargo test --workspace --all-targets --locked
 
+  poc-005:
+    name: POC 005 · FFI LAW-0 authority non-duplication
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CARGO_TARGET_DIR: ${{ runner.temp }}/poc005-target
+    steps:
+      - name: Check out disclosed source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify capsule hashes
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication
+        run: |
+          Get-Content artifact_hashes.sha256 | ForEach-Object {
+            if ([string]::IsNullOrWhiteSpace($_)) { return }
+            $parts = $_ -split '  ', 2
+            $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $parts[1]).Hash.ToLowerInvariant()
+            if ($actual -ne $parts[0]) { throw "SHA-256 mismatch: $($parts[1])" }
+          }
+
+      - name: Build locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication
+        run: cargo build --workspace --release --locked
+
+      - name: Test locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication
+        run: cargo test --workspace --locked
+
+      - name: Execute falsification experiment
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication
+        run: cargo run -p poc005-ffi-law0-experiment --release --locked
+
+  poc-006:
+    name: POC 006 · Living Negative Knowledge verified re-entry
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CARGO_TARGET_DIR: ${{ runner.temp }}/poc006-target
+    steps:
+      - name: Check out disclosed source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify capsule hashes
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry
+        run: |
+          Get-Content artifact_hashes.sha256 | ForEach-Object {
+            if ([string]::IsNullOrWhiteSpace($_)) { return }
+            $parts = $_ -split '  ', 2
+            $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $parts[1]).Hash.ToLowerInvariant()
+            if ($actual -ne $parts[0]) { throw "SHA-256 mismatch: $($parts[1])" }
+          }
+
+      - name: Build locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry
+        run: cargo build --workspace --release --locked
+
+      - name: Test locked workspace
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry
+        run: cargo test --workspace --locked
+
+      - name: Execute falsification experiment
+        shell: pwsh
+        working-directory: publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry
+        run: cargo run -p poc006-living-negative-experiment --release --locked

@@ -1,0 +1,10 @@
+EVIDENCE_CLASS=PRIMARY_SOURCE_IDENTITY
+
+88ed03f02697ca772fb8d6bfd8575f16ce6404e720265a423ecffaa001081142  source_core/src/sovereign_ffi_gate.rs
+7107a2db3b8fd8e05fa2ad12093cd4fa55cf5fb35e76154189a88edecab4bcc2  source_core/src/living_trust_contract.rs
+93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c  source_core/src/verification_receipt.rs
+
+Every hash above matched its mapped v189 source path on 2026-09-10.
+MATCHED_FILES=3
+MISMATCHED_FILES=0
+

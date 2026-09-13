@@ -1,0 +1,47 @@
+SOURCE_IDENTITY_MATCHED=4/4
+SOURCE_IDENTITY_STATUS=PASS
+
+source_core/src/pro_nk_gate.rs
+  V189_PATH=quantum/src/pro_nk_gate.rs
+  BYTES=26614
+  LINES=613
+  SHA256=66f14e82141b7c3e18d9e7f487093899fb3a033ae86ebb804d47749a5ba196c6
+
+source_core/src/tokenizer.rs
+  V189_PATH=quantum/src/tokenizer.rs
+  BYTES=10530
+  LINES=230
+  SHA256=b7214b7f3c336244cdb2fd373c60dc267521a5e7485396e9f2598f33620fa6df
+
+source_core/src/runtime_pulse.rs
+  V189_PATH=quantum/src/runtime_pulse.rs
+  BYTES=15449
+  LINES=429
+  SHA256=903547c3900de4f3892c6b8baa382743986558efebbff5f58faedc9dde95969c
+
+shadow-contracts/src/negative_asset.rs
+  V189_PATH=shadow-contracts/src/negative_asset.rs
+  BYTES=29586
+  LINES=847
+  SHA256=ecbab84bfc65f2561be133f12b047f5e863423c823e294f5bec8f1e06fb673eb
+
+CALLER_COORDINATES=
+  shadow/src/negative_asset.rs:33 typed validation
+  shadow/src/knowledge_vault.rs:136 negative entry
+  shadow/src/knowledge_vault.rs:713 check
+  shadow/src/knowledge_vault.rs:1093 apply
+  shadow/src/knowledge_vault.rs:1438 dedupe test
+  shadow/src/knowledge_vault.rs:1459 lookup/access test
+  shadow/src/knowledge_vault.rs:1505 WAL round-trip test
+  shadow/src/shadow_gateway.rs:602 transaction
+  shadow/src/shadow_gateway.rs:636 stage
+  shadow/src/process_bridge.rs:1158 export
+  shadow-contracts/src/lib.rs:1196 negative_persisted wire field
+  shadow-contracts/src/lib.rs:2122 encoding
+  shadow-contracts/src/lib.rs:2131 decoding
+  quantum/src/main.rs:727 sealed marker
+  quantum/src/main.rs:736 history_required
+  quantum/src/main.rs:767 fail-closed guard
+  quantum/src/main.rs:772 PRO activation
+  quantum/src/main.rs:2248 negative_persisted consumer
+

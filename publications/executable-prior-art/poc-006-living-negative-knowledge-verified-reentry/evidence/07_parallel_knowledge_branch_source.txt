@@ -1,0 +1,35 @@
+EVIDENCE_CLASS=SOURCE_COORDINATE_AND_NATIVE_TEST_SUMMARY
+SOURCE_MODE=READ_ONLY
+SOURCE_FILES_MODIFIED=0
+
+FILE=shadow/src/types.rs
+BYTES=32983
+LINES=809
+SHA256=72b163bea72d6f7dfc98e8ef25c980e18a87dfa58cb3b92ffda5a3f066fa8650
+COORDINATES=582-584 closed Constructive/RigorousNegative domain; 650-675 confirmation and refusal law
+
+FILE=shadow/src/shadow_gj_legacy.rs
+BYTES=32621
+LINES=717
+SHA256=b4b5f11904625c3c9ee39c67c6331a0a2f12246e847581cae46de7d6b0dbf287
+COORDINATES=348-367 sealed verdict maps to Primitive or Negative knowledge write
+
+FILE=shadow/src/shadow_commit.rs
+BYTES=3099
+LINES=86
+SHA256=8884de24b2cd999959489fee9bf99671d6cb46df3d82edbbbd6e05f2f935a557
+COORDINATES=7-25 closed KnowledgeWrite::Primitive/Negative type
+
+FILE=shadow/src/knowledge_vault.rs
+BYTES=67177
+LINES=1662
+SHA256=5dd362f225682d86d782d0b3b3e122a7d4eb58916ce344ae380add9d3602c36d
+COORDINATES=591-633 both variants applied inside one Vault transaction
+
+NATIVE_COMMAND_TEMPLATE=cargo test -p shadow_platform --no-default-features --features pure_rust <FILTER> --locked -- --test-threads=1
+FILTER_1=constructive_pair_is_closed RESULT=1 passed; 0 failed
+FILTER_2=rigorous_negative_requires_real_proof RESULT=1 passed; 0 failed
+FILTER_3=mixed_pairs_are_structural_refusals RESULT=1 passed; 0 failed
+FILTER_4=out_of_domain_bits_are_refused RESULT=1 passed; 0 failed
+NOTE=These focused runs overlap by name with broader filters where applicable and are not added into a synthetic unique-test total.
+VERDICT=Both knowledge branches exist under one closed superior verdict domain; semantic identity is not collapsed.

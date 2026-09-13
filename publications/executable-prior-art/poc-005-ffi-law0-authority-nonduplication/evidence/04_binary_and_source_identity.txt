@@ -1,0 +1,14 @@
+EVIDENCE_CLASS=CHAIN_OF_CUSTODY
+BINARY_NAME=poc005-ffi-law0-experiment.exe
+BINARY_SHA256=a2e5194543031742c682728f5aaa72de524b1f5bf4a8f4ea62a301395d7981ab
+BUILD_COMMAND=cargo build --workspace --release --locked --offline
+CARGO_FEATURES=source_core default feature legacy_ffi_compat
+RUSTC_VERSION=rustc 1.98.0 (88d9e12ae 2026-08-18)
+CARGO_VERSION=cargo 1.98.0 (797e8a9bc 2026-08-05)
+SOURCE_TREE_SHA256=e732fa684190bf0966a80ab55de30a44eecd576f81a8e2397e30c0776f0eef23
+CARGO_LOCK_SHA256=c4640fdbcac7c13624b1be6532ec981f1b8a8ad9d9d56ec54e70a9d421b02736
+V189_CARGO_LOCK_SHA256=8ea0dccfd6024207438f8a4491e41f88c133113e838b7d1d853fadfeb73f9bbf
+RUNTIME_COMMAND=cargo run -p poc005-ffi-law0-experiment --release --locked --offline
+EXIT_STATUS=0
+RESULTING_EVIDENCE=evidence/03_runtime_receipt.txt
+BINARY_STORED_IN_CAPSULE=false

@@ -1,0 +1,23 @@
+EVIDENCE_CLASS=PRIMARY_RUNTIME_EVIDENCE_SUMMARY
+WORKSPACE=POC-006 detached Cargo workspace
+CARGO_TARGET=EXTERNAL_DISPOSABLE
+
+NEGATIVE_CONTROL_COMMAND=cargo build --workspace --release --locked --offline
+NEGATIVE_CONTROL_INITIAL_EXIT=101
+NEGATIVE_CONTROL_REASON=Cargo.lock did not yet exist; --locked correctly refused mutation.
+LOCK_COMMAND=cargo generate-lockfile --offline
+
+BUILD_COMMAND=cargo build --workspace --release --locked --offline
+BUILD_EXIT_STATUS=0
+BUILD_RESULT=PASS
+
+TEST_COMMAND=cargo test --workspace --locked --offline -- --test-threads=1
+TEST_EXIT_STATUS=0
+TEST_RESULT=30 passed; 0 failed
+
+RUNTIME_COMMAND=cargo run -p poc006-living-negative-experiment --release --locked --offline
+RUNTIME_EXIT_STATUS=0
+RUNTIME_RESULT=EXPERIMENT_STATUS=PASS
+
+INTERPRETATION=The initial lock refusal is a tooling negative control, not a theory failure.
+

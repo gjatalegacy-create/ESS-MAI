@@ -27,16 +27,24 @@ experimental success + experimental failure = advancement method
 
 A success establishes only what the disclosed experiment actually demonstrates. A failure is preserved as a typed boundary or unresolved gap. Advancement means identifying the smallest architecture-preserving connection, constraint, or experiment that can close that gap. Neither result is to be hidden or inflated.
 
+For POC 006, positive and negative knowledge are not opposing Boolean labels.
+They are distinct sibling outcomes under GCL: `K+` reinforces or expands
+supported routes, while `K−` excludes rigorously verified failure routes.
+`HOLD` remains separate from both. Their governed parallel use is the
+advancement mechanism; it does not collapse one authority into the other.
+
 ## Validated release-candidate entries
 
 | POC | Directory | Version | Executed result |
 | --- | --- | --- | --- |
 | POC 003 | `poc-003-system-cold-start-reachability/` | 0.2.0 | build PASS; 84/84 tests; empty-state gap + positive control |
 | POC 004 | `poc-004-gcl-law0-global-continuity/` | 0.2.0 | build PASS; 19/19 tests; supported behavior + counterexamples |
+| POC 005 | `poc-005-ffi-law0-authority-nonduplication/` | 1.0.0 | build PASS; native 8/8; detached 1/1; one-shot authority + direct-write hold |
+| POC 006 | `poc-006-living-negative-knowledge-verified-reentry/` | 1.0.0 | build PASS; native runs 12/12, 19/19 and 1/1 plus four focused verdict controls; detached 30/30; verified re-entry + receipt gap |
 
 The machine-readable inventory is in `manifest.json`. An entry in a draft manifest is not by itself evidence that a capsule has been released, tagged, archived, or assigned a DOI.
 
-`ZENODO_DEPOSIT_METADATA.json` is a prepared metadata template for a manual Zenodo Software record. The archival object must be the single final collection ZIP, not an automatically generated archive of the whole repository. No DOI is inserted until Zenodo actually reserves or issues one.
+`ZENODO_DEPOSIT_METADATA.json` describes the v1.1.0 collection deposit. A DOI is inserted into the repository only after Zenodo actually issues it. The preferred archival object is the POC-only release asset, whose SHA-256 is recorded in the GitHub release notes; the private v1.8.9 source is never part of that asset.
 
 ## Reading rule
 

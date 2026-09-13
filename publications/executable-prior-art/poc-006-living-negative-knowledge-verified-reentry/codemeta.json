@@ -1,0 +1,27 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ESS-MAI POC-006: Living Negative Knowledge — Verified Re-entry",
+  "description": "Executable prior-art POC testing sealed negative-history re-entry, future hard blocking, and fail-closed refusal for missing, corrupt, or downgraded required history, with an explicit Boolean-only receipt gap.",
+  "version": "1.0.0",
+  "datePublished": "2026-09-13",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "codeRepository": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "programmingLanguage": "Rust",
+  "author": {
+    "@type": "Person",
+    "givenName": "Bledar",
+    "familyName": "Gjata",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Gjata Legacy"
+    }
+  },
+  "keywords": [
+    "ESS-MAI",
+    "negative knowledge",
+    "verified re-entry",
+    "fail-closed AI",
+    "executable prior art"
+  ]
+}

@@ -28,6 +28,8 @@
     "Gjata Collapse Law",
     "GCL",
     "negative knowledge",
+    "positive and negative knowledge",
+    "parallel knowledge streams",
     "sovereign AI",
     "deterministic systems",
     "runtime verification",
@@ -36,5 +38,27 @@
     "reproducible research",
     "executable prior art",
     "knowledge representation"
+  ],
+  "hasPart": [
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "ESS-MAI POC-003: System Cold-Start Reachability",
+      "version": "0.2.0"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "ESS-MAI POC-004: GCL LAW-0 Global Continuity",
+      "version": "0.2.0"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "ESS-MAI POC-005: FFI LAW-0 Authority Non-Duplication",
+      "version": "1.0.0"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "ESS-MAI POC-006: Living Negative Knowledge — Verified Re-entry",
+      "version": "1.0.0"
+    }
   ]
 }

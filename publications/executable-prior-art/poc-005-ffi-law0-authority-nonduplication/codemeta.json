@@ -1,0 +1,27 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ESS-MAI POC-005: FFI LAW-0 Authority Non-Duplication",
+  "description": "Executable prior-art POC testing the separation between a copyable C-compatible handle and once-consumable Rust-owned authority, including direct-write hold and replay boundaries.",
+  "version": "1.0.0",
+  "datePublished": "2026-09-13",
+  "license": "https://spdx.org/licenses/Apache-2.0.html",
+  "codeRepository": "https://github.com/gjatalegacy-create/ESS-MAI",
+  "programmingLanguage": "Rust",
+  "author": {
+    "@type": "Person",
+    "givenName": "Bledar",
+    "familyName": "Gjata",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Gjata Legacy"
+    }
+  },
+  "keywords": [
+    "ESS-MAI",
+    "capability authority",
+    "FFI",
+    "one-shot authorization",
+    "executable prior art"
+  ]
+}

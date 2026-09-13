@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Cite Bledar Gjata and this repository for the evolving ESS-MAI research architecture. For the frozen public POC 003 + POC 004 collection, use the Zenodo reference listed below."
+message: "Cite Bledar Gjata and this repository for the evolving ESS-MAI research architecture. Cite the immutable collection release for the exact executable POC version used."
 title: "ESS-MAI: Gjata Collapse Law Research Architecture"
 type: software
 authors:
@@ -30,6 +30,15 @@ keywords:
   - "executable prior art"
   - "knowledge representation"
 references:
+  - type: software
+    title: "ESS-MAI Executable Prior Art v1.1.0 — POC 003–006"
+    authors:
+      - family-names: "Gjata"
+        given-names: "Bledar"
+        affiliation: "Gjata Legacy"
+    version: "1.1.0"
+    date-released: 2026-09-13
+    url: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0"
   - type: software
     title: "ESS-MAI Executable Prior Art v1.0.0 — POC 003 + POC 004"
     authors:

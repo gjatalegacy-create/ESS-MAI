@@ -1,0 +1,26 @@
+EVIDENCE_CLASS=PRIMARY_RUNTIME_EVIDENCE
+SOURCE_SNAPSHOT_DIRECTORY_NAME=v1.8.9_ess_mai_phase_015
+INTERNAL_CARGO_PACKAGE_VERSION=1.7.8
+COMMAND:
+  CARGO_TARGET_DIR=<workspace>/_audit_build_cache/poc005_native_shadow
+  cargo test -p shadow_platform --no-default-features --features pure_rust sovereign_ffi_gate --locked -- --test-threads=1
+EXIT_STATUS=0
+RESULT=8 passed; 0 failed; 0 ignored; 0 measured; 394 filtered out
+TEST_BINARY_SHA256=6843f7184fd962bf9734ef3f341bac7b8c9eab450fb812fac3dfc9b75b5803b1
+
+PASSED_TESTS:
+  clone_attack_second_use_is_refused
+  empty_payload_is_rejected_after_capability_validation
+  ffi_view_preserves_pointer_identity_without_allocation
+  forged_nonce_is_rejected
+  nonempty_direct_write_is_compatibility_hold
+  replay_third_time_still_burned
+  unknown_handle_is_not_found
+  verification_output_is_sealed_by_single_use_token
+
+NON_FATAL_WARNINGS:
+  selection_hold::purge_expired is never used
+  process_bridge::persist_negative is never used
+
+The warnings are outside the focal mechanism and did not change the result.
+

@@ -1,0 +1,10 @@
+[package]
+name = "shadow_contracts"
+version = "1.7.8"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+sha2 = "0.10"
+

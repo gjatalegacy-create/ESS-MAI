@@ -1,7 +1,9 @@
 {
   "upload_type": "software",
-  "title": "ESS-MAI Executable Prior Art by Bledar Gjata — POC 003 and POC 004",
-  "description": "A public Apache-2.0 collection of two surgically bounded ESS-MAI proof-of-concept capsules. POC 003 reproduces the generation-zero Shadow cold-start reachability gap and a positive causal control. POC 004 reproduces supported local GCL LAW-0 behavior together with counterexamples to stronger global continuity. Experimental success and experimental failure are preserved together as an architecture-preserving advancement method. The full ESS-MAI v1.8.9 core is not included.",
+  "title": "ESS-MAI Executable Prior Art v1.1.0 by Bledar Gjata — POC 003–006",
+  "description": "A public Apache-2.0 collection of four surgically bounded ESS-MAI proof-of-concept capsules. POC 003 tests system cold-start reachability; POC 004 tests bounded GCL LAW-0 continuity; POC 005 tests FFI authority non-duplication while preserving the direct-write hold; POC 006 tests verified negative-history re-entry and fail-closed omission prevention while exposing the remaining Boolean-only receipt gap. POC 006 also maps source-evidenced constructive K+ and rigorous-negative K- as distinct sibling knowledge outcomes under GCL, with HOLD separate from both, and maps a publisher-timestamped 2026-06-03 ESS-MAI Negative Knowledge disclosure to later executable evidence without inflating the media record into an implementation claim. Experimental success and experimental failure are preserved together as an architecture-preserving advancement method. Earlier failure-memory and positive/negative knowledge work is acknowledged as prior art. The full ESS-MAI v1.8.9 core is not included.",
+  "version": "1.1.0",
+  "publication_date": "2026-09-13",
   "creators": [
     {
       "name": "Gjata, Bledar",
@@ -17,17 +19,32 @@
     "Gjata Collapse Law",
     "GCL",
     "negative knowledge",
+    "positive and negative knowledge",
+    "parallel knowledge streams",
     "executable prior art",
     "proof of concept",
     "Rust",
-    "cold-start reachability"
+    "cold-start reachability",
+    "FFI authority",
+    "verified re-entry",
+    "fail-closed AI"
   ],
   "related_identifiers": [
     {
       "identifier": "https://github.com/gjatalegacy-create/ESS-MAI",
       "relation": "isSupplementTo",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.5281/zenodo.22074028",
+      "relation": "isNewVersionOf",
+      "resource_type": "software"
     }
   ],
-  "notes": "Metadata template for a manual Zenodo Software record. Publish exactly one compressed collection ZIP. Add the final GitHub tag/commit as related identifiers and set the release version only after they exist."
+  "notes": "Metadata for the POC-only v1.1.0 release asset. Verify the GitHub tag, archive SHA-256, and final Zenodo DOI before adding that DOI back to the repository."
 }

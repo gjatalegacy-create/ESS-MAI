@@ -1,0 +1,21 @@
+EVIDENCE_CLASS=PRIMARY_BUILD_AND_TEST_EVIDENCE
+BUILD_COMMAND:
+  CARGO_TARGET_DIR=<workspace>/_audit_build_cache/poc005_release_witness
+  cargo build --workspace --release --locked --offline
+BUILD_EXIT_STATUS=0
+BUILD_RESULT=Finished release profile
+
+TEST_COMMAND:
+  CARGO_TARGET_DIR=<workspace>/_audit_build_cache/poc005_detached
+  cargo test --workspace --locked --offline -- --test-threads=1
+TEST_EXIT_STATUS=0
+TEST_RESULT=1 passed; 0 failed
+
+INITIAL_NEGATIVE_CONTROL:
+  cargo build --workspace --locked --offline
+  exit=1 because Cargo.lock did not yet exist and --locked correctly refused to create it
+ADVANCEMENT:
+  cargo generate-lockfile --offline
+  then rerun exact locked offline build
+FINAL_RESULT=PASS
+
