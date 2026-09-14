@@ -34,7 +34,7 @@ CALLER
 TRANSITION
   -> AtomicBool CAS(true,false)
 EVIDENCE
-  -> native 8/8 + detached 1/1 + runtime codes
+  -> native 8/8 + strict detached 15/15 + 3/3 runtime receipts
 CONSUMER
   -> sovereign_commit
 SINK
@@ -69,7 +69,9 @@ BOUNDED THEORY: MATERIALIZED
 DIRECT FFI KNOWLEDGE WRITE: NOT MATERIALIZED
 SEMANTIC REPLAY ACROSS FRESH ISSUANCE: NOT TESTED / NOT ESTABLISHED
 ARCHITECTURAL ADVANCEMENT PATH: IDENTIFIED
-OVERALL: PARTIAL_MATERIALIZATION
+LOCAL_PROPERTY: POC_READY
+GLOBAL_THEORY: NOT_MATERIALISED
+OVERALL: PARTIAL_POC
 ```
 
 The strongest honest statement is that ESS-MAI materializes a software
@@ -84,4 +86,3 @@ weakening the hold.
 [^2]: Rust Project, FFI safety obligations. [Official documentation](https://doc.rust-lang.org/nomicon/ffi.html).
 [^3]: Saltzer and Schroeder, fail-safe defaults and complete mediation, 1975. [Author source](https://www.mit.edu/~Saltzer/publications/pubs.html).
 [^4]: Xu et al., durable authorization state and semantic replay, arXiv:2608.01710. [Primary preprint](https://arxiv.org/abs/2608.01710).
-

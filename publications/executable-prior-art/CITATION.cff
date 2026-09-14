@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use or discuss this POC collection, cite Bledar Gjata, ESS-MAI, and Gjata Legacy."
 title: "ESS-MAI Executable Prior Art — POC Collection"
 type: software
-version: 1.1.0
-date-released: 2026-09-13
+version: 1.1.1
+date-released: 2026-09-14
 authors:
   - family-names: Gjata
     given-names: Bledar
@@ -31,5 +31,5 @@ keywords:
   - verified re-entry
 identifiers:
   - type: url
-    value: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0"
-    description: "Immutable GitHub release for collection version 1.1.0"
+    value: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1"
+    description: "GitHub release for standard-method collection version 1.1.1"

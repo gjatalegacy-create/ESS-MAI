@@ -10,6 +10,8 @@
 - Native v189 tests establish the referenced Shadow validation, transaction,
   deduplication, access/frequency, and WAL behaviors within their tested scope.
 - Four focal files in the POC are byte-identical to their v189 originals.
+- The strict detached capsule passes all-target release build, 30/30 tests and
+  3/3 independent principal runs.
 - A third-party publisher page publicly attributes the broad “Dija Negative”
   concept to Bledar Gjata and ESS-MAI on 2026-06-03.
 - v189 source and focused native tests contain distinct constructive and
@@ -26,6 +28,8 @@
 - That the 2026-06-03 article disclosed every later Living Negative mechanism,
   supplied an immutable cryptographic timestamp, or determines legal priority.
 - A symmetric positive-history re-entry experiment inside this POC.
+- A detached terminate/reopen run spanning the authoritative Shadow Vault and
+  the following Quantum process.
 
 ## Publication-safe statement
 
@@ -38,3 +42,6 @@
 > independently verifiable cross-subsystem receipt.
 
 This wording is intentionally narrower than the project vision.
+
+`CLAIM_BOUNDARY=SEALED` applies only to this POC's verified-re-entry question.
+It does not declare the full ESS-MAI v189 architecture closed.

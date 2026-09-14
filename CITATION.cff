@@ -31,14 +31,14 @@ keywords:
   - "knowledge representation"
 references:
   - type: software
-    title: "ESS-MAI Executable Prior Art v1.1.0 — POC 003–006"
+    title: "ESS-MAI Executable Prior Art v1.1.1 — POC 003–006; Standard-Method Closure for POC 005–006"
     authors:
       - family-names: "Gjata"
         given-names: "Bledar"
         affiliation: "Gjata Legacy"
-    version: "1.1.0"
-    date-released: 2026-09-13
-    url: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0"
+    version: "1.1.1"
+    date-released: 2026-09-14
+    url: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1"
   - type: software
     title: "ESS-MAI Executable Prior Art v1.0.0 — POC 003 + POC 004"
     authors:

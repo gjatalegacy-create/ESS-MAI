@@ -1,11 +1,11 @@
 # POC-006 — Living Negative Knowledge: Verified Re-entry
 
-**Artifact class:** `THEORY_POC`  
-**Experimental classification:** `PARTIAL_MATERIALIZATION`  
-**Author:** Bledar Gjata  
-**Project / organization:** ESS-MAI / Gjata Legacy  
-**Verification date:** 2026-09-10  
-**License:** Apache-2.0
+- **Artifact class:** `THEORY_POC`
+- **Experimental classification:** `PARTIAL_POC` — narrow verified re-entry ready, global lifecycle incomplete
+- **Author:** Bledar Gjata
+- **Project / organization:** ESS-MAI / Gjata Legacy
+- **Verification date:** 2026-09-14
+- **License:** Apache-2.0
 
 ## Falsifiable claim
 
@@ -67,12 +67,15 @@ Quantum re-entry gate—without creating a second writer or moving authority.
 - four focused native constitutional-domain runs: **1/1 each passed**;
 - detached workspace tests: **30 passed, 0 failed**;
 - detached release build: **pass**;
-- release runtime: **exit 0**, `EXPERIMENT_STATUS=PASS`;
+- release runtime repeatability: **3/3**, `EXPERIMENT_STATUS=PASS`;
 - source identity: **4/4 focal files byte-identical**;
 - v189 source files modified: **0**;
 - Cargo target: external to this capsule.
 
-See [SCIENTIFIC_REPORT.md](SCIENTIFIC_REPORT.md), [RESULTS.md](RESULTS.md),
-[PRIOR_ART.md](PRIOR_ART.md), [PUBLIC_DISCLOSURE_TRACE.md](PUBLIC_DISCLOSURE_TRACE.md),
+Start with [CLAIM.md](CLAIM.md), [SOURCE_RUNTIME_MAP.md](SOURCE_RUNTIME_MAP.md)
+and [EXPERIMENT_PROTOCOL.md](EXPERIMENT_PROTOCOL.md). Results and boundaries
+are in [RESULTS.md](RESULTS.md), [FINAL_VERDICT.txt](FINAL_VERDICT.txt),
+[SCIENTIFIC_REPORT.md](SCIENTIFIC_REPORT.md), [PRIOR_ART.md](PRIOR_ART.md),
+[PUBLIC_DISCLOSURE_TRACE.md](PUBLIC_DISCLOSURE_TRACE.md),
 [POSITIVE_NEGATIVE_PARALLELISM.md](POSITIVE_NEGATIVE_PARALLELISM.md), and
 [REPRODUCIBILITY.md](REPRODUCIBILITY.md).

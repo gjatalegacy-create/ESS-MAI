@@ -20,8 +20,8 @@
 | [Executable prior-art collection](publications/executable-prior-art/) | Canonical Apache-2.0 index of the public ESS-MAI POCs |
 | [POC 003 — cold-start reachability](publications/executable-prior-art/poc-003-system-cold-start-reachability/) | System POC reproducing the empty-state reachability gap and an exact-pair causal control |
 | [POC 004 — GCL LAW-0 continuity](publications/executable-prior-art/poc-004-gcl-law0-global-continuity/) | Theory POC reproducing supported local behavior and counterexamples to stronger global continuity |
-| [POC 005 — FFI LAW-0 authority non-duplication](publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication/) | Theory POC proving bounded one-shot authority while preserving the direct-write hold |
-| [POC 006 — Living Negative Knowledge verified re-entry](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/) | Theory POC proving bounded verified re-entry, mapping distinct `K+`/`K−` sibling streams under GCL, and exposing the receipt gap |
+| [POC 005 — FFI LAW-0 authority non-duplication](publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication/) | Theory POC testing generation-local one-shot authority while preserving the direct-write hold and semantic-reissuance counterexample |
+| [POC 006 — Living Negative Knowledge verified re-entry](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/) | Theory POC testing bounded verified re-entry, mapping distinct `K+`/`K−` sibling streams under GCL, and exposing receipt/restart gaps |
 | [Public disclosure trace — 3 June 2026](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/PUBLIC_DISCLOSURE_TRACE.md) | Publisher-dated attribution of the broad ESS-MAI “Dija Negative” concept, kept separate from later executable proof |
 | [`K+` / `K−` parallelism](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/POSITIVE_NEGATIVE_PARALLELISM.md) | Source-grounded authority topology, materialized scope, remaining asymmetry, and next POC variation |
 | [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Sealed pre-tag state, validation results, disclosure boundaries, and artifact-manifest hashes |
@@ -46,35 +46,47 @@ A separate private ESS-MAI v1.8.9 workspace is outside this disclosure. C01 and 
 | --- | --- | --- |
 | POC 003 v0.2.0 | System POC | Cargo build PASS; 84/84 tests; empty cold-start gap reproduced 3/3; exact-pair control passed 1/1 |
 | POC 004 v0.2.0 | Theory POC | Cargo build PASS; 19/19 tests; supported behavior and counterexamples reproduced 5/5 |
-| POC 005 v1.0.0 | Theory POC | Cargo build PASS; native 8/8; detached 1/1; one-shot authority confirmed; direct write held at `-8` |
-| POC 006 v1.0.0 | Theory POC | Cargo build PASS; native runs 12/12, 19/19 and 1/1 plus four focused verdict controls; detached 30/30; full receipt absent |
+| POC 005 v1.1.1 | Theory POC | strict build PASS; 15/15; detached 3/3; generation-local authority confirmed; fresh semantic reissuance found; direct write held at `-8` |
+| POC 006 v1.1.1 | Theory POC | strict build PASS; detached 30/30 + 3/3; verified K- re-entry; full receipt and detached cross-process restart absent |
 
-The latest [v1.1.0 tagged manifest](https://github.com/gjatalegacy-create/ESS-MAI/blob/ess-mai-executable-prior-art-v1.1.0/publications/executable-prior-art/manifest.json) identifies all four capsules and their integrity roots. The [v1.0.0 manifest](https://github.com/gjatalegacy-create/ESS-MAI/blob/ess-mai-executable-prior-art-v1.0.0/publications/executable-prior-art/manifest.json) remains the historical record for POC 003 + POC 004. Run counts come from disclosed maintainer evidence and are not presented as independent replication.
+The latest [v1.1.1 tagged manifest](https://github.com/gjatalegacy-create/ESS-MAI/blob/ess-mai-executable-prior-art-v1.1.1/publications/executable-prior-art/manifest.json) identifies all four capsules and their integrity roots. The immutable [v1.1.0 manifest](https://github.com/gjatalegacy-create/ESS-MAI/blob/ess-mai-executable-prior-art-v1.1.0/publications/executable-prior-art/manifest.json) remains the first POC 005/006 release; v1.1.1 records the stricter standard-method rerun without rewriting that history. Run counts come from disclosed maintainer evidence and are not presented as independent replication.
 
 ## Reproduce the public POCs
 
-```bash
+```powershell
+$repo = (Get-Location).Path
+
 # POC 003
-cd publications/executable-prior-art/poc-003-system-cold-start-reachability
+$env:CARGO_TARGET_DIR = Join-Path $repo '..\_audit_build_cache\poc003'
+Set-Location publications/executable-prior-art/poc-003-system-cold-start-reachability
 cargo build --workspace --all-targets --locked
 cargo test --workspace --all-targets --locked
 
 # POC 004
-cd ../poc-004-gcl-law0-global-continuity
+Set-Location $repo
+$env:CARGO_TARGET_DIR = Join-Path $repo '..\_audit_build_cache\poc004'
+Set-Location publications/executable-prior-art/poc-004-gcl-law0-global-continuity
 cargo build --workspace --all-targets --locked
 cargo test --workspace --all-targets --locked
 
 # POC 005
-cd ../poc-005-ffi-law0-authority-nonduplication
-cargo build --workspace --release --locked
-cargo test --workspace --locked
-cargo run -p poc005-ffi-law0-experiment --release --locked
+Set-Location $repo
+$env:CARGO_TARGET_DIR = Join-Path $repo '..\_audit_build_cache\poc005'
+Set-Location publications/executable-prior-art/poc-005-ffi-law0-authority-nonduplication
+cargo build --workspace --all-targets --release --locked
+cargo test --workspace --all-targets --release --locked -- --test-threads=1
+1..3 | ForEach-Object { cargo run -p poc005-ffi-law0-experiment --release --locked }
 
 # POC 006
-cd ../poc-006-living-negative-knowledge-verified-reentry
-cargo build --workspace --release --locked
-cargo test --workspace --locked
-cargo run -p poc006-living-negative-experiment --release --locked
+Set-Location $repo
+$env:CARGO_TARGET_DIR = Join-Path $repo '..\_audit_build_cache\poc006'
+Set-Location publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry
+cargo build --workspace --all-targets --release --locked
+cargo test --workspace --all-targets --release --locked -- --test-threads=1
+1..3 | ForEach-Object { cargo run -p poc006-living-negative-experiment --release --locked }
+
+Set-Location $repo
+Remove-Item Env:CARGO_TARGET_DIR
 ```
 
 For exact extraction checks, environment notes, and expected outputs, use each capsule's `REPRODUCIBILITY.md`. The public workflow reruns all four Cargo suites on the default branch.
@@ -102,6 +114,7 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 - [Zenodo — ESS-MAI Executable Prior Art v1.0.0](https://doi.org/10.5281/zenodo.22074028)
 - [Software Heritage — content-addressed POC collection](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
 - [OpenAIRE — indexed ESS-MAI research software](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22074028)
+- [GitHub Release v1.1.1 — POC 003–006; standard-method closure for POC 005–006](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1)
 - [GitHub Release v1.1.0 — POC 003–006 executable prior art](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0)
 - [GitHub Release v1.0.0 — POC 003 + POC 004](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.0.0)
 - [Business Magazine Albania — Bledar Gjata and ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)

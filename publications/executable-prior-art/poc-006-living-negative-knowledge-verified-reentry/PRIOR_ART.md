@@ -1,6 +1,6 @@
 # Prior art and contribution boundary
 
-## ESS-MAI public disclosure trace — 2026-06-03
+## ESS-MAI EARLIER PUBLIC DISCLOSURE — 2026-06-03
 
 Business Magazine published an interview identifying Bledar Gjata and ESS-MAI
 on 2026-06-03.[^5] It explicitly describes the project concept “Dija Negative”:
@@ -14,7 +14,7 @@ sealed re-entry, downgrade check, pre-PRO gate, or receipt. Its evidentiary
 weight is therefore conceptual disclosure and attribution, not executable
 materialization.
 
-## Direct external prior art: Negative Knowledge
+## DIRECT TECHNICAL MATCH: NEGATIVE KNOWLEDGE
 
 Wang's arXiv v1, submitted 2026-06-19, explicitly proposes converting failure
 into a bounded, typed, shareable negative-knowledge object so a downstream
@@ -33,13 +33,15 @@ Therefore these broad propositions are **existing theory**, not ESS-MAI novelty:
 - later agents can use it to avoid repeating failed work;
 - provenance/confidence/scope can bound reuse.
 
-## Adjacent prior art
+## ADJACENT PRIOR ART
 
 Constitutive-governance work treats a protocol as shaping the set of permitted
 actions rather than merely checking an output.[^3] LATTICE describes runtime
 governance with a non-bypassable execution gate and tamper-evident audit
 records.[^4] These are relevant to fail-closed execution and governance, but do
 not by themselves evidence the exact ESS-MAI lifecycle tested here.
+
+## FOUNDATIONAL PRIOR ART
 
 Earlier work also prevents reading the 2026-06-03 trace as the first appearance
 of every broad failure-memory idea. Riesbeck's 1981 system stores a failed
@@ -49,6 +51,14 @@ problems.[^7] CONS (2024) explicitly shares positive and negative knowledge
 between cooperative agents.[^8] None of these sources, individually, supplies
 the complete typed-asset → Shadow transaction → sealed re-entry → mandatory
 pre-PRO gate composition tested here.
+
+## LATER INDEPENDENT WORK
+
+Wang's arXiv v1 was submitted on 2026-06-19, 16 calendar days after the
+publisher date on the ESS-MAI interview. It is direct independent work on
+negative knowledge and remains declared here. The sequence is a chronology
+observation only; it is not evidence of copying, universal priority, or legal
+novelty.
 
 ## ESS-MAI contribution tested by this POC
 
@@ -84,6 +94,13 @@ a specific, reproduced receipt gap.
 The focused search establishes relevant and direct prior art; it cannot prove
 the absence of every publication, patent, private system, or later disclosure.
 No universal novelty or patentability opinion is made.
+
+No single source in the declared focused search was found to disclose the
+entire typed-asset + independent Shadow transaction + sealed handoff +
+mandatory Quantum pre-PRO readiness gate + observable next-cycle hard-block
+composition.
+
+`NO_DIRECT_MATCH_FOUND_IN_DECLARED_SEARCH_SCOPE`
 
 ## Sources
 

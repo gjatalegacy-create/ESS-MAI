@@ -92,6 +92,12 @@ fn main() {
 
     println!("ARTIFACT_TYPE=THEORY_POC");
     println!("THEORY=LIVING_NEGATIVE_KNOWLEDGE_VERIFIED_REENTRY");
+    println!("RUN0_INSTRUMENT_VALIDATION=PASS");
+    println!("BASELINE_NO_HISTORY_PRO_ACTIVATED={}", first_cycle.pro_activated);
+    println!("TARGET_VERIFIED_HISTORY_HARD_BLOCKED={}", verified_reentry.hard_blocked.unwrap_or(false));
+    println!("ABLATION_MISSING_REQUIRED_HISTORY_PRO_ACTIVATED={}", missing_history.pro_activated);
+    println!("ADVERSARIAL_CORRUPT_HISTORY_PRO_ACTIVATED={}", corrupt_history.pro_activated);
+    println!("ADVERSARIAL_DOWNGRADE_PRO_ACTIVATED={}", downgrade.pro_activated);
     println!("FIRST_CYCLE_PRO_ACTIVATED={}", first_cycle.pro_activated);
     println!("VALID_HISTORY_STATUS={}", verified_reentry.nk_status);
     println!("VALID_HISTORY_ENTRIES={}", verified_reentry.vault_entries);
@@ -111,6 +117,8 @@ fn main() {
     println!("DOWNGRADE_PRO_ACTIVATED={}", downgrade.pro_activated);
     println!("FULL_NEGATIVE_RECEIPT_WIRE_MATERIALIZED=false");
     println!("NEGATIVE_PERSISTED_BOOLEAN_ONLY_GAP=true");
+    println!("RECEIPT_GAP_EVIDENCE_CLASS=SOURCE_INSPECTION_NOT_RUNTIME");
+    println!("DETACHED_RESTART_RECOVERY=NOT_EXECUTED");
 
     let passed = first_cycle.pro_activated
         && verified_reentry.history_required

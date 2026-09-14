@@ -3,6 +3,8 @@
 ## Included
 
 - theory, scientific report, prior-art comparison and claim boundary;
+- falsifiable `CLAIM.md`, production-aware `SOURCE_RUNTIME_MAP.md`, and
+  pre-registered `EXPERIMENT_PROTOCOL.md`;
 - byte-identical focal source files;
 - clearly labelled detached compilation adapters;
 - Cargo manifests and lockfile;
@@ -10,6 +12,8 @@
 - Apache-2.0 license and citation metadata;
 - CodeMeta machine-readable metadata;
 - compact native/detached build, test, runtime and identity evidence;
+- strict all-target build failure plus adapter-only advancement, final 15/15
+  tests, 3/3 repeatability, caller closure and machine-readable verdict;
 - source-identity verification script.
 
 ## Excluded
@@ -27,6 +31,7 @@
 ```text
 THEORY_POC
 PARTIAL_MATERIALIZATION
+PARTIAL_POC
 EXECUTABLE_PRIOR_ART_CANDIDATE
 ```
 

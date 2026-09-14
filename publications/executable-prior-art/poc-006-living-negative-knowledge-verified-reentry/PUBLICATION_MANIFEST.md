@@ -3,6 +3,8 @@
 ## Included
 
 - theory, scientific report, prior-art comparison and claim boundary;
+- falsifiable `CLAIM.md`, production-aware `SOURCE_RUNTIME_MAP.md`, and
+  pre-registered `EXPERIMENT_PROTOCOL.md`;
 - publisher-timestamped public-disclosure mapping and chronology;
 - positive/negative parallel-authority formulation tied to source coordinates;
 - four byte-identical focal source files;
@@ -12,6 +14,8 @@
 - Apache-2.0 license and citation metadata;
 - CodeMeta machine-readable metadata;
 - compact native/detached build, test, runtime and identity evidence;
+- strict all-target build, 30/30 tests, 3/3 repeatability, caller closure and
+  machine-readable verdict;
 - compact public-reference and non-copied source-coordinate evidence;
 - source-identity verification script.
 
@@ -30,6 +34,7 @@
 ```text
 THEORY_POC
 PARTIAL_MATERIALIZATION
+PARTIAL_POC
 EXECUTABLE_PRIOR_ART_CANDIDATE
 ```
 

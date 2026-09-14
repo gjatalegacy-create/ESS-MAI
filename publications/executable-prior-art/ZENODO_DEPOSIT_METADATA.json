@@ -1,9 +1,9 @@
 {
   "upload_type": "software",
-  "title": "ESS-MAI Executable Prior Art v1.1.0 by Bledar Gjata — POC 003–006",
-  "description": "A public Apache-2.0 collection of four surgically bounded ESS-MAI proof-of-concept capsules. POC 003 tests system cold-start reachability; POC 004 tests bounded GCL LAW-0 continuity; POC 005 tests FFI authority non-duplication while preserving the direct-write hold; POC 006 tests verified negative-history re-entry and fail-closed omission prevention while exposing the remaining Boolean-only receipt gap. POC 006 also maps source-evidenced constructive K+ and rigorous-negative K- as distinct sibling knowledge outcomes under GCL, with HOLD separate from both, and maps a publisher-timestamped 2026-06-03 ESS-MAI Negative Knowledge disclosure to later executable evidence without inflating the media record into an implementation claim. Experimental success and experimental failure are preserved together as an architecture-preserving advancement method. Earlier failure-memory and positive/negative knowledge work is acknowledged as prior art. The full ESS-MAI v1.8.9 core is not included.",
-  "version": "1.1.0",
-  "publication_date": "2026-09-13",
+  "title": "ESS-MAI Executable Prior Art v1.1.1 by Bledar Gjata — POC 003–006; Standard-Method Closure for POC 005–006",
+  "description": "A public Apache-2.0 collection of four surgically bounded ESS-MAI proof-of-concept capsules. POC 005 and POC 006 now follow the explicit theory-to-source-to-runtime experimental method with frozen falsifiable claims, production caller maps, baseline, target, ablation, adversarial failure, counterexample search, repeatability, detached reproduction, machine-readable verdicts and exact claim boundaries. POC 005 establishes generation-local authority non-duplication while publishing fresh semantic reissuance and the direct-write hold as counterexamples to stronger claims. POC 006 establishes bounded verified negative-history re-entry while publishing the Boolean-only receipt and detached restart gaps. Constructive K+ and rigorous-negative K- remain distinct sibling knowledge outcomes under GCL. The publisher-timestamped 2026-06-03 ESS-MAI Negative Knowledge trace is separated from executable implementation evidence. Existing theory, ESS-MAI contribution, bounded innovation, current materialization and future research are declared separately. The full ESS-MAI v1.8.9 core is not included.",
+  "version": "1.1.1",
+  "publication_date": "2026-09-14",
   "creators": [
     {
       "name": "Gjata, Bledar",
@@ -36,7 +36,7 @@
       "resource_type": "software"
     },
     {
-      "identifier": "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0",
+      "identifier": "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1",
       "relation": "isSupplementTo",
       "resource_type": "software"
     },
@@ -46,5 +46,5 @@
       "resource_type": "software"
     }
   ],
-  "notes": "Metadata for the POC-only v1.1.0 release asset. Verify the GitHub tag, archive SHA-256, and final Zenodo DOI before adding that DOI back to the repository."
+  "notes": "Metadata for the POC-only v1.1.1 release asset. Verify the GitHub tag, archive SHA-256, and final Zenodo DOI before adding that DOI back to the repository."
 }

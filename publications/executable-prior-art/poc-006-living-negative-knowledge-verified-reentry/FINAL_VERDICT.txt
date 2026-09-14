@@ -1,0 +1,44 @@
+POC_ID=POC-006
+POC_TITLE=Living Negative Knowledge Verified Re-entry
+
+CURRENT_SOURCE_GRAPH=PRODUCTION_SOURCE_CHAIN_FOUND_FROM_SHADOW_VALIDATION_AND_TRANSACTION_TO_SEALED_EXPORT_THEN_QUANTUM_READINESS_AND_NK_FILTER; DETACHED_HARNESS_EXECUTES_EXACT_IMPORT_FILTER_WITH_AUTHORED_GUARD
+SOURCE_MUTATION_COUNT=0
+
+BUILD=PASS_STRICT_RELEASE_ALL_TARGETS
+TESTS=PASS_30_OF_30
+BASELINE=PASS_NO_HISTORY_REQUIREMENT_ALLOWED_FILTER_PATH_WITH_SCORE_0_900
+TARGET_CONDITION=PASS_VALID_REQUIRED_HISTORY_READY_ONE_ENTRY_MATCHING_FAILURE_HARD_BLOCKED_SCORE_0_000
+ABLATION=PASS_MISSING_REQUIRED_HISTORY_DEGRADED_AND_PRO_NOT_ACTIVATED
+ADVERSARIAL_TEST=PASS_CORRUPT_SEAL_AND_UNSEALED_DOWNGRADE_NOT_READY_AND_PRO_NOT_ACTIVATED
+COUNTEREXAMPLE_SEARCH=FOUND_BOOLEAN_ONLY_PERSISTENCE_SIGNAL_AND_NO_DETACHED_FULL_SHADOW_TO_QUANTUM_RESTART_RECEIPT
+RESTART_RECOVERY=NATIVE_SHADOW_COMPONENT_PASS_1_OF_1; DETACHED_END_TO_END_TERMINATE_REOPEN_NOT_EXECUTED
+REPEATABILITY=PASS_3_OF_3_INDEPENDENT_PROCESSES_ZERO_UNEXPECTED_VARIANCE
+DETACHED_REPRODUCTION=PASS_BUILD_30_TESTS_AND_3_RUNTIME_RUNS_WITHOUT_PRIVATE_SOURCE
+BINARY_REPRODUCIBILITY=BEHAVIOR_PASS_BIT_FOR_BIT_NOT_ESTABLISHED_ACROSS_CLEAN_BUILD_ROOTS
+CI_READY=YES_PROTOCOL_PARITY_PREPARED
+HASH_MANIFEST=PASS_AFTER_FINAL_SEAL
+
+NARROW_CLAIM_STATUS=POC_READY
+GLOBAL_THEORY_STATUS=THEORY_NOT_MATERIALISED_GLOBALLY
+
+POC_STATUS=PARTIAL_POC
+
+PROVEN:
+1. Exact copied v189 import/filter code turns valid required sealed history into READY state and hard-blocks a semantically matching later candidate with score zero.
+2. Missing, corrupt and downgraded required history prevents progression to PRO in the disclosed experiment.
+3. v189 source and focused native tests preserve distinct constructive K+ and rigorous-negative K- writes under one superior GCL/Shadow verdict boundary.
+
+NOT_PROVEN:
+1. A complete independently verifiable negative-commit receipt across Shadow and Quantum.
+2. A detached terminate/reopen recovery chain through the authoritative Shadow Vault and following Quantum process.
+3. Symmetric detached positive-history re-entry, universal failure avoidance, or closure of the full v189 architecture.
+
+COUNTEREXAMPLES:
+1. The current cycle response carries negative_persisted as a Boolean rather than a typed NegativeCommitReceiptWire.
+2. Native WAL recovery passes at component scope while detached end-to-end process recovery remains unexecuted.
+
+ADVANCEMENT_METHOD:
+After the existing Shadow transaction commits, emit one typed receipt binding negative asset token, transaction/cycle, GCL identity, export digest and commit result. Quantum verifies it before import. A successor POC terminates Shadow, reopens the real Vault and launches the next Quantum cycle. Preserve Shadow as writer and Quantum as verification/reasoning consumer; do not flatten K+ and K-.
+
+CLAIM_BOUNDARY=SEALED_FOR_POC_006_ONLY
+FULL_ESS_MAI_V189_ARCHITECTURE_CLOSED=false

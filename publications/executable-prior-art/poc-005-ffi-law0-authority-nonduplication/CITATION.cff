@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this bounded ESS-MAI theory POC, cite this artifact version."
 type: software
 title: "ESS-MAI POC-005: FFI LAW-0 Authority Non-Duplication"
-version: 0.1.0
-date-released: 2026-09-13
+version: 1.1.1
+date-released: 2026-09-14
 authors:
   - family-names: Gjata
     given-names: Bledar

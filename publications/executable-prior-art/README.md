@@ -39,12 +39,12 @@ advancement mechanism; it does not collapse one authority into the other.
 | --- | --- | --- | --- |
 | POC 003 | `poc-003-system-cold-start-reachability/` | 0.2.0 | build PASS; 84/84 tests; empty-state gap + positive control |
 | POC 004 | `poc-004-gcl-law0-global-continuity/` | 0.2.0 | build PASS; 19/19 tests; supported behavior + counterexamples |
-| POC 005 | `poc-005-ffi-law0-authority-nonduplication/` | 1.0.0 | build PASS; native 8/8; detached 1/1; one-shot authority + direct-write hold |
-| POC 006 | `poc-006-living-negative-knowledge-verified-reentry/` | 1.0.0 | build PASS; native runs 12/12, 19/19 and 1/1 plus four focused verdict controls; detached 30/30; verified re-entry + receipt gap |
+| POC 005 | `poc-005-ffi-law0-authority-nonduplication/` | 1.1.1 | strict build PASS; 15/15; detached 3/3; local one-shot authority + semantic-reissuance counterexample + direct-write hold |
+| POC 006 | `poc-006-living-negative-knowledge-verified-reentry/` | 1.1.1 | strict build PASS; detached 30/30 + 3/3; verified K- re-entry + Boolean receipt/restart boundary |
 
 The machine-readable inventory is in `manifest.json`. An entry in a draft manifest is not by itself evidence that a capsule has been released, tagged, archived, or assigned a DOI.
 
-`ZENODO_DEPOSIT_METADATA.json` describes the v1.1.0 collection deposit. A DOI is inserted into the repository only after Zenodo actually issues it. The preferred archival object is the POC-only release asset, whose SHA-256 is recorded in the GitHub release notes; the private v1.8.9 source is never part of that asset.
+`ZENODO_DEPOSIT_METADATA.json` describes the v1.1.1 collection deposit. A DOI is inserted into the repository only after Zenodo actually issues it. The preferred archival object is the POC-only release asset, whose SHA-256 is recorded in the GitHub release notes; the private v1.8.9 source is never part of that asset.
 
 ## Reading rule
 

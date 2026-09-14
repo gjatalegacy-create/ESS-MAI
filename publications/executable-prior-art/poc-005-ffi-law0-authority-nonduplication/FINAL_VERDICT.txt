@@ -1,0 +1,44 @@
+POC_ID=POC-005
+POC_TITLE=FFI LAW-0 Authority Non-Duplication
+
+CURRENT_SOURCE_GRAPH=LOCAL_GATE_CLOSED_AT_TEST_OR_EXPLICIT_FEATURE_EDGE_TO_COMPATIBILITY_HOLD; DEFAULT_PRODUCTION_FFI_CALLER_AND_DIRECT_VAULT_SINK_NOT_FOUND
+SOURCE_MUTATION_COUNT=0
+
+BUILD=PASS_STRICT_RELEASE_ALL_TARGETS_AFTER_DISCLOSED_ADAPTER_ONLY_CLOSURE
+TESTS=PASS_15_OF_15
+BASELINE=PASS_FRESH_GENERATION_REACHED_POST_AUTHORITY_HOLD_CODE_MINUS_8
+TARGET_CONDITION=PASS_COPIED_SAME_GENERATION_REPLAY_REJECTED_CODE_MINUS_1
+ABLATION=PASS_BURNED_SLOT_WITH_RETAINED_HANDLE_BITS_REJECTED_CODE_MINUS_1
+ADVERSARIAL_TEST=PASS_FORGED_NONCE_UNKNOWN_GENERATION_EMPTY_PAYLOAD_AND_8_COPY_RACE
+COUNTEREXAMPLE_SEARCH=FOUND_TWO_FRESH_GENERATIONS_FOR_SAME_MODULE_AND_PAYLOAD_EACH_REACHED_MINUS_8
+RESTART_RECOVERY=NOT_EXECUTED_NO_DURABLE_SLOT_IN_NARROW_CLAIM; GLOBAL_DURABILITY_NOT_PROVEN
+REPEATABILITY=PASS_3_OF_3_INDEPENDENT_PROCESSES_ZERO_UNEXPECTED_VARIANCE
+DETACHED_REPRODUCTION=PASS_BUILD_15_TESTS_AND_3_RUNTIME_RUNS_WITHOUT_PRIVATE_SOURCE
+BINARY_REPRODUCIBILITY=BEHAVIOR_PASS_BIT_FOR_BIT_NOT_ESTABLISHED_ACROSS_CLEAN_BUILD_ROOTS
+CI_READY=YES_PROTOCOL_PARITY_PREPARED
+HASH_MANIFEST=PASS_AFTER_FINAL_SEAL
+
+NARROW_CLAIM_STATUS=POC_READY
+GLOBAL_THEORY_STATUS=THEORY_NOT_MATERIALISED_GLOBALLY
+
+POC_STATUS=PARTIAL_POC
+
+PROVEN:
+1. For one issued generation, copying the C-visible handle does not duplicate the Rust-owned one-shot authority.
+2. Forged, unknown, empty, serial-replay and concurrent-copy cases reach the pre-registered refusal/hold states.
+3. The direct FFI route does not silently write knowledge; it terminates at CompatibilityHold without the superior committed verdict.
+
+NOT_PROVEN:
+1. Durable authority consumption across process restart.
+2. Semantic idempotency across fresh generations or an idempotent knowledge sink.
+3. Default-production deployment or end-to-end FFI-to-Vault persistence.
+
+COUNTEREXAMPLES:
+1. Two fresh generations issued for the same module and payload each cross local authorization, so generation-local non-duplication is not semantic non-duplication.
+2. A locally authorized non-empty call returns CompatibilityHold instead of a committed knowledge-write success.
+
+ADVANCEMENT_METHOD:
+Bind a durable semantic authorization key to the existing confirmed-verdict transaction, consume it atomically at the authoritative Shadow sink, make that sink idempotent, and verify restart/replay in a successor POC. Preserve the hierarchy: the FFI child carries evidence but never assumes verdict or persistence authority.
+
+CLAIM_BOUNDARY=SEALED_FOR_POC_005_ONLY
+FULL_ESS_MAI_V189_ARCHITECTURE_CLOSED=false

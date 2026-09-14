@@ -1,0 +1,38 @@
+EVIDENCE_CLASS=SOURCE_AND_CALLER_CLOSURE
+CAPTURE_DATE=2026-09-13
+SOURCE_ROOT_IDENTITY=directory v1.8.9_ess_mai_phase_015; internal Cargo packages 1.7.8
+SOURCE_MODE=READ_ONLY
+
+FOCAL_FILE=shadow/src/sovereign_ffi_gate.rs
+BYTES=24080
+SHA256=88ed03f02697ca772fb8d6bfd8575f16ce6404e720265a423ecffaa001081142
+COPY_IDENTITY=PASS
+
+FOCAL_FILE=shadow/src/living_trust_contract.rs
+BYTES=9813
+SHA256=7107a2db3b8fd8e05fa2ad12093cd4fa55cf5fb35e76154189a88edecab4bcc2
+COPY_IDENTITY=PASS
+
+FOCAL_FILE=shadow/src/lab_contracts/verification_receipt.rs
+BYTES=4283
+SHA256=93f010fbd3171c8ec8f452e3f7332df5c529eaefa7ce6afd910200b0381b8d9c
+COPY_IDENTITY=PASS
+
+CALLER_SEARCH_SYMBOLS=sovereign_issue_capability|sovereign_validate_and_write|sovereign_commit
+CALLER_SEARCH_SCOPE=v189 source excluding target
+IN_REPOSITORY_NON_TEST_CALLER_FOR_PUBLIC_FFI_EXPORTS=NOT_FOUND
+SURFACE_CFG=any(test, feature="legacy_ffi_compat")
+EDGE_CLASS=TEST_ONLY_EDGE_OR_EXTERNAL_FEATURE_CALLER
+
+PRODUCTION_RELATED_PATH=shadow/src/shadow_gateway.rs:590-616 -> seal_verified_output -> VaultTransaction -> commit_transaction
+PRODUCTION_RELATED_PATH_SHA256=ad09991cd6ed7f61756566f02b36d9185477dcf41923001a4ddf553e5a0af212
+RELATION_TO_POC=uses the same hidden gate for verified-output receipt; not the held direct-FFI write route
+
+AUTHORITATIVE_SINK_FOR_DIRECT_FFI=ABSENT
+OBSERVED_TERMINAL=CompatibilityHold(-8)
+GLOBAL_PERSISTENCE_CLAIM=NOT_MATERIALISED
+
+REFERENCE_FILENAME_SEARCH=academic|akademik|paper[1-3]|prior-art
+EXACT_ACADEMIC_1_2_3_FILES_FOUND=0
+CONTENT_REFERENCE=ess-mai.md:5746,5760
+CONTENT_REFERENCE_CLASS=REFERENCE_ONLY_NOT_RUNTIME_PROOF

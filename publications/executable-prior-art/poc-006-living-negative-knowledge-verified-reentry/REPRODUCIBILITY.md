@@ -13,14 +13,27 @@ Run from this POC root. Keep the build tree outside the capsule:
 
 ```powershell
 $env:CARGO_TARGET_DIR = 'C:\path\outside\poc006-target'
-cargo build --workspace --release --locked --offline
-cargo test --workspace --locked --offline -- --test-threads=1
-cargo run -p poc006-living-negative-experiment --release --locked --offline
+rustc --version --verbose
+cargo --version --verbose
+cargo build --workspace --all-targets --release --locked
+cargo test --workspace --all-targets --release --locked -- --test-threads=1
+1..3 | ForEach-Object {
+  cargo run -p poc006-living-negative-experiment --release --locked
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
 Remove-Item Env:CARGO_TARGET_DIR
 ```
 
-If the dependencies are not already cached, omit `--offline` while preserving
+If dependencies are already cached, `--offline` may be added while preserving
 `--locked`. Network retrieval changes availability, not the recorded lockfile.
+The expected strict result is build PASS, 30/30 tests, and three identical
+runtime receipts with `EXPERIMENT_STATUS=PASS`.
+
+Behavioral reproducibility and bit-for-bit binary reproducibility are separate
+claims. Three clean build roots used identical Rust/Cargo inputs and produced
+the same semantic receipt, but their Windows executable SHA-256 values were
+different. Exact witness hashes are recorded in `RESULTS.md`; byte-identical
+binary reproduction is therefore **not established** by this release.
 
 ## Source-identity check
 
