@@ -53,11 +53,11 @@ JOSS is an appropriate **future** review target only if ESS-MAI becomes a mature
 
 ### Blocking or unresolved items
 
-- **Public-history gate:** JOSS currently requires more than six months of public development with activity across that period. The visible checkout history begins on 2026-07-15, so this gate cannot be met on the status date.[^5]
+- **Public-history gate:** JOSS currently requires more than six months of public development with activity across that period. GitHub records this repository as created on 2026-07-14, and the currently checked-out Git commit graph begins on 2026-08-24, so this gate cannot be met on the status date.[^15][^5]
 - **Research impact:** a DOI and repository are useful identifiers, not evidence that independent researchers use the software. Collect public citations, adoption, integrations or external research workflows.
 - **External development:** the visible author/email variants appear to represent one maintainer. Seek genuine issue discussion, pull-request review and contributions; never manufacture activity.
 - **Independent usability:** ask a colleague with no privileged setup to install and test the software, then publish the report.
-- **Paper:** no JOSS `paper.md`/bibliography package is identified in the reviewed top-level materials. A future paper needs JOSS's required summary, statement of need, state of the field, quality statement and references, without turning documentation into unsupported research claims.[^4]
+- **Paper:** no JOSS `paper.md`/bibliography package is identified in the reviewed top-level materials. A future paper needs the current JOSS sections: Summary, Statement of need, State of the field, Software design, Research impact statement, AI usage disclosure, Acknowledgements, and References, without turning documentation into unsupported research claims.[^4][^5]
 - **Scope and comparison:** explain the research application, intended users, relation to existing software, architectural trade-offs and why this is reusable software rather than a one-off demonstration.
 - **Testability:** demonstrate objective installation and core-function verification across the supported scope; report coverage and limitations rather than extrapolating from selected POCs.
 - **AI-use disclosure:** review and satisfy JOSS's current AI-usage policy at submission time.[^5]
@@ -125,3 +125,4 @@ The current NLnet notice also says mostly LLM-generated work is not eligible and
 [^12]: NLnet, “Apply for funding”: https://nlnet.nl/funding.html
 [^13]: NLnet, “Apply for funding before November 3rd 2026”: https://nlnet.nl/news/2026/20260903-call.html
 [^14]: NLnet, Restack: https://nlnet.nl/restack/
+[^15]: GitHub REST API, ESS-MAI repository metadata (`created_at`) and local public Git commit history: https://api.github.com/repos/gjatalegacy-create/ESS-MAI

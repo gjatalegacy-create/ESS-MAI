@@ -19,9 +19,9 @@ Zenodo version record                         Software Heritage snapshot
 Zenodo concept DOI                                    |
 10.5281/zenodo.22074027                               |
         | all-versions/latest-version resolver         |
-        +----------------------+----------------------+
-                               v
-                    OpenAIRE discovery/index record
+        v                                             |
+OpenAIRE discovery/index record                       |
+        (Zenodo DOI route)                            |
 ```
 
 - **GitHub is the development repository.** It exposes the public source, revision history, releases, issue templates and the repository's validation workflow. A public repository and a passing workflow run make work inspectable; they do not independently validate the project's scientific claims.[^1]
@@ -29,7 +29,7 @@ Zenodo concept DOI                                    |
 - **Software Heritage is the source-code preservation layer.** `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` is a snapshot-type SWHID (`snp`). A SWHID identifies an archived software object by intrinsic content-derived identity; a snapshot SWHID is not a review or endorsement.[^4][^5]
 - **OpenAIRE is an indexing and discovery layer.** The project has a result URL keyed to the v1.1.1 DOI. OpenAIRE describes its graph and Explore service as research discovery infrastructure, including research-software records. Presence there does not mean OpenAIRE peer-reviewed or certified ESS-MAI.[^6][^7]
 
-When naming an exact experimental release, cite the v1.1.1 DOI. When naming the evolving Zenodo version family, cite the concept DOI. When proving which archived repository snapshot is meant, cite the snapshot SWHID. When inviting code inspection or participation, link GitHub.
+When naming an exact experimental release, cite the v1.1.1 DOI. When naming the evolving Zenodo version family, cite the concept DOI. When identifying an archived repository snapshot, cite the snapshot SWHID; do not infer a DOI/tag-to-snapshot mapping unless that mapping is separately evidenced. When inviting code inspection or participation, link GitHub.
 
 ## What each external surface does—and does not do
 
@@ -54,7 +54,7 @@ ORCID can improve author-to-work discovery by linking a DOI to the author's reco
 
 JOSS is a journal with formal peer review, but ESS-MAI should be represented only as a **future checklist candidate**. Current JOSS screening expects, among other things, more than six months of public development history, demonstrated research impact, a full-featured maintainable research package, public contribution paths, tests and documentation, and a paper in the repository.[^11][^12]
 
-The visible checkout history begins on 2026-07-15, less than six months before this status date. The repository has an Apache-2.0 license, contribution/support/security files and a public validation workflow, but those positive signals do not cure the history gate. No JOSS submission, pre-review issue, reviewer assignment or acceptance is asserted. See `WHO_SHOULD_REVIEW_THIS.md` for a staged independent-review plan.
+GitHub records the repository as created on 2026-07-14, while the currently checked-out Git commit graph begins on 2026-08-24; both are less than six months before this status date.[^22] The repository has an Apache-2.0 license, contribution/support/security files and a public validation workflow, but those positive signals do not cure the history gate. No JOSS submission, pre-review issue, reviewer assignment or acceptance is asserted. See `WHO_SHOULD_REVIEW_THIS.md` for a staged independent-review plan.
 
 ## Future quality-signal route: OpenSSF
 
@@ -116,3 +116,4 @@ Before considering NLnet, define a concise milestone-based FOSS work package, na
 [^19]: NLnet, “Apply for funding”: https://nlnet.nl/funding.html
 [^20]: NLnet, “Apply for funding before November 3rd 2026”: https://nlnet.nl/news/2026/20260903-call.html
 [^21]: NLnet, Restack: https://nlnet.nl/restack/
+[^22]: GitHub REST API, ESS-MAI repository metadata (`created_at`) and local public Git commit history: https://api.github.com/repos/gjatalegacy-create/ESS-MAI

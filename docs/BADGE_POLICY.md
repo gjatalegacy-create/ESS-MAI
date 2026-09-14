@@ -22,7 +22,7 @@ OpenAIRE may be linked as “Indexed in OpenAIRE” or “Discover in OpenAIRE,�
 
 ORCID, OSF and HAL should not receive project badges unless a corresponding public identifier or deposit actually exists and resolves:
 
-- An ORCID icon/link may identify a named researcher's verified public ORCID iD; it must not be inferred from a name or email. ORCID permits works to be added by DOI, and manually added information identifies its source.[^6]
+- An ORCID icon/link may identify a named researcher's author-confirmed public ORCID iD; it must not be inferred from a name or email. ORCID permits works to be added by DOI, and manually added information identifies its source.[^6]
 - An OSF link must say whether it points to a registration or a preprint. OSF explicitly distinguishes registrations from preprints and says preprints are shared without formal peer review.[^7]
 - A HAL link may say “Archived in HAL” only after a HAL deposit exists. HAL is an open archive for published and unpublished research, including software.[^8]
 

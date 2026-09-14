@@ -12,7 +12,7 @@ automated scores, or grant-call vocabulary as external validation.
 
 - Published research-domain, hypothesis, theory-to-materialization,
   negative-result, review-status, reviewer, topic, external-platform, badge, and
-  release-template documentation in commit `152a3ad`.
+  release-template documentation in [commit `152a3ad`](https://github.com/gjatalegacy-create/ESS-MAI/commit/152a3ad).
 - Added README sections for Research Domains, Engineering Domains, Review
   Domains, Experimental Questions, Implementation Status, Falsifiable Claims,
   and Open Hypotheses.
@@ -23,7 +23,7 @@ automated scores, or grant-call vocabulary as external validation.
 - Updated `CITATION.cff` and `codemeta.json` with narrower, factual research
   terminology. No DOI, ORCID, affiliation, acceptance, or review was invented.
 - Left every file under `publications/executable-prior-art/` unchanged; the
-  immutable v1.1.1 tag remains at `d38c2ba`.
+  `v1.1.1` tag resolved to `d38c2ba` when maintainer-checked on 2026-09-14.
 
 ## Final repository description
 
@@ -115,12 +115,25 @@ It explicitly invites disagreement and asks which claim is unsupported, which
 invariant can be broken, what cannot be reproduced, what should be removed,
 proved, benchmarked, or rewritten, and what evidence would change a conclusion.
 
-Default `Ideas` and `Q&A` categories are available. A structured
-`independent-technical-review` discussion form is committed. Specialized
-Architecture, Formal Methods, Hypotheses & Falsification, Research Questions,
-Reproducibility, Rust, Security, and Theory → Materialization categories are
-prepared for GitHub UI configuration; category creation has no public REST or
-GraphQL mutation.
+The following nine specialist categories were created and publicly verified on
+2026-09-14 through GitHub's repository UI:
+
+- `Independent Technical Review`;
+- `Architecture Review`;
+- `Formal Methods`;
+- `Hypotheses & Falsification`;
+- `Research Questions`;
+- `Reproducibility`;
+- `Rust Implementation`;
+- `Security Review`;
+- `Theory to Materialization`.
+
+Default GitHub categories remain available. The structured
+`independent-technical-review` discussion form is committed, its configured
+category slug resolves, and discussion #12 was moved into that category and
+pinned on the public Discussions page. No supported public API for creating
+discussion categories was identified as of 2026-09-14; GitHub's documented
+repository interface provides category management through the web UI.[^1]
 
 ## Academic and research-software discovery assets
 
@@ -205,7 +218,7 @@ The exact query-to-content and overclaim matrix is in
 4. Add cross-platform CI and conservative supply-chain controls in a separately
    reviewed change; run OpenSSF locally first and publish its negative findings.
 5. Build successor POCs for the four named implementation gaps without
-   rewriting the immutable v1.1.1 evidence.
+   rewriting the previously published and hash-addressed v1.1.1 evidence.
 6. Define a single real application task and baseline protocol before making
    DeepRAP capability or TRL claims.
 7. Earn external use, citations, issues, and pull requests through useful
@@ -213,5 +226,9 @@ The exact query-to-content and overclaim matrix is in
    metrics.
 
 Current measured readiness is recorded in
-`ORGANIC_DISCOVERY_READINESS.md` as 80/100, with evidence and deductions for
+`ORGANIC_DISCOVERY_READINESS.md` as 81/100, with evidence and deductions for
 every dimension.
+
+## Source
+
+[^1]: GitHub Docs, “Managing categories for discussions”: https://docs.github.com/en/discussions/managing-discussions-for-your-community/managing-categories-for-discussions
