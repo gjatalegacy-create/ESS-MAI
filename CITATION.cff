@@ -38,6 +38,7 @@ references:
         affiliation: "Gjata Legacy"
     version: "1.1.1"
     date-released: 2026-09-14
+    doi: "10.5281/zenodo.22750188"
     url: "https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1"
   - type: software
     title: "ESS-MAI Executable Prior Art v1.0.0 — POC 003 + POC 004"

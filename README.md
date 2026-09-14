@@ -4,7 +4,7 @@
 
 [![POC build and tests](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml/badge.svg?branch=main&label=POC%20build%20%26%20tests)](https://github.com/gjatalegacy-create/ESS-MAI/actions/workflows/poc-validation.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-2f81f7.svg)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22074028.svg)](https://doi.org/10.5281/zenodo.22074028)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22074027.svg)](https://doi.org/10.5281/zenodo.22074027)
 [![Software Heritage](https://img.shields.io/badge/Software%20Heritage-archived-f47b20.svg)](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
 
 ## Executable research in negative knowledge and governed deterministic AI
@@ -26,7 +26,8 @@
 | [`K+` / `K−` parallelism](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/POSITIVE_NEGATIVE_PARALLELISM.md) | Source-grounded authority topology, materialized scope, remaining asymmetry, and next POC variation |
 | [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Sealed pre-tag state, validation results, disclosure boundaries, and artifact-manifest hashes |
 | [Citation metadata](CITATION.cff) | Author, project, affiliation, license, and research keywords |
-| [Zenodo software record](https://doi.org/10.5281/zenodo.22074028) | Version DOI for the exact v1.0.0 POC 003 + POC 004 deposit |
+| [Zenodo v1.1.1 software record](https://doi.org/10.5281/zenodo.22750188) | Exact version DOI for the POC 003–006 deposit and standard-method closure of POC 005–006 |
+| [Zenodo all-versions DOI](https://doi.org/10.5281/zenodo.22074027) | Concept DOI that resolves to the latest ESS-MAI executable-prior-art version |
 | [Software Heritage archive](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/) | Content-addressed SWHID for the extracted executable-prior-art tree |
 
 A separate private ESS-MAI v1.8.9 workspace is outside this disclosure. C01 and C02 are historical references only and are not evidence for these POCs.
@@ -111,9 +112,11 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 
 ## Public references
 
-- [Zenodo — ESS-MAI Executable Prior Art v1.0.0](https://doi.org/10.5281/zenodo.22074028)
+- [Zenodo — ESS-MAI Executable Prior Art v1.1.1](https://doi.org/10.5281/zenodo.22750188)
+- [Zenodo — all versions / latest resolver](https://doi.org/10.5281/zenodo.22074027)
+- [Zenodo — immutable historical v1.0.0](https://doi.org/10.5281/zenodo.22074028)
 - [Software Heritage — content-addressed POC collection](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
-- [OpenAIRE — indexed ESS-MAI research software](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22074028)
+- [OpenAIRE — indexed ESS-MAI v1.1.1 research software](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22750188)
 - [GitHub Release v1.1.1 — POC 003–006; standard-method closure for POC 005–006](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.1)
 - [GitHub Release v1.1.0 — POC 003–006 executable prior art](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.1.0)
 - [GitHub Release v1.0.0 — POC 003 + POC 004](https://github.com/gjatalegacy-create/ESS-MAI/releases/tag/ess-mai-executable-prior-art-v1.0.0)
