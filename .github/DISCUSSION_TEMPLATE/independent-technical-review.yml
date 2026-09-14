@@ -1,0 +1,107 @@
+title: "[Independent technical review]: "
+labels:
+  - "kind/technical-review"
+  - "status/needs-triage"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this category for an evidence-bound review of the public POC 003–006 capsules. A review may support, narrow, or contradict a bounded claim. It must not imply access to the private v1.8.9 core, and an unsuccessful build alone is not a falsification.
+
+  - type: dropdown
+    id: capsule
+    attributes:
+      label: Public capsule or scope
+      options:
+        - POC 003 — system cold-start reachability
+        - POC 004 — GCL LAW-0 global continuity
+        - POC 005 — FFI LAW-0 authority non-duplication
+        - POC 006 — Living Negative Knowledge verified re-entry
+        - Cross-POC or collection-level review
+    validations:
+      required: true
+
+  - type: dropdown
+    id: objective
+    attributes:
+      label: Review objective
+      options:
+        - Independent falsification attempt
+        - Reproduction-method audit
+        - Claim-boundary audit
+        - Artifact-integrity or extraction audit
+        - Cross-POC architecture analysis
+    validations:
+      required: true
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: Independence and conflicts disclosure
+      description: State any ESS-MAI project role, authorship, funding, collaboration, access to non-public material, or other material relationship. Write "none" only if none applies.
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: Exact public claim under review
+      description: Quote or narrowly paraphrase one claim and cite its public file, section, tag, commit, or artifact-manifest identifier.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterion
+    attributes:
+      label: Predeclared falsification or decision criterion
+      description: State what observation would support, contradict, or leave the bounded claim unresolved. Distinguish claim failure from environment or method failure.
+    validations:
+      required: true
+
+  - type: textarea
+    id: method
+    attributes:
+      label: Method, environment, and controls
+      description: Provide enough detail for another reviewer to repeat the work, including toolchain, platform, inputs, commands or procedure, repetition count, and positive or negative controls.
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: Observations and evidence
+      description: Report raw observations before interpretation. Link public logs, hashes, minimal code, or other inspectable evidence; do not include secrets or private source.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: conclusion
+    attributes:
+      label: Bounded conclusion
+      options:
+        - Supports the stated bounded claim
+        - Contradicts the stated bounded claim
+        - Mixed result requiring claim narrowing
+        - Inconclusive
+    validations:
+      required: true
+
+  - type: textarea
+    id: limitations
+    attributes:
+      label: Limitations and alternative explanations
+      description: Identify untested conditions, method differences, likely confounders, and the smallest useful follow-up.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Review checks
+      options:
+        - label: I used only publicly disclosed material and have not attached credentials, personal data, private source, or private workspace material.
+          required: true
+        - label: I separated observation from interpretation and did not expand the cited claim beyond its published boundary.
+          required: true
+        - label: My independence and conflict disclosure is complete to the best of my knowledge.
+          required: true

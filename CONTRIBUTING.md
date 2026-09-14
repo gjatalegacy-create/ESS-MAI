@@ -6,7 +6,7 @@ Thank you for examining ESS-MAI. The most useful contributions are evidence-boun
 
 Contributions may address:
 
-- POC 003 or POC 004 reproducibility;
+- POC 003, POC 004, POC 005, or POC 006 reproducibility;
 - disclosed Rust source and Cargo behavior;
 - extraction identity and artifact-integrity checks;
 - prior-art attribution or citation corrections;
@@ -26,6 +26,26 @@ Before opening an issue or pull request:
 5. distinguish observed behavior from interpretation or a proposed future variant.
 
 Use the repository's **Reproducibility report** or **Research question** issue form whenever possible.
+
+## Ways to Contribute Without Accepting the Theory
+
+You do not need to agree with Gjata Collapse Law, the ESS-MAI authority model, or the project's terminology to make a valuable contribution. A result that narrows, contradicts, or disproves a claim is useful when its evidence and scope are clear.
+
+Legitimate entry points include:
+
+- **Review only:** identify an overbroad claim, ambiguous term, missing citation, or unsupported documentation statement without changing code.
+- **Reproduce:** run an exact locked Cargo procedure and report the environment, command, exit status, and output—even when the result differs from the maintainer record.
+- **Report failure:** preserve a minimal failing input or counterexample and state which bounded claim it affects.
+- **Challenge theory:** select an ID from `docs/HYPOTHESES.md`, explain the challenged premise, and provide a falsification argument or test design.
+- **Test a hypothesis:** add the smallest test that distinguishes the claim from a plausible alternative explanation.
+- **Review Rust:** inspect ownership, concurrency, FFI, process, serialization, persistence, and state assumptions in public source.
+- **Review security:** look for authority bypass, artifact substitution, replay, receipt forgery, confused-deputy behavior, or fail-open paths. Report sensitive findings through `SECURITY.md`.
+- **Review formalization:** translate a bounded invariant into a precise model and identify assumptions that the executable test leaves implicit. Do not label a model “verified” without a real proof or model-check result.
+- **Improve documentation:** reconcile terminology and claims with exact source paths and test observations.
+- **Add a test or benchmark:** define the property, baseline, environment, limits, and falsification threshold before reporting a number.
+- **Reproduce an experiment independently:** avoid relying on maintainer build caches or unpublished files, and disclose every deviation from the documented procedure.
+
+When a contribution disproves or materially narrows an ESS-MAI claim, the project should preserve that negative result in `docs/NEGATIVE_RESULTS.md` and attribute the contributor in the issue, pull request, release notes, or resulting research artifact as appropriate. Attribution never converts a result into endorsement by either party.
 
 ## Sealed POC rule
 
@@ -48,4 +68,3 @@ A pull request should:
 Be precise, respectful, and evidence-first. Criticism, failed reproduction, and counterexamples are welcome when they include enough information to inspect. Promotional claims, personal attacks, and unverifiable assertions are not useful research contributions.
 
 Security-sensitive findings should be reported privately according to [SECURITY.md](SECURITY.md).
-

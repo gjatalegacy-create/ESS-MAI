@@ -1,13 +1,28 @@
 name: Evidence-bound research question
-description: Propose a precise question, counterexample, or minimal experiment grounded in the disclosed ESS-MAI POCs.
+description: Propose a precise question, counterexample, or falsification experiment grounded in public POC 003–006 evidence.
 title: "[Research question]: "
-labels: []
+labels:
+  - "kind/research-question"
+  - "status/needs-triage"
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        ESS-MAI treats successful and failed experiments as inputs to advancement. Questions should identify the public evidence they rely on and must not imply access to the private v1.8.9 core.
+        ESS-MAI treats successful and failed experiments as inputs to advancement. Questions should identify the public evidence they rely on, stay within the published claim boundary, and must not imply access to the private v1.8.9 core.
+
+  - type: dropdown
+    id: capsule
+    attributes:
+      label: Public capsule or scope
+      options:
+        - POC 003 — system cold-start reachability
+        - POC 004 — GCL LAW-0 global continuity
+        - POC 005 — FFI LAW-0 authority non-duplication
+        - POC 006 — Living Negative Knowledge verified re-entry
+        - Cross-POC or collection-level question
+    validations:
+      required: true
 
   - type: dropdown
     id: area
@@ -18,8 +33,11 @@ body:
         - Negative knowledge
         - Cold-start reachability
         - LAW-0 continuity
+        - FFI authority non-duplication or semantic reissuance
+        - Living Negative Knowledge verified re-entry
         - Light–Quantum–Shadow separation
         - Claim boundary or prior-art attribution
+        - Artifact or extraction integrity
         - Reproducibility method
     validations:
       required: true
@@ -28,7 +46,7 @@ body:
     id: question
     attributes:
       label: Precise question or counterexample
-      description: State one falsifiable or inspectable question.
+      description: State one falsifiable or inspectable question and identify the exact bounded claim it tests.
     validations:
       required: true
 
@@ -44,7 +62,23 @@ body:
     id: experiment
     attributes:
       label: Smallest proposed experiment
-      description: Describe inputs, expected observation, failure condition, and the authority boundary that remains unchanged.
+      description: Describe inputs, controls, repetition count, expected observation, and the authority boundary that remains unchanged.
+    validations:
+      required: true
+
+  - type: textarea
+    id: falsification
+    attributes:
+      label: Falsification and interpretation criterion
+      description: State in advance what result would contradict the cited claim, what would support it, and what would remain inconclusive. A build or environment failure alone is not a falsification.
+    validations:
+      required: true
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: Independence or project relationship
+      description: State any project role, evidence authorship, collaboration, non-public access, or material conflict. Write "none" only if none applies.
     validations:
       required: true
 
@@ -57,4 +91,5 @@ body:
           required: true
         - label: This question does not present a future hypothesis as an already materialized result.
           required: true
-
+        - label: I have identified the exact public claim boundary and will report supportive, contradictory, and inconclusive observations by the same standard.
+          required: true

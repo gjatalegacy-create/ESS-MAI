@@ -11,21 +11,23 @@ repository-code: "https://github.com/gjatalegacy-create/ESS-MAI"
 url: "https://github.com/gjatalegacy-create/ESS-MAI"
 license: "Apache-2.0"
 abstract: >-
-  ESS-MAI is an experimental Rust-based research architecture investigating
-  Gjata Collapse Law, bounded hierarchical authority, negative knowledge,
-  traceable sovereign AI, deterministic reasoning, and executable
+  ESS-MAI is experimental Rust research software investigating Gjata Collapse
+  Law, explicit authority boundaries, negative knowledge as operational
+  evidence, traceable state transitions, and reproducible falsification
   proof-of-concept evidence.
 keywords:
   - "ESS-MAI"
   - "Bledar Gjata"
   - "Gjata Collapse Law"
   - "negative knowledge"
-  - "sovereign AI"
   - "Rust"
-  - "deterministic systems"
+  - "systems research"
+  - "state machines"
   - "runtime verification"
-  - "executable POC"
+  - "hypothesis testing"
   - "AI governance"
+  - "software architecture"
+  - "traceability"
   - "reproducible research"
   - "executable prior art"
   - "knowledge representation"

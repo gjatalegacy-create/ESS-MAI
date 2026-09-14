@@ -7,9 +7,9 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22074027.svg)](https://doi.org/10.5281/zenodo.22074027)
 [![Software Heritage](https://img.shields.io/badge/Software%20Heritage-archived-f47b20.svg)](https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/)
 
-## Executable research in negative knowledge and governed deterministic AI
+## Executable research in negative knowledge and governed deterministic systems
 
-**ESS-MAI** is an experimental deep-tech research and systems-engineering project by **Bledar Gjata** at **Gjata Legacy**. It investigates a Rust-based architecture for bounded hierarchical authority, traceable reasoning, deterministic state transitions, fail-closed behavior, and the preservation of negative knowledge as operational evidence.
+**ESS-MAI** is experimental Rust research software and a systems-engineering project by **Bledar Gjata** at **Gjata Legacy**. It investigates explicit authority boundaries, traceable reasoning, deterministic state transitions, fail-closed behavior, and the preservation of negative knowledge as operational evidence through reproducible Cargo POCs.
 
 > **Evidence rule:** every public claim is bounded by disclosed source, an executable procedure, or an explicitly identified reference. A successful build proves compilation for the tested scope; it does not prove every architectural or scientific claim.
 
@@ -24,6 +24,11 @@
 | [POC 006 — Living Negative Knowledge verified re-entry](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/) | Theory POC testing bounded verified re-entry, mapping distinct `K+`/`K−` sibling streams under GCL, and exposing receipt/restart gaps |
 | [Public disclosure trace — 3 June 2026](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/PUBLIC_DISCLOSURE_TRACE.md) | Publisher-dated attribution of the broad ESS-MAI “Dija Negative” concept, kept separate from later executable proof |
 | [`K+` / `K−` parallelism](publications/executable-prior-art/poc-006-living-negative-knowledge-verified-reentry/POSITIVE_NEGATIVE_PARALLELISM.md) | Source-grounded authority topology, materialized scope, remaining asymmetry, and next POC variation |
+| [Hypothesis registry](docs/HYPOTHESES.md) | Falsifiable claims, tests, current evidence, and explicit open or unsupported status |
+| [Theory-to-materialization registry](docs/THEORY_TO_MATERIALIZATION.md) | Trace from theory through source/runtime/test/artifact, including every missing layer |
+| [Research and reviewer map](docs/RESEARCH_DOMAINS.md) | Bounded connections to external disciplines and the specialist best placed to challenge each one |
+| [Independent-review entry points](docs/WHO_SHOULD_REVIEW_THIS.md) | Where different reviewers should start, what to attack, and commands to run |
+| [Negative-results register](docs/NEGATIVE_RESULTS.md) | Failed experiments, contradictions, limitations, and architecture-preserving next tests |
 | [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Sealed pre-tag state, validation results, disclosure boundaries, and artifact-manifest hashes |
 | [Citation metadata](CITATION.cff) | Author, project, affiliation, license, and research keywords |
 | [Zenodo v1.1.1 software record](https://doi.org/10.5281/zenodo.22750188) | Exact version DOI for the POC 003–006 deposit and standard-method closure of POC 005–006 |
@@ -40,6 +45,53 @@ A separate private ESS-MAI v1.8.9 workspace is outside this disclosure. C01 and 
 - **Light–Quantum–Shadow separation:** named ESS-MAI roles for coordination, reasoning, and verdict/persistence under GCL; “Quantum” does not claim quantum hardware or quantum computation.
 - **Traceable deterministic reasoning:** explicit transitions, evidence-bound handoffs, reproducible contracts, and fail-closed gates.
 - **Executable prior art:** Rust/Cargo POCs that publish successful results and experimental failures together with the smallest architecture-preserving advancement method; the publication title is not a patent-office novelty determination.
+
+## Research domains
+
+ESS-MAI is directly a Rust systems-research and research-software repository. It intersects with runtime verification, state-machine analysis, knowledge representation, reproducible computing, and software architecture. It is relevant to AI-governance and AI-safety review because it makes authority, evidence, refusal, and persistence boundaries inspectable; that relevance is an invitation to evaluate the project, not a claim of academic validation, regulatory compliance, or safety assurance.
+
+The detailed cross-disciplinary map is in [Research domains](docs/RESEARCH_DOMAINS.md). Established foundations, ESS-MAI-specific contributions, proposed innovations, and unmaterialized claims are separated in the POC `PRIOR_ART.md` files and the [theory-to-materialization registry](docs/THEORY_TO_MATERIALIZATION.md).
+
+## Engineering domains
+
+- **Systems programming:** Rust workspaces, process boundaries, FFI surfaces, wire formats, vault/WAL paths, and explicit error states.
+- **Runtime verification:** evidence digests, receipts, validation gates, and refusal behavior evaluated during execution.
+- **State machines:** named phases and tested transition constraints; no model-checker or machine-checked proof is claimed.
+- **Reproducible computing:** locked Cargo commands, source-identity scripts, SHA-256 manifests, clean target directories, and public CI.
+- **Security boundaries:** fail-closed gates, authority separation, integrity checks, and a public security-reporting path; no external security certification is claimed.
+
+## Review domains
+
+The highest-value external work is adversarial: find an authority bypass, an invalid state assumption, a non-reproducible result, a receipt-substitution path, a documentation/source mismatch, or an overbroad theoretical claim. Formal-methods researchers may evaluate the explicit invariants and transitions, but the repository currently provides executable tests and counterexamples—not formal verification. See [Who should review this?](docs/WHO_SHOULD_REVIEW_THIS.md), the [review dashboard](docs/REVIEW_STATUS.md), and [Ways to Contribute Without Accepting the Theory](CONTRIBUTING.md#ways-to-contribute-without-accepting-the-theory).
+
+## Experimental questions
+
+1. Can a fail-closed pipeline escape an empty-state reachability cycle without giving a subordinate module new authority?
+2. Does a locally monotone uncertainty tuple establish global continuity across phase and process boundaries?
+3. Is FFI authority consumed exactly once across every semantically equivalent reissuance route, rather than only per identifier generation?
+4. Can verified negative history re-enter reasoning with a complete receipt across a detached process restart?
+5. Can constructive (`K+`) and rigorous negative (`K−`) knowledge remain distinct sibling evidence streams while both advance a GCL-governed cycle?
+
+These questions are registered with falsification conditions in [HYPOTHESES.md](docs/HYPOTHESES.md).
+
+## Implementation status
+
+The public repository contains a broader experimental workspace and four isolated executable POCs. POC 003–006 compile and pass their disclosed test suites in the referenced maintainer and CI runs, while intentionally preserving observed failures and unmaterialized connections. This does **not** mean the full architecture, the private v1.8.9 workspace, production deployment, formal correctness, or scientific validity is closed.
+
+Status words are used narrowly:
+
+- `MATERIALIZED`: source, runtime behavior, test, and artifact are all present for the stated bounded property.
+- `PARTIAL`: at least one required layer or boundary is absent.
+- `DOCUMENTED_ONLY`: a claim appears in documentation without a matching disclosed executable path.
+- `NOT_MATERIALIZED`: the expected connection is absent or a counterexample demonstrates the stronger claim does not hold.
+
+## Falsifiable claims
+
+Each POC states a bounded claim and a condition that can defeat it. A green Cargo run means the experiment behaved as asserted—including when the asserted observation is a fail-closed outcome or a counterexample. It never converts an expected failure into architectural success. Exact claim boundaries live in each POC's `CLAIM_BOUNDARY.md`; the cross-POC registry is [HYPOTHESES.md](docs/HYPOTHESES.md).
+
+## Open hypotheses
+
+Open work includes an architecture-preserving genesis permission for the empty-state route, end-to-end LAW-0 transcript binding, semantic rather than identifier-local FFI non-duplication, a complete Shadow-to-Quantum negative-history receipt, detached restart verification, symmetric positive-history re-entry, external reproduction, formalization, security review, and benchmark characterization. These remain hypotheses or engineering methods until separately implemented and tested.
 
 ## Public evidence snapshot
 
@@ -96,6 +148,8 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 
 - [Submit an independent reproducibility report](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=reproducibility-report.yml)
 - [Open an evidence-bound research question](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=research-question.yml)
+- [Challenge an open hypothesis](docs/HYPOTHESES.md) or select a concrete gap from the [review dashboard](docs/REVIEW_STATUS.md).
+- [Inspect the topic-selection and search-surface audit](docs/DISCOVERABILITY_TOPIC_AUDIT.md).
 - Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes to a sealed POC.
 - See [SUPPORT.md](SUPPORT.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the public participation boundary.
 - Use [SECURITY.md](SECURITY.md) for private reporting of security-sensitive findings.

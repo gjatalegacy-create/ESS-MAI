@@ -1,13 +1,15 @@
 name: Reproducibility report
-description: Report an independent build, test, extraction, or experiment result for a public ESS-MAI POC.
+description: Report a build, test, extraction, reproduction, or independent falsification result for public POC 003–006 evidence.
 title: "[Reproducibility]: "
-labels: []
+labels:
+  - "kind/reproducibility"
+  - "status/needs-triage"
 assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for testing ESS-MAI. Report successful and failed reproductions with the same level of detail. Do not include secrets, personal data, or private workspace material.
+        Thank you for testing ESS-MAI. Report successful, failed, and inconclusive reproductions with the same level of detail. Name the exact bounded claim; an unsuccessful build alone does not falsify it. Do not include secrets, personal data, private source, or private workspace material.
 
   - type: dropdown
     id: capsule
@@ -16,7 +18,21 @@ body:
       options:
         - POC 003 — cold-start reachability
         - POC 004 — GCL LAW-0 continuity
-        - Collection integrity or metadata
+        - POC 005 — FFI LAW-0 authority non-duplication
+        - POC 006 — Living Negative Knowledge verified re-entry
+        - Cross-POC or collection integrity
+    validations:
+      required: true
+
+  - type: dropdown
+    id: method
+    attributes:
+      label: Review method
+      options:
+        - Exact rerun of the documented procedure
+        - Independent implementation or falsification attempt
+        - Platform or toolchain variation
+        - Artifact, hash, or extraction-integrity check
     validations:
       required: true
 
@@ -29,10 +45,18 @@ body:
       required: true
 
   - type: textarea
+    id: claim
+    attributes:
+      label: Exact claim and decision criterion
+      description: Cite the public file and section. State what observation would reproduce, contradict, or leave that bounded claim unresolved.
+    validations:
+      required: true
+
+  - type: textarea
     id: environment
     attributes:
       label: Environment
-      description: Operating system, architecture, rustc version, cargo version, and any relevant environment details.
+      description: Operating system, architecture, rustc version, cargo version, dependency/network conditions, and any relevant environment differences.
       render: text
     validations:
       required: true
@@ -41,6 +65,7 @@ body:
     id: commands
     attributes:
       label: Exact commands
+      description: Include setup, verification, build, test, experiment, repetition count, and controls. Redact only secrets, never outcome-relevant arguments.
       render: shell
     validations:
       required: true
@@ -52,7 +77,9 @@ body:
       options:
         - PASS — result reproduced as documented
         - PARTIAL — some documented results reproduced
-        - FAIL — documented result did not reproduce
+        - NOT REPRODUCED — documented result did not reproduce
+        - FALSIFIED — repeatable evidence contradicts the exact bounded claim
+        - INCONCLUSIVE — environment or method differences prevent a conclusion
     validations:
       required: true
 
@@ -60,7 +87,15 @@ body:
     id: observation
     attributes:
       label: Observed output and smallest divergence
-      description: Include the relevant output and distinguish observation from interpretation.
+      description: Include relevant raw output, hashes, and repetition totals. Compare expected and observed results and distinguish observation from interpretation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: Independence or project relationship
+      description: State any project role, evidence authorship, collaboration, non-public access, or material conflict. Write "none" only if none applies.
     validations:
       required: true
 
@@ -79,4 +114,5 @@ body:
           required: true
         - label: I have separated observed behavior from interpretation and future hypotheses.
           required: true
-
+        - label: I identified the exact bounded claim; I understand that non-reproduction is not automatically falsification.
+          required: true
