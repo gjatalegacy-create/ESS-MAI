@@ -19,7 +19,7 @@ method and result.
 
 | Area | Review needed | Review in progress | Externally reviewed | Current findings | Open issues | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| Independent reproduction | Clean reproduction of all POC 003–006 from an immutable identifier | No external run registered | No | Maintainer and CI results exist; independent replication absent | [#3](https://github.com/gjatalegacy-create/ESS-MAI/issues/3) | POC `REPRODUCIBILITY.md`; CI run [34817554348](https://github.com/gjatalegacy-create/ESS-MAI/actions/runs/34817554348) |
+| Independent reproduction | Clean reproduction of all POC 003–006 from a fixed, independently resolvable version boundary | No external run registered | No | Maintainer and CI results exist; independent replication absent | [#3](https://github.com/gjatalegacy-create/ESS-MAI/issues/3) | POC `REPRODUCIBILITY.md`; CI run [34817554348](https://github.com/gjatalegacy-create/ESS-MAI/actions/runs/34817554348) |
 | Authority hierarchy / formalization | Model one bounded invariant and test refinement assumptions | Open request; no reviewer assigned | No | Executable invariants/counterexamples exist; no mechanized proof | [#4](https://github.com/gjatalegacy-create/ESS-MAI/issues/4) | `docs/HYPOTHESES.md`; POC claim boundaries |
 | LAW-0 state continuity | Typed cross-role state/phase/receipt review | Open request; no reviewer assigned | No | Local non-expansion supported; global claim has counterexamples | [#5](https://github.com/gjatalegacy-create/ESS-MAI/issues/5) | POC 004 `RESULTS.md`, `SHADOW_CONNECTION_FINDING.md` |
 | FFI authority non-duplication | Rust/FFI, semantic identity, crash/restart, and sink review | Open request; no reviewer assigned | No | Generation-local one-shot supported; semantic reissuance counterexample; durability untested | [#6](https://github.com/gjatalegacy-create/ESS-MAI/issues/6) | POC 005 `RESULTS.md`, `FINAL_VERDICT.txt` |
@@ -85,7 +85,7 @@ cargo test --workspace --all-targets --release --locked -- --test-threads=1
 1..3 | ForEach-Object { cargo run -p poc006-living-negative-experiment --release --locked }
 ```
 
-Review caveat: inspecting a workflow confirms configured procedure, not remote execution status. A future release review should cite the immutable commit/tag and the corresponding GitHub Actions run URL, then compare its outputs with the capsule result files.
+Review caveat: inspecting a workflow confirms configured procedure, not remote execution status. A future release review should cite the full commit SHA, record the tag-to-commit resolution observed at review time, cite the version DOI and corresponding GitHub Actions run URL, then compare those identities and outputs with the capsule result files.
 
 ## Evidence hierarchy used in review
 

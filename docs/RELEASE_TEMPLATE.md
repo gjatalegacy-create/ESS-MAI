@@ -9,7 +9,7 @@ Use this format for a serious public release. Replace every placeholder with a v
 - Commit: `<full commit SHA>`
 - Release date: `<YYYY-MM-DD>`
 - Covered public scope: `<paths>`
-- Previous immutable release: `<tag/DOI>`
+- Previous published release identity: `<tag observed at commit / version DOI>`
 
 ## Architecture status
 

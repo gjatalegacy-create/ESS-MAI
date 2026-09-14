@@ -143,8 +143,14 @@ repository interface provides category management through the web UI.[^1]
   license, research classification, and POC 003–006 components.
 - Zenodo exact v1.1.1 DOI: `10.5281/zenodo.22750188`.
 - Zenodo all-versions DOI: `10.5281/zenodo.22074027`.
-- Software Heritage repository snapshot:
-  `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a`.
+- Separately recorded Software Heritage snapshot SWHID
+  `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a`; no origin/visit
+  mapping to GitHub, a tag, a commit, or a DOI is claimed here.
+- Separately, the README's qualified Software Heritage POC-tree link has core
+  directory SWHID `swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3`
+  within visit snapshot `swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191`.
+  No equivalence between these SWH objects, a Git tag/commit, or Zenodo files
+  is asserted without an explicit mapping.
 - OpenAIRE discovery route for the version DOI.
 - A future JOSS checklist is documented, but ESS-MAI is **not ready** and no
   submission or peer-review claim was made.
@@ -179,7 +185,7 @@ with 3 November 2026 12:00 CET recorded as the present deadline.
 ## Badge readiness
 
 Allowed and currently used: POC workflow status, Apache-2.0, Zenodo concept DOI,
-and Software Heritage archive. Their meanings are bounded in
+and a Software Heritage POC-tree directory badge. Their meanings are bounded in
 `docs/BADGE_POLICY.md`.
 
 Not displayed because not earned: OpenSSF Scorecard, OpenSSF Best Practices,

@@ -25,8 +25,8 @@ followers, and unverifiable impressions are deliberately excluded.
 | Research classification | 85 | `docs/RESEARCH_DOMAINS.md`, `HYPOTHESES.md`, and capsule prior-art files separate established theory, project contribution, proposition, evidence, and gap | Cross-disciplinary claims need independent specialists and a broader systematic literature review |
 | Review accessibility | 90 | Reviewer personas, contribution routes, structured forms, issue #3 and scoped issues #4–#11 provide concrete starting tasks | No external reviewer is assigned and no independent review result is registered |
 | Reproducibility | 84 | Locked Cargo commands, source/extraction checks, SHA-256 manifests, external target directories, repeatability runs, and [successful public CI run 34817554348](https://github.com/gjatalegacy-create/ESS-MAI/actions/runs/34817554348), maintainer-observed on 2026-09-14 | Windows-centered CI; no independent reproduction; POC 005/006 do not claim bit-for-bit executable reproducibility |
-| Citation readiness | 92 | Valid-looking `CITATION.cff`, CodeMeta, exact v1.1.1 DOI, all-versions DOI, author/organization/license, and citation boundary | No ORCID is asserted; no journal paper or independent citation/adoption is established |
-| External archival | 94 | Zenodo version DOI `10.5281/zenodo.22750188`, concept DOI `10.5281/zenodo.22074027`, Software Heritage snapshot SWHID, and OpenAIRE discovery route | Future Phase 16 commits are newer than the sealed v1.1.1 POC record; archive/version identities must remain explicit |
+| Citation readiness | 92 | `CITATION.cff` and CodeMeta are present; exact v1.1.1 DOI, all-versions DOI, author/organization/license, and citation boundary are recorded | No CFF schema-validation claim is made here; no ORCID, journal paper or independent citation/adoption is established |
+| External archival | 94 | Zenodo version DOI `10.5281/zenodo.22750188`, concept DOI `10.5281/zenodo.22074027`, two separately scoped Software Heritage routes, and OpenAIRE DOI discovery route | Future Phase 16 commits are newer than the sealed v1.1.1 POC record; cross-service and cross-SWHID mappings must not be inferred without separate evidence |
 | OpenSSF readiness | 35 | License, security/contribution policies, issue/PR templates, least-privilege POC workflow, public history | Maintainer-observed through GitHub APIs on 2026-09-14: no published Scorecard/Best Practices result, `main` unprotected, secret scanning disabled, and Dependabot security updates disabled; no pinned action SHAs, coverage, fuzzing, SAST, SBOM/provenance, signed-release evidence, or multi-maintainer review requirement |
 | Discussion readiness | 90 | Maintainer-observed on 2026-09-14: Discussions enabled; nine specialist categories published; [independent-review discussion #12](https://github.com/gjatalegacy-create/ESS-MAI/discussions/12) moved to its matching category and pinned; structured discussion form committed | No outside conversation or independent review result exists yet |
 | Contributor readiness | 88 | `CONTRIBUTING.md` has evidence procedure and “Ways to Contribute Without Accepting the Theory”; forms, labels, support, conduct, and security paths exist | Newcomer installation remains substantial; attribution policy is stated but has not yet been exercised with an outside contribution |
@@ -42,8 +42,8 @@ Arithmetic mean: `(1209 / 15) = 80.60`, reported as **81/100**.
 
 1. Four executable POCs expose both supporting observations and counterexamples.
 2. Separate public identifiers exist for the GitHub release context, Zenodo
-   version/family records, and a Software Heritage snapshot; no unevidenced
-   cross-service identity mapping is implied.
+   version/family records, and separately scoped Software Heritage objects; no
+   unevidenced cross-service identity mapping is implied.
 3. Claims now route to a normalized hypothesis and theory-to-materialization registry.
 4. Outsiders can enter through reproduction, formalization, architecture,
    security, Rust, state-machine, negative-knowledge, documentation, or

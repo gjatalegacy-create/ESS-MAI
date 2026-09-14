@@ -7,29 +7,30 @@ This map describes how a reader can find and identify the public ESS-MAI materia
 ## Canonical public nodes
 
 ```text
-GitHub repository and tagged release
-        | source, history, issues, CI
-        +----------------------+----------------------+
-        |                                             |
-        v                                             v
-Zenodo version record                         Software Heritage snapshot
-10.5281/zenodo.22750188                       swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a
-        | exact deposited version                     | content-derived archive identity
-        v                                             |
-Zenodo concept DOI                                    |
-10.5281/zenodo.22074027                               |
-        | all-versions/latest-version resolver         |
-        v                                             |
-OpenAIRE discovery/index record                       |
-        (Zenodo DOI route)                            |
+DEVELOPMENT                 DOI / DISCOVERY              SOFTWARE HERITAGE OBJECTS
+
+GitHub repository           Zenodo version DOI           snapshot swh:1:snp:d2d862ac...
+observed tag -> commit      10.5281/zenodo.22750188      (no origin/visit mapping supplied here)
+                            |
+                            v                            qualified POC-tree URI
+                            Zenodo concept DOI           core dir swh:1:dir:79459e40...
+                            10.5281/zenodo.22074027      visit swh:1:snp:678c388d...
+                            |                            origin qualifier: Zenodo DOI
+                            v                            (context; no equivalence asserted)
+                            OpenAIRE DOI discovery
 ```
+
+The columns are separate identifier surfaces. Only the Zenodo version-family
+and OpenAIRE DOI-discovery arrows are asserted here. No cross-column
+byte-equivalence or identity is asserted unless a mapping is explicitly
+supplied.
 
 - **GitHub is the development repository.** It exposes the public source, revision history, releases, issue templates and the repository's validation workflow. A public repository and a passing workflow run make work inspectable; they do not independently validate the project's scientific claims.[^1]
 - **Zenodo is the deposited-record/archive layer.** DOI `10.5281/zenodo.22750188` identifies the v1.1.1 record. DOI `10.5281/zenodo.22074027` is the all-versions concept DOI and should be used when a citation is intended to follow the version set rather than freeze v1.1.1. Zenodo describes each version as a separate record with its own persistent identifier and files.[^2][^3]
-- **Software Heritage is the source-code preservation layer.** `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` is a snapshot-type SWHID (`snp`). A SWHID identifies an archived software object by intrinsic content-derived identity; a snapshot SWHID is not a review or endorsement.[^4][^5]
+- **Software Heritage is the source-code preservation layer.** `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` is a separately recorded snapshot-type SWHID (`snp`); this document supplies no origin/visit qualifier that maps it to GitHub, a tag, a commit or a DOI. The README separately uses core directory SWHID `swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3`, qualified by Zenodo origin, visit snapshot `swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191`, release anchor and `/executable-prior-art/` path. Those qualifiers provide browsing context, not byte-equivalence to Zenodo files. These are different Software Heritage objects and contexts; no cross-map is asserted without explicit evidence.[^4][^5][^23]
 - **OpenAIRE is an indexing and discovery layer.** The project has a result URL keyed to the v1.1.1 DOI. OpenAIRE describes its graph and Explore service as research discovery infrastructure, including research-software records. Presence there does not mean OpenAIRE peer-reviewed or certified ESS-MAI.[^6][^7]
 
-When naming an exact experimental release, cite the v1.1.1 DOI. When naming the evolving Zenodo version family, cite the concept DOI. When identifying an archived repository snapshot, cite the snapshot SWHID; do not infer a DOI/tag-to-snapshot mapping unless that mapping is separately evidenced. When inviting code inspection or participation, link GitHub.
+When naming an exact experimental release, cite the v1.1.1 DOI. When naming the evolving Zenodo version family, cite the concept DOI. When identifying an archived Software Heritage object, cite the exact SWHID and state whether it is the separately recorded snapshot or the qualified POC-tree directory context; do not infer a DOI/tag-to-SWHID mapping unless that mapping is separately evidenced. When inviting code inspection or participation, link GitHub.
 
 ## What each external surface does—and does not do
 
@@ -38,7 +39,7 @@ When naming an exact experimental release, cite the v1.1.1 DOI. When naming the 
 | GitHub | Repository and collaboration | Public ESS-MAI repository, tags, releases, issues and Actions surface | Independent replication, scientific review, security certification |
 | Zenodo v1.1.1 | Archive/record | Version DOI `10.5281/zenodo.22750188` | Journal publication, novelty finding, peer review |
 | Zenodo concept DOI | Version-family identifier | Concept DOI `10.5281/zenodo.22074027` | That every version has identical files or results |
-| Software Heritage | Source archive | Snapshot SWHID `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` | Correctness, reproducibility, security or authorship adjudication |
+| Software Heritage | Source archive | Separately recorded snapshot `swh:1:snp:d2d862ac…`; README's qualified POC-tree directory `swh:1:dir:79459e40…` within visit snapshot `swh:1:snp:678c388d…` | The origin of the unqualified snapshot; equivalence between either SWH object, a Git tag/commit or Zenodo files; correctness, reproducibility, security or authorship adjudication |
 | OpenAIRE | Index/discovery graph | Search/result route for the Zenodo DOI | Validation, eligibility, endorsement or peer review |
 | ORCID | Researcher identity and work linking | A DOI can be added to an author's ORCID record | Verification of the work's claims or of unverified manually entered contributors |
 | OSF | Registration/preprint infrastructure | Optional future venue for a genuinely distinct study plan or manuscript | A registration is not peer review; a preprint is explicitly pre-peer-review |
@@ -54,7 +55,7 @@ ORCID can improve author-to-work discovery by linking a DOI to the author's reco
 
 JOSS is a journal with formal peer review, but ESS-MAI should be represented only as a **future checklist candidate**. Current JOSS screening expects, among other things, more than six months of public development history, demonstrated research impact, a full-featured maintainable research package, public contribution paths, tests and documentation, and a paper in the repository.[^11][^12]
 
-GitHub records the repository as created on 2026-07-14, while the currently checked-out Git commit graph begins on 2026-08-24; both are less than six months before this status date.[^22] The repository has an Apache-2.0 license, contribution/support/security files and a public validation workflow, but those positive signals do not cure the history gate. No JOSS submission, pre-review issue, reviewer assignment or acceptance is asserted. See `WHO_SHOULD_REVIEW_THIS.md` for a staged independent-review plan.
+GitHub records the repository as created on 2026-07-14, less than six months before this status date.[^22] The repository has an Apache-2.0 license, contribution/support/security files and a public validation workflow, but those positive signals do not cure the history gate. No JOSS submission, pre-review issue, reviewer assignment or acceptance is asserted. See `WHO_SHOULD_REVIEW_THIS.md` for a staged independent-review plan.
 
 ## Future quality-signal route: OpenSSF
 
@@ -116,4 +117,5 @@ Before considering NLnet, define a concise milestone-based FOSS work package, na
 [^19]: NLnet, “Apply for funding”: https://nlnet.nl/funding.html
 [^20]: NLnet, “Apply for funding before November 3rd 2026”: https://nlnet.nl/news/2026/20260903-call.html
 [^21]: NLnet, Restack: https://nlnet.nl/restack/
-[^22]: GitHub REST API, ESS-MAI repository metadata (`created_at`) and local public Git commit history: https://api.github.com/repos/gjatalegacy-create/ESS-MAI
+[^22]: GitHub REST API, ESS-MAI repository metadata (`created_at`): https://api.github.com/repos/gjatalegacy-create/ESS-MAI
+[^23]: Software Heritage qualified POC-tree link used in the README: https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/

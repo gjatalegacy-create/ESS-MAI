@@ -21,7 +21,7 @@ Recruit reviewers who can publish their identity, affiliation, conflict-of-inter
 
 ## Recommended sequence
 
-1. **Artifact identity:** freeze the item under review with the v1.1.1 DOI `10.5281/zenodo.22750188`, the Git tag/commit, checksums and—when reviewing the repository snapshot—`swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a`.[^1][^2]
+1. **Artifact identity:** record each available identifier independently: the v1.1.1 DOI `10.5281/zenodo.22750188`, a full Git commit SHA, the tag-to-commit resolution observed at review time, and file checksums. `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` is a separately recorded snapshot SWHID without an origin/visit mapping supplied here. The README's archived POC-tree link instead uses core directory `swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3` with contextual qualifiers. Treat any of these as the same reviewed item only after publishing an explicit mapping and verifying the relevant bytes.[^1][^2][^16]
 2. **Clean-room reproduction:** have an external Rust reviewer execute only documented steps and publish raw logs plus deviations.
 3. **Claim audit:** have systems/formal-methods reviewers map every claim to code, tests, assumptions and counterexamples. Maintainer-run tests remain maintainer evidence until independently rerun.
 4. **Comparative evaluation:** require named baselines, measurable tasks and ablations before using “advance,” “state of the art,” “deep reasoning,” “planning” or “trustworthy” as comparative conclusions.
@@ -53,7 +53,7 @@ JOSS is an appropriate **future** review target only if ESS-MAI becomes a mature
 
 ### Blocking or unresolved items
 
-- **Public-history gate:** JOSS currently requires more than six months of public development with activity across that period. GitHub records this repository as created on 2026-07-14, and the currently checked-out Git commit graph begins on 2026-08-24, so this gate cannot be met on the status date.[^15][^5]
+- **Public-history gate:** JOSS currently requires more than six months of public development with activity across that period. GitHub records this repository as created on 2026-07-14, so this gate cannot be met on the status date.[^15][^5]
 - **Research impact:** a DOI and repository are useful identifiers, not evidence that independent researchers use the software. Collect public citations, adoption, integrations or external research workflows.
 - **External development:** the visible author/email variants appear to represent one maintainer. Seek genuine issue discussion, pull-request review and contributions; never manufacture activity.
 - **Independent usability:** ask a colleague with no privileged setup to install and test the software, then publish the report.
@@ -125,4 +125,5 @@ The current NLnet notice also says mostly LLM-generated work is not eligible and
 [^12]: NLnet, “Apply for funding”: https://nlnet.nl/funding.html
 [^13]: NLnet, “Apply for funding before November 3rd 2026”: https://nlnet.nl/news/2026/20260903-call.html
 [^14]: NLnet, Restack: https://nlnet.nl/restack/
-[^15]: GitHub REST API, ESS-MAI repository metadata (`created_at`) and local public Git commit history: https://api.github.com/repos/gjatalegacy-create/ESS-MAI
+[^15]: GitHub REST API, ESS-MAI repository metadata (`created_at`): https://api.github.com/repos/gjatalegacy-create/ESS-MAI
+[^16]: Software Heritage qualified POC-tree link used in the README: https://archive.softwareheritage.org/swh:1:dir:79459e40e31b2a248c87402a1e20b99f067d66d3;origin=https://doi.org/10.5281/zenodo.22074027;visit=swh:1:snp:678c388d6e821b03c00cc276aa1366e2575c7191;anchor=swh:1:rel:f74b7c45dfbcd0046722ff7aadd4a7e238d569d6;path=/executable-prior-art/

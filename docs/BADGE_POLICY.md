@@ -12,7 +12,7 @@ A badge is compact metadata, not a substitute for evidence. ESS-MAI badges must 
 | License | “Apache-2.0”; link to the repository `LICENSE` file | Declared repository license only. It is not a compliance opinion about every dependency, dataset or third-party asset. |
 | Zenodo concept DOI | Label “DOI — all versions” or plainly “DOI”; link to `10.5281/zenodo.22074027` | Persistent identifier for the version family. Do not call it a journal-publication DOI or peer-review badge. |
 | Zenodo version DOI | Prefer a text link or label “v1.1.1 DOI”; link to `10.5281/zenodo.22750188` | Exact deposited version. Zenodo preservation and DOI registration do not establish correctness, novelty or peer review.[^2][^3] |
-| Software Heritage | Label “Software Heritage snapshot” or “source archived”; link to `swh:1:snp:d2d862ac5122383925807c53d2ec4cda7d05b46a` | Archived snapshot identity. `snp` denotes a snapshot object; the SWHID is an intrinsic identifier, not a verdict.[^4] |
+| Software Heritage | Label the exact object: “Software Heritage snapshot” for `swh:1:snp:d2d862ac…`, or “POC tree archived” for README's core directory `swh:1:dir:79459e40…` | These are separate SWH objects/contexts. The README directory link includes Zenodo-origin, visit-snapshot, release-anchor and path qualifiers; neither target implies equivalence to a Git tag/commit or DOI files unless separately mapped. A SWHID is an identifier, not a verdict.[^4] |
 
 The current README's workflow, license, DOI and Software Heritage classes are acceptable in principle if each target continues to resolve and the nearby prose preserves these boundaries. Prefer the exact v1.1.1 DOI in release-specific contexts and the concept DOI in project-wide, all-version contexts.
 
@@ -71,7 +71,7 @@ Before applying for a Best Practices badge, answer every criterion conservativel
 
 1. Keep no more than four primary badges at the top of the README: workflow, license, DOI and source archive.
 2. Link every badge to first-party evidence, not to a generic home page or image renderer.
-3. Use explicit alt text. “Software Heritage snapshot” is better than “archived”; “v1.1.1 DOI” is better than an unexplained “published.”
+3. Use object-specific alt text. The current README target is “Software Heritage POC tree” or “Software Heritage directory”; reserve “Software Heritage snapshot” for a `snp` target. “v1.1.1 DOI” is better than an unexplained “published.”
 4. Put OpenAIRE, ORCID and other discovery identities in a “Public references” section unless space or accessibility requires another layout.
 5. Put maintainer-run results in prose/tables labeled “maintainer-verified” or “maintainer-reported.” Reserve “independently reproduced” for a named external reproduction with a public report and scope.
 6. Recheck links and claims for every release. Remove stale, revoked or no-longer-resolving signals.

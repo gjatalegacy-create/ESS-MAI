@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Cite Bledar Gjata and this repository for the evolving ESS-MAI research architecture. Cite the immutable collection release for the exact executable POC version used."
+message: "Cite Bledar Gjata and this repository for the evolving ESS-MAI research architecture. Cite the version-specific published collection record for the exact executable POC version used."
 title: "ESS-MAI: Gjata Collapse Law Research Architecture"
 type: software
 authors:
