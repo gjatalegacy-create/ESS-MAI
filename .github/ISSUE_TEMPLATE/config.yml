@@ -1,6 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Independent technical review discussion
+    url: https://github.com/gjatalegacy-create/ESS-MAI/discussions/12
+    about: Discuss a claim, architecture assumption, terminology concern, or review method before opening a scoped issue.
   - name: Security-sensitive report
     url: https://github.com/gjatalegacy-create/ESS-MAI/security/policy
     about: Use the private reporting instructions instead of placing sensitive material in a public issue.
-

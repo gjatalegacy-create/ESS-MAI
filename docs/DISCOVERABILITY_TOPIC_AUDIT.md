@@ -1,7 +1,9 @@
 # ESS-MAI discoverability topic audit
 
-Status date: 2026-09-14  
-Scope: public repository `gjatalegacy-create/ESS-MAI` at `ab87e3e` before the Phase 16 documentation commit  
+Status date: 2026-09-14
+
+Scope: public repository `gjatalegacy-create/ESS-MAI` at `ab87e3e` before the Phase 16 documentation commit
+
 Rule: a topic is selected only when a public source, experiment, or repository practice supports it. A topic is classification metadata, not validation.
 
 GitHub permits at most 20 topics and recommends terms that describe a repository's purpose, subject area, community, or language.[^1] The set below therefore favors established engineering and research vocabulary over project-internal names. The project-specific `ess-mai` and the central experimental term `negative-knowledge` are retained because they provide exact-identity and exact-concept routes.

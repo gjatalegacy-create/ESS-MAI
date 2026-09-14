@@ -10,6 +10,25 @@ Execution performed for this review: documentation and source inspection only; n
 
 The public repository presents an evidence-aware experimental program with four bounded capsules. Its strongest support is for local, explicitly tested properties and reproduced counterexamples. The review does not support describing v1.8.9 or the full ESS-MAI architecture as closed, fully materialized, production-certified, formally verified, independently replicated, or security validated.
 
+## Public review dashboard
+
+`Externally reviewed = No` is intentional: a public issue, discussion, CI run,
+DOI, archive record, or maintainer audit is not an independent external review.
+Change that cell only after an identifiable outside reviewer publishes a scoped
+method and result.
+
+| Area | Review needed | Review in progress | Externally reviewed | Current findings | Open issues | Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| Independent reproduction | Clean reproduction of all POC 003–006 from an immutable identifier | No external run registered | No | Maintainer and CI results exist; independent replication absent | [#3](https://github.com/gjatalegacy-create/ESS-MAI/issues/3) | POC `REPRODUCIBILITY.md`; CI run [34817554348](https://github.com/gjatalegacy-create/ESS-MAI/actions/runs/34817554348) |
+| Authority hierarchy / formalization | Model one bounded invariant and test refinement assumptions | Open request; no reviewer assigned | No | Executable invariants/counterexamples exist; no mechanized proof | [#4](https://github.com/gjatalegacy-create/ESS-MAI/issues/4) | `docs/HYPOTHESES.md`; POC claim boundaries |
+| LAW-0 state continuity | Typed cross-role state/phase/receipt review | Open request; no reviewer assigned | No | Local non-expansion supported; global claim has counterexamples | [#5](https://github.com/gjatalegacy-create/ESS-MAI/issues/5) | POC 004 `RESULTS.md`, `SHADOW_CONNECTION_FINDING.md` |
+| FFI authority non-duplication | Rust/FFI, semantic identity, crash/restart, and sink review | Open request; no reviewer assigned | No | Generation-local one-shot supported; semantic reissuance counterexample; durability untested | [#6](https://github.com/gjatalegacy-create/ESS-MAI/issues/6) | POC 005 `RESULTS.md`, `FINAL_VERDICT.txt` |
+| Living Negative Knowledge | Full receipt, detached restart, and separate K+/K− re-entry review | Open request; no reviewer assigned | No | Bounded K− re-entry supported; Boolean receipt/restart/K+ symmetry gaps remain | [#7](https://github.com/gjatalegacy-create/ESS-MAI/issues/7) | POC 006 `RESULTS.md`, `POSITIVE_NEGATIVE_PARALLELISM.md` |
+| Cold-start reachability | Architecture-preserving genesis hypothesis criticism | Open request; no reviewer assigned | No | Empty route stops at Asht; exact-pair control advances; no production commit | [#8](https://github.com/gjatalegacy-create/ESS-MAI/issues/8) | POC 003 `RESULTS.md`, `FAILURE_TO_ADVANCEMENT.md` |
+| Security / artifact provenance | Adversarial substitution, replay, confused-deputy, and supply-chain review | Open request; no reviewer assigned | No | Hashes and scope boundaries exist; no external security audit/certification | [#9](https://github.com/gjatalegacy-create/ESS-MAI/issues/9) | Collection manifest, `SECURITY.md`, `docs/NEGATIVE_RESULTS.md` |
+| Documentation/source consistency | Verify four README result rows against capsule evidence | Open approachable task; no reviewer assigned | No | Maintainer cross-check exists; outside consistency check absent | [#10](https://github.com/gjatalegacy-create/ESS-MAI/issues/10) | Root `README.md`; four capsule result/claim files |
+| Benchmarking | Predeclared functional/performance/reasoning comparison protocol | Open request; no reviewer assigned | No | No performance, state-of-the-art, TRL, or comparative reasoning result claimed | [#11](https://github.com/gjatalegacy-create/ESS-MAI/issues/11) | `docs/THEORY_TO_MATERIALIZATION.md`; POC procedures |
+
 | Area | Review status | Basis |
 | --- | --- | --- |
 | Claim boundaries | Present for POC 003–006 | Capsule `CLAIM.md` or `CLAIM_BOUNDARY.md` files distinguish supported and unsupported inferences |

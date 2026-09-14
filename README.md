@@ -29,6 +29,8 @@
 | [Research and reviewer map](docs/RESEARCH_DOMAINS.md) | Bounded connections to external disciplines and the specialist best placed to challenge each one |
 | [Independent-review entry points](docs/WHO_SHOULD_REVIEW_THIS.md) | Where different reviewers should start, what to attack, and commands to run |
 | [Negative-results register](docs/NEGATIVE_RESULTS.md) | Failed experiments, contradictions, limitations, and architecture-preserving next tests |
+| [Organic-discovery readiness](ORGANIC_DISCOVERY_READINESS.md) | Evidence-based readiness score, missing signals, and reassessment rule |
+| [Phase 16 execution report](ORGANIC_DISCOVERY_EXECUTION_REPORT.md) | Applied metadata, public review surfaces, platform boundaries, and next actions |
 | [Machine-readable manifest](publications/executable-prior-art/manifest.json) | Sealed pre-tag state, validation results, disclosure boundaries, and artifact-manifest hashes |
 | [Citation metadata](CITATION.cff) | Author, project, affiliation, license, and research keywords |
 | [Zenodo v1.1.1 software record](https://doi.org/10.5281/zenodo.22750188) | Exact version DOI for the POC 003–006 deposit and standard-method closure of POC 005–006 |
@@ -146,6 +148,7 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 
 ## Research participation
 
+- [Join the independent technical review discussion](https://github.com/gjatalegacy-create/ESS-MAI/discussions/12)—agreement with the theory is not required.
 - [Submit an independent reproducibility report](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=reproducibility-report.yml)
 - [Open an evidence-bound research question](https://github.com/gjatalegacy-create/ESS-MAI/issues/new?template=research-question.yml)
 - [Challenge an open hypothesis](docs/HYPOTHESES.md) or select a concrete gap from the [review dashboard](docs/REVIEW_STATUS.md).
@@ -180,7 +183,7 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 
 ## Technical documentation / Dokumentacioni teknik
 
-Dokumentacioni teknik më poshtë ruan përshkrimin ekzistues të arkitekturës dhe materializimit të projektit.
+Dokumentacioni teknik më poshtë ruan përshkrimin historik të arkitekturës dhe materializimit të projektit. Ai është reference për auditim; një deklaratë aty nuk ngrihet automatikisht në evidencë runtime. Për pretendimet publike aktuale kanë përparësi `docs/HYPOTHESES.md`, `docs/THEORY_TO_MATERIALIZATION.md` dhe `CLAIM_BOUNDARY.md`/`RESULTS.md` të kapsulës përkatëse.
 
 ## Arkitektura: Triniteti Light–Quantum–Shadow
 
