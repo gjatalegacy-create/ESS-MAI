@@ -180,6 +180,8 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 - [Business Magazine Albania — Bledar Gjata and ESS-MAI](https://businessmag.al/a-jemi-drejt-nje-ai-sovrane-bledar-gjata-dhe-vizioni-ambicioz-pas-ess-mai/)
 - [ACP Albania — ESS-MAI, a project by Bledar Gjata](https://acp.al/posts/6645/ess-mai-projekti-i-bledar-gjates-qe-synon-nje-qasje-te-re-ndaj-inteligjences-artificiale/)
 - [LinkedIn — Bledar Gjata](https://www.linkedin.com/in/bledar-gjata-1a527030b/) · [X — Gjata Legacy](https://x.com/Gjata_Legacy) · [YouTube — ESS-MAI](https://www.youtube.com/watch?v=i23jeqIwqJA)
+- [Instagram — Gjata Legacy](https://www.instagram.com/gjata_legacy/) · [Facebook — GJATA](https://www.facebook.com/gjatalegacy) · [YouTube — Gjata Legacy channel](https://www.youtube.com/@GjataLegacy)
+- [Hugging Face — Gjata Legacy](https://huggingface.co/gjata-legacy) · [ORCID — Bledar Gjata](https://orcid.org/0009-0003-7854-266X)
 
 ## Technical documentation / Dokumentacioni teknik
 
