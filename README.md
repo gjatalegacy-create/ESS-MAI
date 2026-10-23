@@ -295,3 +295,9 @@ Verifikimi i plotë në Windows GNU:
 A self-contained historical Rust reference capsule derived from ESS-MAI is now available with twelve freshly passing tests, exact reproduction commands, open limitations, theory and a transparent human/AI working-method account. The larger private product is explicitly outside this capsule.
 
 [Code and review protocol](https://github.com/gjatalegacy-create/AIGovern-Cyber-POC007) · [Hugging Face mirror](https://huggingface.co/datasets/gjata-legacy/ess-mai-poc-007-aigovern-cyber) · [Publication boundary](docs/POC007_PUBLICATION.md)
+
+## Companion UI and connected accounts
+
+[ESS-MAI UI / Nura Legacy source](https://github.com/gjatalegacy-create/ESS-MAI-UI) · [Full UI distribution and eligible data](https://huggingface.co/datasets/gjata-legacy/ess-mai-ui-nura-legacy). This is a separate interface workspace, not the private AIGovern-Cyber runtime. Publication scope and validation limits are recorded with the UI.
+
+[Public identity, publications and review routes](https://github.com/gjatalegacy-create/AIGovern-Cyber-POC007/blob/main/PUBLIC_NETWORK.md) · [ORCID](https://orcid.org/0009-0003-7854-266X) · [Hugging Face](https://huggingface.co/gjata-legacy) · [HackerNoon author profile](https://hackernoon.com/u/gjatalegacy).
