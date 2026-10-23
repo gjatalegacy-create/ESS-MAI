@@ -288,3 +288,10 @@ Verifikimi i plotë në Windows GNU:
 
 ---
 **GJATA LEGACY™ — ESS-MAI** • Sovereign Deterministic Reasoning Substrate
+
+
+## POC007 / AIGovern-Cyber public reference
+
+A self-contained historical Rust reference capsule derived from ESS-MAI is now available with twelve freshly passing tests, exact reproduction commands, open limitations, theory and a transparent human/AI working-method account. The larger private product is explicitly outside this capsule.
+
+[Code and review protocol](https://github.com/gjatalegacy-create/AIGovern-Cyber-POC007) · [Hugging Face mirror](https://huggingface.co/datasets/gjata-legacy/ess-mai-poc-007-aigovern-cyber) · [Publication boundary](docs/POC007_PUBLICATION.md)
