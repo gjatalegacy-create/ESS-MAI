@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">ESS-MAI: Evidence Before Action</title><desc id="desc">Conceptual diagram: the Gjata Collapse Law defines the remit of LIGHT, QUANTUM and SHADOW. LIGHT coordinates, QUANTUM evaluates candidates, and SHADOW verifies and records.</desc>
+<rect width="1200" height="675" fill="#0b1424"/><path d="M64 194H1136" stroke="#2c405a"/>
+<g font-family="Arial, sans-serif">
+<text x="64" y="71" fill="#8addd7" font-size="20" font-weight="700" letter-spacing="3">OPEN-SOURCE AI SYSTEMS RESEARCH</text>
+<text x="64" y="140" fill="#f2f6ff" font-size="62" font-weight="700">ESS-MAI</text>
+<text x="375" y="137" fill="#bdcadc" font-size="31">Evidence Before Action</text>
+<rect x="255" y="227" width="690" height="112" rx="15" fill="#133537" stroke="#54aca9" stroke-width="2"/>
+<text x="600" y="272" fill="#e2fbf8" font-size="28" font-weight="700" text-anchor="middle">GCL · Gjata Collapse Law</text>
+<text x="600" y="309" fill="#a9d6d4" font-size="21" text-anchor="middle">Executable constitution defining each authority’s remit</text>
+<path d="M600 339V373 M234 406V373H966V406 M600 373V406" stroke="#70bebd" stroke-width="3" fill="none"/>
+<g fill="#132239" stroke="#405e81" stroke-width="2"><rect x="64" y="406" width="340" height="130" rx="15"/><rect x="430" y="406" width="340" height="130" rx="15"/><rect x="796" y="406" width="340" height="130" rx="15"/></g>
+<g fill="#f0f6ff" font-size="28" font-weight="700" text-anchor="middle"><text x="234" y="459">LIGHT</text><text x="600" y="459">QUANTUM</text><text x="966" y="459">SHADOW</text></g>
+<g fill="#b9c9df" font-size="22" text-anchor="middle"><text x="234" y="498">Coordinates requests</text><text x="600" y="498">Evaluates candidates</text><text x="966" y="498">Verifies and records</text></g>
+<path d="M64 583H1136" stroke="#2c405a"/>
+<text x="64" y="629" fill="#bdcadc" font-size="20">Conceptual architecture</text><text x="1136" y="629" fill="#dce7f8" font-size="20" font-weight="700" text-anchor="end">Bledar Gjata</text>
+</g></svg>
