@@ -183,6 +183,14 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 - [Instagram — Gjata Legacy](https://www.instagram.com/gjata_legacy/) · [Facebook — GJATA](https://www.facebook.com/gjatalegacy) · [YouTube — Gjata Legacy channel](https://www.youtube.com/@GjataLegacy)
 - [Hugging Face — Gjata Legacy](https://huggingface.co/gjata-legacy) · [ORCID — Bledar Gjata](https://orcid.org/0009-0003-7854-266X)
 
+
+### Public visibility / Dukshmëria publike
+
+- [AI POST Korea — Interview with Bledar Gjata on ESS-MAI](https://www.aipostkorea.com/news/articleView.html?idxno=13242) (10 November 2026, in Korean).
+- [European AI Forum (EAIF) newsletter — ESS-MAI mention in the Albania update](https://eaiforum.substack.com/p/eaif-newsletter-a2c). The newsletter links to the original Business Magazine Albania coverage.
+
+These links document public coverage and mentions; they are not technical validation or endorsement.
+
 ## Technical documentation / Dokumentacioni teknik
 
 Dokumentacioni teknik më poshtë ruan përshkrimin historik të arkitekturës dhe materializimit të projektit. Ai është reference për auditim; një deklaratë aty nuk ngrihet automatikisht në evidencë runtime. Për pretendimet publike aktuale kanë përparësi `docs/HYPOTHESES.md`, `docs/THEORY_TO_MATERIALIZATION.md` dhe `CLAIM_BOUNDARY.md`/`RESULTS.md` të kapsulës përkatëse.
