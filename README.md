@@ -184,7 +184,7 @@ For exact extraction checks, environment notes, and expected outputs, use each c
 - [Hugging Face — Gjata Legacy](https://huggingface.co/gjata-legacy) · [ORCID — Bledar Gjata](https://orcid.org/0009-0003-7854-266X)
 
 
-### Public visibility / Dukshmëria publike
+### Public visibility
 
 - [AI POST Korea — Interview with Bledar Gjata on ESS-MAI](https://www.aipostkorea.com/news/articleView.html?idxno=13242) (10 November 2026, in Korean).
 - [European AI Forum (EAIF) newsletter — ESS-MAI mention in the Albania update](https://eaiforum.substack.com/p/eaif-newsletter-a2c). The newsletter links to the original Business Magazine Albania coverage.
