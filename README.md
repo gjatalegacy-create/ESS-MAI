@@ -302,8 +302,14 @@ A self-contained historical Rust reference capsule derived from ESS-MAI is now a
 
 [Public identity, publications and review routes](https://github.com/gjatalegacy-create/AIGovern-Cyber-POC007/blob/main/PUBLIC_NETWORK.md) · [ORCID](https://orcid.org/0009-0003-7854-266X) · [Hugging Face](https://huggingface.co/gjata-legacy) · [HackerNoon author profile](https://hackernoon.com/u/gjatalegacy).
 
+## AI self-governance and traceable decisions
+
+ESS-MAI is open-source AI research from Albania that explores AI self-governance through an executable constitution and independent authorities with defined mandates. Its Rust experiments study AI authority and AI authorization before action, AI verification when evidence is missing, and AI traceability through audit trails. This connects to AI governance, AI accountability, and AI safety. For readers exploring constitutional AI, ESS-MAI focuses on how a constitution is executed at runtime. Its scope is architectural self-governance, not sovereign AI in the sense of a national model or infrastructure.
+
+**Topics:** AI self-governance · AI governance · AI safety · AI traceability · AI accountability · AI authority · AI authorization · AI audit trails · constitutional AI · AI verification · AI Albania · open-source AI · AI in Rust · sovereign AI
+
 ## Project, artifact and author links
 
-[GitHub — source](https://github.com/gjatalegacy-create/ESS-MAI) · [Hugging Face — public mirror](https://huggingface.co/datasets/gjata-legacy/ess-mai-executable-prior-art) · [LinkedIn — author](https://www.linkedin.com/in/bledar-gjata-1a527030b/) · [Zenodo — software archive](https://doi.org/10.5281/zenodo.22750188) · [OpenAIRE — software metadata](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22750188) · [ORCID — author](https://orcid.org/0009-0003-7854-266X)
+[ESS-MAI — public project site](https://ess-mai.gjatalegacy.chatgpt.site) · [GitHub — source](https://github.com/gjatalegacy-create/ESS-MAI) · [Hugging Face — public mirror](https://huggingface.co/datasets/gjata-legacy/ess-mai-executable-prior-art) · [LinkedIn — author](https://www.linkedin.com/in/bledar-gjata-1a527030b/) · [Zenodo — software archive](https://doi.org/10.5281/zenodo.22750188) · [OpenAIRE — software metadata](https://explore.openaire.eu/search/result?pid=10.5281%2Fzenodo.22750188) · [ORCID — author](https://orcid.org/0009-0003-7854-266X)
 
 ESS-MAI is the originating research project; the linked Zenodo version and HF collection contain the four distinct POC003–006 experiments. This live introduction does not revise their frozen artifacts or combine their claims. LinkedIn and ORCID identify author-declared profiles for Bledar Gjata (Gjata Legacy). The OpenAIRE DOI lookup returned the matching software metadata on 24 October 2026; indexing and these cross-links do not establish peer review, certification or endorsement.
